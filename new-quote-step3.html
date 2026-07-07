@@ -1,0 +1,3518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft Dealer Portal — Review Quote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:       #C9A84C;
+      --green-dark: #3e5a42;
+      --green-mid:  #4a6b4f;
+      --cream:      #F5F2EC;
+      --text:       #2C3A32;
+      --muted:      #7A8C82;
+      --border:     #DDD8CC;
+      --white:      #FFFFFF;
+      --error:      #C0392B;
+    }
+    html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+    .page { max-width: 920px; margin: 0 auto; padding: 28px 20px 100px; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--green-dark); margin-bottom: 24px; }
+
+    .returned-revising-banner {
+      background: rgba(224,123,57,0.07);
+      border: 1px solid rgba(224,123,57,0.3);
+      border-left: 4px solid #E07B39;
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .returned-revising-banner .rrb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(224,123,57,0.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .returned-revising-banner .rrb-icon-wrap svg { width: 16px; height: 16px; fill: #E07B39; }
+    .returned-revising-banner .rrb-body { flex: 1; min-width: 0; }
+    .returned-revising-banner .rrb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #E07B39;
+      margin-bottom: 4px;
+    }
+.returned-revising-banner .rrb-msg { font-size: 13px; color: #2C3A32; line-height: 1.55; }
+    .returned-revising-banner .rrb-msg strong { color: #E07B39; }
+
+    /* CB-4: admin-edit banner (admin editing a dealer's PO) */
+    .admin-editing-banner {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .admin-editing-banner .aeb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(201,168,76,0.18);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .admin-editing-banner .aeb-icon-wrap svg { width: 16px; height: 16px; fill: var(--gold); }
+    .admin-editing-banner .aeb-body { flex: 1; min-width: 0; }
+    .admin-editing-banner .aeb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #8B6914; margin-bottom: 4px;
+    }
+    .admin-editing-banner .aeb-msg { font-size: 13px; color: #2C3A32; line-height: 1.55; }
+    .admin-editing-banner .aeb-msg strong { font-weight: 600; }
+
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); background: #FAFAF8; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green-dark); }
+    .card-body { padding: 18px 20px; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-label { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .info-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+    .items-table { width: 100%; border-collapse: collapse; }
+    .items-table thead th { padding: 9px 10px; background: #F5F3EF; border-bottom: 1px solid var(--border); font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-align: left; white-space: nowrap; }
+    .items-table thead th.th-right { text-align: right; }
+    .items-table tbody tr { border-bottom: 1px solid var(--border); }
+    .items-table tbody tr:last-child { border-bottom: none; }
+    .items-table td { padding: 10px 10px; font-size: 13px; vertical-align: top; }
+    .td-style { font-weight: 500; color: var(--green-dark); }
+    .td-sku { color: var(--text); font-size: 12px; font-weight: 500; white-space: nowrap; }
+    .td-desc { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .td-desc .desc-main { color: var(--text); font-size: 12px; margin-bottom: 4px; }
+    .td-type .type-badge { display: inline-block; padding: 2px 7px; border-radius: 2px; font-size: 10px; letter-spacing: 0.05em; white-space: nowrap; }
+    .td-type .type-badge.rta { background: rgba(62,90,66,0.07); color: var(--green-dark); }
+    .td-type .type-badge.assembled { background: rgba(201,168,76,0.12); color: #8B6914; }
+    .td-right { text-align: right; }
+    .td-total { font-weight: 500; }
+
+    /* CB-7 / CB-9: type group divider row（橫跨 10 欄、不佔 Item 編號）*/
+    .items-table tbody tr.type-divider td {
+      padding: 8px 12px;
+      background: rgba(62,90,66,0.06);
+      border-top: 1px solid var(--green-mid);
+      border-bottom: 1px solid var(--green-mid);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+color: var(--green-dark);
+      text-align: center;
+    }
+    /* CB-25: 三層分組 divider — Section(Assembled/Unassembled)最重, Style 次之, Type 沿用上方 */
+    .items-table tbody tr.section-divider td {
+      padding: 10px 12px;
+      background: var(--green-mid);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .items-table tbody tr.style-divider td {
+      padding: 7px 12px;
+      background: rgba(201,168,76,0.14);
+      border-top: 1px solid rgba(201,168,76,0.45);
+      border-bottom: 1px solid rgba(201,168,76,0.45);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8B6914;
+      text-align: center;
+    }
+    /* CB-25: mapping SKU 獨立 row — 緊跟父 row,縮排呈現附屬關係 */
+    .items-table tbody tr.mapping-row td { background: rgba(62,90,66,0.03); }
+    .items-table tbody tr.mapping-row td:first-child {
+      border-left: 2px solid rgba(62,90,66,0.25);
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .items-table tbody tr.mapping-row .td-sku { padding-left: 14px; }
+    /* CB-7: mod 子項移入 SKU 欄後，需允許換行（td-sku 原為 nowrap）*/
+    .items-table td.td-sku .mods-list,
+    .items-table td.td-sku .mods-list * { white-space: normal; }
+    
+    
+    /* F-CUSTOM: [CUSTOM] badge — gold bg + gold text, consistent with step2/2.5 */
+    .custom-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.18);
+      color: #8B6914;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 1px 5px;
+      border-radius: 2px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .items-table tbody tr.sub-continuation {
+      border-top: 1px dashed rgba(201,168,76,0.25);
+    }
+    .items-table tbody tr.sub-continuation td:first-child {
+      border-left: 2px solid rgba(201,168,76,0.35);
+    }
+    .sub-label {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: #8B6914;
+      background: rgba(201,168,76,0.10);
+      padding: 1px 6px;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+
+    .mods-list {
+      margin-top: 6px;
+      padding: 6px 0 0;
+      border-top: 1px dotted rgba(125,140,130,0.25);
+    }
+    .mods-list .mod-line {
+      font-size: 11px;
+      color: var(--green-dark);
+      line-height: 1.5;
+      padding: 1px 0;
+    }
+    .mods-list .mod-line .mod-bullet { color: var(--gold); margin-right: 4px; }
+    .mods-list .mod-material {
+      font-size: 11px;
+      color: var(--green-mid);
+      line-height: 1.4;
+      padding: 0 0 1px 14px;
+    }
+    .mods-list .mod-line .mod-note-ref {
+      color: #E07B39;
+      font-style: italic;
+      font-size: 11px;
+    }
+  .mods-list .mod-status-skipped,
+    .mods-list .mod-status-unprocessed {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* CB-11 任務B: DOOR & FRAME 固定註記「Hinge not included」(樣式比照 mod 子項) */
+    .items-table td.td-sku .hinge-note {
+      font-size: 11px;
+      color: var(--green-dark);
+      line-height: 1.5;
+      margin-top: 6px;
+      white-space: normal;
+    }
+
+    .td-modfee { color: #8B6914; font-weight: 500; }
+
+    /* Notes table for MF06 / MF07 / long values */
+    .notes-table-wrap {
+      margin: 14px 20px 0;
+      padding: 14px 16px;
+      background: rgba(224,123,57,0.04);
+      border: 1px solid rgba(224,123,57,0.2);
+      border-radius: 4px;
+    }
+    .notes-table-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #E07B39;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .notes-table-title svg { width: 14px; height: 14px; fill: #E07B39; }
+    .notes-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 1px solid rgba(224,123,57,0.25);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .notes-table thead th {
+      padding: 7px 10px;
+      background: rgba(224,123,57,0.08);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8B6914;
+      text-align: left;
+      border-bottom: 1px solid rgba(224,123,57,0.2);
+    }
+    .notes-table tbody td {
+      padding: 9px 10px;
+      font-size: 12px;
+      color: var(--text);
+      vertical-align: top;
+      border-bottom: 1px solid rgba(224,123,57,0.12);
+      line-height: 1.5;
+    }
+    .notes-table tbody tr:last-child td { border-bottom: none; }
+    .notes-table .note-num {
+      font-weight: 600;
+      color: #E07B39;
+      white-space: nowrap;
+      width: 40px;
+    }
+    .notes-table .note-item {
+      color: var(--green-dark);
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .notes-table .note-mf {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .notes-table .note-content {
+      color: var(--text);
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .totals-section { padding: 0 20px 18px; }
+    .total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .total-row:last-child { border-bottom: none; }
+    .total-row.grand { padding-top: 12px; }
+    .total-label { color: var(--text); }
+    .total-value { font-weight: 500; color: var(--text); }
+    .total-row.grand .total-label { font-size: 14px; font-weight: 500; color: var(--green-dark); }
+    .total-row.grand .total-value { font-size: 16px; font-weight: 500; color: var(--green-dark); }
+    .total-note { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .tax-exempt { color: var(--green-mid); font-size: 11px; }
+
+    .total-value.tbd { color: #E07B39; font-weight: 600; }
+    .pending-grand-note {
+      font-size: 11px;
+      color: #E07B39;
+      font-style: italic;
+      text-align: right;
+      padding: 6px 0 0;
+    }
+
+    .btn-edit { font-size: 11px; color: var(--gold); background: none; border: none; cursor: pointer; letter-spacing: 0.05em; transition: opacity 0.2s; text-decoration: none; }
+    .btn-edit:hover { opacity: 0.7; }
+
+    .notes-display { font-size: 13px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+    .btn-back { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 3px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; min-height: 40px; text-decoration: none; display: inline-flex; align-items: center; }
+    .btn-back:hover { color: var(--text); border-color: var(--text); }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: flex-end; align-items: center; gap: 10px; z-index: 150; height: 56px; }
+    .submit-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 24px 20px; margin-bottom: 16px; text-align: center; }
+    .submit-note { font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-dark); color: #fff; border: none; border-radius: 3px;
+      padding: 15px 40px; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s; min-height: 52px;
+    }
+    .btn-submit:hover { background: var(--green-mid); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit svg { width: 16px; height: 16px; fill: currentColor; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .btn-submit.loading .btn-text { display: none; }
+    .btn-submit.loading .spinner { display: block; }
+
+    .draft-banner {
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #8B6914;
+    }
+    .draft-banner svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+
+    .btn-draft {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; color: var(--gold);
+      border: 1.5px solid var(--gold); border-radius: 3px;
+      padding: 14px 24px; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; min-height: 52px;
+    }
+    .btn-draft:hover { background: rgba(201,168,76,0.08); }
+    .btn-draft:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-draft svg { width: 14px; height: 14px; fill: currentColor; }
+    .btn-draft.loading .draft-btn-text { display: none; }
+    .btn-draft.loading .draft-spinner { display: block; }
+
+    /* CB-36: Save & Notify Dealer (admin-draft only) — brand blue */
+    .btn-notify {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--green-dark); color: #fff; border: none; border-radius: 3px;
+      padding: 14px 24px; font-family: 'DM Sans', sans-serif; font-size: 12px;
+      font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s; min-height: 48px;
+    }
+    .btn-notify:hover { background: var(--green-mid); }
+    .btn-notify:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-notify svg { width: 14px; height: 14px; fill: currentColor; }
+    .btn-notify.loading .notify-btn-text { display: none; }
+    .btn-notify.loading .notify-spinner { display: block; }
+    .notify-spinner { display: none; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .draft-spinner { width: 14px; height: 14px; border: 2px solid rgba(201,168,76,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+
+    /* CB-32: Admin Submit 按鈕(警示橘) */
+    .btn-admin-submit {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #E07B39; color: #fff; border: none; border-radius: 3px;
+      padding: 15px 40px; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s; min-height: 52px;
+    }
+    .btn-admin-submit:hover { background: #C96A2E; }
+    .btn-admin-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-admin-submit svg { width: 16px; height: 16px; fill: currentColor; }
+    .btn-admin-submit.loading .btn-text { display: none; }
+    .btn-admin-submit.loading .spinner { display: block; }
+
+    /* CB-32: Admin checklist modal 勾選列 */
+    .admin-check-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 13px; color: var(--text); line-height: 1.5; }
+    .admin-check-row input[type="checkbox"] { margin-top: 2px; width: 16px; height: 16px; cursor: pointer; accent-color: #E07B39; flex-shrink: 0; }
+    .admin-check-row label { cursor: pointer; text-align: left; }
+
+    .success-icon.gold { background: rgba(201,168,76,0.15); border: 2px solid var(--gold); }
+    .success-icon.gold svg { stroke: var(--gold); }
+
+    .error-msg { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.25); border-radius: 3px; padding: 12px 16px; font-size: 12px; color: var(--error); margin-bottom: 16px; display: none; }
+    .error-msg.show { display: block; }
+
+    .success-overlay {
+      position: fixed; inset: 0; background: var(--cream);
+      z-index: 500; display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 20px; text-align: center;
+    }
+    .success-overlay.show { display: flex; }
+    .success-icon { width: 72px; height: 72px; background: var(--green-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .success-icon svg { width: 32px; height: 32px; fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linecap: round; }
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--green-dark); margin-bottom: 8px; }
+    .success-quote-num { font-size: 20px; color: var(--gold); font-weight: 500; margin-bottom: 16px; letter-spacing: 0.05em; }
+    .success-msg { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 400px; margin-bottom: 32px; }
+    .btn-dashboard { background: var(--green-dark); color: #fff; border: none; border-radius: 3px; padding: 14px 32px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; min-height: 48px; }
+.btn-dashboard:hover { background: var(--green-mid); }
+
+    /* CB-4: modal dialogs (Request Revision / Resubmit confirm) */
+    .cb4-modal {
+      position: fixed; inset: 0;
+      background: rgba(44,58,50,0.45);
+      backdrop-filter: blur(2px);
+      z-index: 700; display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .cb4-modal.show { display: flex; }
+    .cb4-modal-box {
+      background: var(--white);
+      border: 1px solid var(--border); border-radius: 6px;
+      width: 100%; max-width: 460px;
+      padding: 28px 26px 24px;
+      box-shadow: 0 12px 40px rgba(44,58,50,0.18);
+    }
+    .cb4-modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 400;
+      color: var(--green-dark); margin-bottom: 10px;
+    }
+    .cb4-modal-msg { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 18px; }
+    /* CB-5 需求2: Special Order 警示區塊 */
+    .cb5-nonstock-note {
+      font-size: 13px;
+      line-height: 1.55;
+      color: #8B6914;
+      background: rgba(224,123,57,0.08);
+      border-left: 3px solid #E07B39;
+      border-radius: 3px;
+      padding: 10px 12px;
+      margin-bottom: 18px;
+    }
+    .cb4-modal-label {
+      display: block; font-size: 9px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .cb4-modal-textarea {
+      width: 100%; min-height: 110px; resize: vertical;
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+      line-height: 1.5; outline: none;
+    }
+    .cb4-modal-textarea:focus { border-color: var(--green-dark); }
+    .cb4-modal-error { font-size: 12px; color: var(--error); margin-top: 8px; display: none; }
+    .cb4-modal-error.show { display: block; }
+    .cb4-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .cb4-modal-btn {
+      border-radius: 3px; padding: 11px 22px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; min-height: 44px;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .cb4-modal-btn.cancel { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .cb4-modal-btn.cancel:hover { color: var(--text); border-color: var(--text); }
+    .cb4-modal-btn.confirm { background: var(--green-dark); color: #fff; border: none; }
+    .cb4-modal-btn.confirm:hover { background: var(--green-mid); }
+    .cb4-modal-btn.confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cb4-modal-btn .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .cb4-modal-btn.loading .cb4-btn-label { display: none; }
+    .cb4-modal-btn.loading .spinner { display: block; }
+
+    .progress-overlay {
+      position: fixed; inset: 0;
+      background: rgba(253, 251, 247, 0.97);
+      backdrop-filter: blur(2px);
+      z-index: 600;
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 20px; text-align: center;
+    }
+    .progress-overlay.show { display: flex; }
+    .progress-spinner {
+      width: 56px; height: 56px;
+      border: 3px solid rgba(27, 48, 34, 0.12);
+      border-top-color: var(--green-dark);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 28px;
+    }
+    .progress-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 400;
+      color: var(--green-dark);
+      margin-bottom: 14px;
+    }
+    .progress-step {
+      font-size: 13px;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+      min-height: 20px;
+    }
+.progress-msg {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 360px;
+    }
+    /* Submit overlay 強警示框（Portal warning 橘 #E07B39）：提醒 dealer 等 PO# 出現再關視窗 */
+    .progress-warning {
+      max-width: 400px;
+      margin: 4px auto 0;
+      background: #FFF3E6;
+      border: 1.5px solid #E07B39;
+      border-radius: 6px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .progress-warning .pw-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #C0392B;
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+    .progress-warning .pw-title .pw-emoji { font-size: 17px; }
+    .progress-warning .pw-sub {
+      font-size: 12.5px;
+      color: #8B4A12;
+      line-height: 1.55;
+    }
+    .progress-warning .pw-sub strong { font-weight: 700; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div id="pcd-quote-flow-header" data-step="4"></div>
+
+<div class="page">
+  <div class="page-title">Review Your Quote</div>
+
+  <div id="returnedBannerMount"></div>
+
+  <div class="draft-banner" id="draftBanner" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <span id="draftBannerText">You are editing a saved quote. You can save again or submit when ready.</span>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Order Information</span>
+      <a id="editStep1Link" href="new-quote.html" class="btn-edit">Edit ✎</a>
+    </div>
+    <div class="card-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">PO Number</div>
+          <div class="info-value" id="reviewPO">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Job Name</div>
+          <div class="info-value" id="reviewJobName">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Dealer</div>
+          <div class="info-value" id="reviewDealer">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Contact</div>
+          <div class="info-value" id="reviewContact">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" id="shipToTitle">Shipping Address</span>
+      <a id="editStep1LinkShip" href="new-quote.html" class="btn-edit">Edit ✎</a>
+    </div>
+      <div class="card-body">
+            <div class="info-value" id="reviewShipping">—</div>
+            <div id="leadTimeLine" style="display:none;margin-top:10px;text-align:left;"></div>
+        </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Items</span>
+      <a id="editStep2Link" href="new-quote-modifications.html" class="btn-edit">Edit ✎</a>
+    </div>
+
+    <div style="background:#FAFAF8;border:1px solid var(--border);border-radius:4px;padding:14px 20px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">PDF Markup</div>
+          <div style="font-size:11px;color:var(--muted);">Applied to Unit Price only — for PDF download. Does not affect your submitted quote.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+          <input type="number" id="markupPct" min="0" step="0.1" placeholder="0"
+            style="width:80px;height:36px;border:1px solid var(--border);border-radius:3px;padding:0 10px;font-family:'DM Sans',sans-serif;font-size:13px;text-align:center;"
+            oninput="updateMarkupPreview()" onchange="updateMarkupPreview()"/>
+          <span style="font-size:13px;color:var(--muted);">%</span>
+          <button onclick="downloadPDF()" style="height:36px;padding:0 16px;background:var(--green-dark);color:#fff;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tag</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th class="th-right">Qty</th>
+            <th>Assembled?</th>
+            <th class="th-right">Unit Price</th>
+            <th class="th-right">Mod Fee</th>
+            <th class="th-right">Assemble Fee</th>
+            <th class="th-right">Total</th>
+          </tr>
+        </thead>
+          <tbody id="itemsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div id="notesTableMount"></div>
+
+    <div class="totals-section">
+      <div class="total-row">
+        <span class="total-label">Subtotal</span>
+        <span class="total-value" id="totalSubtotal">$0.00</span>
+      </div>
+      <!-- CB-27: Modifications 改成標題 + by-type 明細 + Total(仿 assembleRow) -->
+      <div id="modsRow" style="display:none;">
+        <div class="total-row" style="padding-bottom:2px;">
+          <span class="total-label">Modifications</span>
+          <span class="total-value" id="totalMods" style="color:#8B6914;"></span>
+        </div>
+        <div id="modsBreakdown" style="padding:0 0 8px 16px;"></div>
+      </div>
+      <div id="assembleRow" style="display:none;">
+        <div class="total-row" style="padding-bottom:2px;">
+          <span class="total-label">Assemble Fee</span>
+          <span class="total-value" id="totalAssemble" style="color:#8B6914;">$0.00</span>
+        </div>
+        <div id="assembleBreakdown" style="padding:0 0 8px 16px;"></div>
+      </div>
+      <div class="total-row" id="shippingRow">
+              <div>
+                <span class="total-label">Shipping</span>
+                <div class="total-note" id="shippingNote"></div>
+                <!-- CB-33: admin 直接設定 shipping fee(僅 admin mode + logistic=shipping) -->
+                <div id="adminShippingWrap" style="display:none;margin-top:6px;align-items:center;gap:6px;">
+                  <span style="font-size:12px;color:var(--muted);">Set fee&nbsp;$</span>
+                  <input type="number" id="adminShippingFee" min="0" step="0.01" placeholder="0.00"
+                    oninput="onAdminShippingInput()"
+                    style="width:100px;height:30px;border:1px solid var(--border);border-radius:3px;padding:0 8px;font-family:'DM Sans',sans-serif;font-size:13px;text-align:right;"/>
+                </div>
+              </div>
+              <span class="total-value" id="totalShipping">$0.00</span>
+            </div>
+      <div class="total-row" id="taxRow">
+        <div>
+          <span class="total-label">Tax</span>
+          <div class="total-note" id="taxNote"></div>
+        </div>
+        <span class="total-value" id="totalTax">$0.00</span>
+      </div>
+      <div class="total-row grand">
+        <span class="total-label">Order Total</span>
+        <span class="total-value" id="totalGrand">$0.00</span>
+      </div>
+      <div class="pending-grand-note" id="pendingGrandNote" style="display:none;">
+        * Shipping fee pending — final total will be confirmed by Sales
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="notesCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Notes</span></div>
+    <div class="card-body">
+      <div class="notes-display" id="reviewNotes"></div>
+    </div>
+  </div>
+
+  <div class="submit-card">
+    <div class="submit-note" id="submitNote">
+      Please review your purchase order carefully before submitting.<br>
+      You can also save as a quote to continue later.
+    </div>
+    <div id="termsAgreeRow" style="display:none;align-items:flex-start;justify-content:center;gap:8px;margin-bottom:18px;font-size:13px;color:var(--text);line-height:1.5;">
+        <input type="checkbox" id="agreeTerms" onchange="onAgreeTermsChange()"
+          style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--green-dark);flex-shrink:0;"/>
+        <label for="agreeTerms" style="cursor:pointer;max-width:520px;text-align:left;">
+          I have read and agree to follow ProCraft DC's portal policy and
+          <a href="https://dc.procraftcabinetry.com/term-of-use/" target="_blank" rel="noopener"
+            style="color:var(--gold);text-decoration:underline;">Terms of Use</a>.
+        </label>
+      </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+    <button class="btn-draft" id="btnDraft" onclick="saveDraftInternal()">
+        <svg viewBox="0 0 24 24" class="draft-btn-text"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span class="draft-btn-text">Save Draft</span>
+        <div class="draft-spinner"></div>
+      </button>
+      <!-- CB-36: Save & Notify Dealer — admin-draft only, hidden by default -->
+      <button class="btn-notify" id="btnNotify" onclick="saveDraftNotify()" style="display:none;">
+        <svg viewBox="0 0 24 24" class="notify-btn-text" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <span class="notify-btn-text">Save &amp; Notify Dealer</span>
+        <div class="notify-spinner"></div>
+      </button>
+<button class="btn-submit" id="btnSubmit" onclick="openSubmitConfirmModal()" disabled>
+        <svg class="btn-text" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <span class="btn-text" id="btnSubmitText">Submit Purchase Order</span>
+                <div class="spinner"></div>
+              </button>
+              <button class="btn-admin-submit" id="btnAdminSubmit" onclick="openAdminSubmitFlow()" style="display:none;">
+                <svg class="btn-text" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                <span class="btn-text">Submit Purchase Order (Admin)</span>
+                <div class="spinner"></div>
+              </button>
+              <button class="btn-submit" id="btnRequestRevision" onclick="openRevisionModal()" style="display:none;">
+        <svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
+        <span>Request Review &amp; Resubmit</span>
+              </button>
+            </div>
+            <!-- CB-33: admin shipping 未填時的提示(擋 submit) -->
+            <div id="adminShippingHint" style="display:none;margin-top:12px;font-size:12px;color:#E07B39;">
+              Enter a shipping fee above to submit, or use Save Draft.
+            </div>
+          </div>
+        
+        </div>
+        
+        <div class="bottom-bar">
+  <a id="backToStep2" href="new-quote-modifications.html" class="btn-back">← Back to Modifications</a>
+</div>
+
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-spinner"></div>
+  <div class="progress-title" id="progressTitle">Submitting Your Purchase Order</div>
+  <div class="progress-step" id="progressStep">Saving your quote...</div>
+  <div class="progress-warning">
+      <div class="pw-title"><span class="pw-emoji">⚠️</span> DO NOT close this window</div>
+      <div class="pw-sub">
+        Please wait until your <strong>Purchase Order Number</strong> appears on the confirmation screen.<br>
+        This usually takes <strong>5–10 seconds</strong>.
+      </div>
+    </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="success-title" id="successTitle">Purchase Order Submitted!</div>
+  <div class="success-quote-num" id="successQuoteNum"></div>
+  <div class="success-msg" id="successMsg">
+    Thank you! Your quote has been received.<br>
+    Our team will review it and get back to you shortly.<br>
+    A confirmation has been sent to your email.
+  </div>
+  <button class="btn-dashboard" onclick="window.location.href='dashboard.html'">
+    Back to Dashboard
+  </button>
+</div>
+
+<div class="success-overlay" id="draftOverlay">
+  <div class="success-icon gold">
+    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+  </div>
+  <div class="success-title" id="draftTitle">Quote Saved!</div>
+  <div class="success-quote-num" id="draftQuoteNum"></div>
+  <div class="success-msg" id="draftMsg">
+    Your quote has been saved as a draft.<br>
+    You can find it in My Quotes and continue editing anytime.
+  </div>
+<button class="btn-dashboard" onclick="window.location.href='quotes.html'">
+    View My Quotes
+  </button>
+</div>
+
+<!-- CB-4: Request Revision modal (admin-edit mode) -->
+<div class="cb4-modal" id="revisionModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">Request Revision</div>
+    <div class="cb4-modal-msg">
+      Your changes will be saved and this Purchase Order will be sent back to the dealer
+      for review. Add a note explaining what changed or what the dealer should check.
+    </div>
+    <label class="cb4-modal-label" for="revisionNote">Revision Note</label>
+    <textarea class="cb4-modal-textarea" id="revisionNote"
+      placeholder="e.g. Updated door style on 3 line items and adjusted quantities — please review and resubmit."></textarea>
+    <div class="cb4-modal-error" id="revisionModalError"></div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" id="revisionCancelBtn" onclick="closeRevisionModal()">Cancel</button>
+      <button class="cb4-modal-btn confirm" id="revisionSendBtn" onclick="sendRevision()">
+        <span class="cb4-btn-label">Send to Dealer</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CB-4: Resubmit confirm modal (dealer review mode) -->
+<div class="cb4-modal" id="resubmitModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">Resubmit Purchase Order</div>
+    <div class="cb4-modal-msg">
+      Please confirm you have reviewed the revised Purchase Order. Resubmitting sends it
+      back to the ProCraft team for processing and generates an updated PDF.
+    </div>
+    <!-- CB-5 / CB-29: Resubmit 特殊品逐項提醒 -->
+    <div class="cb5-nonstock-note" id="resubmitSpecialItems" style="display:none;"></div>
+    <div class="cb4-modal-error" id="resubmitModalError"></div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" id="resubmitCancelBtn" onclick="closeResubmitModal()">Cancel</button>
+<button class="cb4-modal-btn confirm" id="resubmitConfirmBtn" onclick="confirmResubmit()">
+        <span class="cb4-btn-label">Confirm &amp; Resubmit</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CB-5 需求2 / CB-29: Save Draft 特殊品提醒(逐項清單,不擋流程) -->
+<div class="cb4-modal" id="saveNoticeModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">⚠️ Please Review the Following</div>
+    <div class="cb5-nonstock-note" id="saveNoticeSpecialItems" style="display:block;"></div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" id="saveNoticeCancelBtn" onclick="closeSaveNoticeModal()">Cancel</button>
+      <button class="cb4-modal-btn confirm" id="saveNoticeOkBtn" onclick="confirmSaveNotice()">
+        <span class="cb4-btn-label">Continue</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+  
+<!-- CB-5 需求2 階段3: Submit 確認(永遠跳;含 Special Order 時加 ⚠) -->
+<div class="cb4-modal" id="submitConfirmModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">Submit Purchase Order?</div>
+    <div class="cb4-modal-msg">
+      Once submitted, this PO# will be locked and cannot be edited.
+    </div>
+    <div class="cb5-nonstock-note" id="submitSpecialItems" style="display:none;"></div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" id="submitConfirmCancelBtn" onclick="closeSubmitConfirmModal()">Cancel</button>
+      <button class="cb4-modal-btn confirm" id="submitConfirmOkBtn" onclick="confirmSubmitFromModal()">
+        <span class="cb4-btn-label">Confirm &amp; Submit</span>
+      </button>
+</div>
+  </div>
+</div>
+
+<!-- CB-32: Admin Submit 階段1 — needs_confirmation(僅當有特殊品才跳) -->
+<div class="cb4-modal" id="adminNeedsConfirmModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">⚠️ Please Review the Following</div>
+    <div class="cb5-nonstock-note" id="adminNeedsConfirmItems" style="display:block;"></div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" onclick="closeAdminNeedsConfirmModal()">Cancel</button>
+      <button class="cb4-modal-btn confirm" onclick="continueAdminNeedsConfirm()">
+        <span class="cb4-btn-label">Continue</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CB-32: Admin Submit 階段2 — checklist 防呆 -->
+<div class="cb4-modal" id="adminChecklistModal">
+  <div class="cb4-modal-box">
+    <div class="cb4-modal-title">⚠️ Confirm Admin Submission</div>
+    <div class="admin-check-row">
+      <input type="checkbox" id="adminCheck1" onchange="onAdminChecklistChange()"/>
+      <label for="adminCheck1">Dealer has reviewed the complete order</label>
+    </div>
+    <div class="admin-check-row">
+      <input type="checkbox" id="adminCheck2" onchange="onAdminChecklistChange()"/>
+      <label for="adminCheck2">Dealer has authorized submission</label>
+    </div>
+    <div class="cb4-modal-actions">
+      <button class="cb4-modal-btn cancel" onclick="closeAdminChecklistModal()">Cancel</button>
+      <button class="cb4-modal-btn confirm" id="adminChecklistConfirmBtn" onclick="confirmAdminSubmit()" disabled>
+        <span class="cb4-btn-label">Confirm &amp; Submit</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="pdf-builder.js"></script>
+<script src="components/quote-flow-header.js"></script>
+<script>
+const { createClient } = supabase;
+const _supabase = createClient(
+  window.SB_URL,
+  window.SB_KEY
+);
+
+let dealer    = null;
+let step1Data = null;
+let step2Data = null;
+let shippingAddress = null;
+let draftId   = null;
+let allDoorStyles = [];  // CB-5 需求1/2: door_styles 快取
+let allSkusFramed    = [];  // CB-9: tag 查表用(skus_framed)
+let allSkusFrameless = [];  // CB-9: tag 查表用(skus_frameless)
+
+let _isResumingReturned     = false;
+let _currentRevisionNumber  = 1;
+let _existingPoNumber       = null;
+let _existingDraftNumber    = null;   // 雙編號制: Draft ID (D + 5碼)
+let _isAdminContext         = false;
+
+let _existingLogisticType = null;
+let _existingShippingCost = null;
+let _existingSubtotal     = null;
+let _saveNonStockAck = false;  // CB-5 需求2 階段2: non-stock 通知已確認
+// CB-36: Save Internal Draft vs Save & Notify Dealer 意圖（module 變數,避免 non-stock modal 回呼丟失參數）
+let _pendingNotify = false;
+let _existingAdminNotifiedAt = null;  // resume draft 時從 DB 讀入;新建為 null
+function saveDraftInternal() { _pendingNotify = false; saveDraft(); }
+function saveDraftNotify()   { _pendingNotify = true;  saveDraft(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-4: view-mode model (sync with new-quote.html / step2 / modifications)
+//   'normal'      — dealer creating/editing own Draft, or new quote
+//   'admin-draft' — admin creating a quote on a dealer's behalf (adminDraft=1)
+//   'admin-edit'  — admin editing a dealer's Pending/Returned PO
+//   'review'      — dealer reviewing a returned PO (read-only; can only resubmit)
+// admin-draft is layered on top in init() (not produced by resolveViewMode).
+// ─────────────────────────────────────────────────────────────────────────────
+let viewMode      = 'normal';
+let isAdminViewer = false;
+function isReviewLocked() { return viewMode === 'review'; }
+
+function resolveViewMode(status, isOwner, isAdmin) {
+  if (!status) return 'normal';
+  if (status === 'Returned') {
+    if (isAdmin && !isOwner) return 'admin-edit';
+    if (isOwner) return 'review';
+    if (isAdmin) return 'admin-edit';
+    return 'review';
+  }
+  if (status === 'Pending') return isAdmin ? 'admin-edit' : 'normal';
+  return 'normal';
+}
+
+function buildModeParam() {
+  if (viewMode === 'admin-edit') return '&mode=admin-edit';
+  if (viewMode === 'review')     return '&mode=review';
+  return '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F4.1 v2 — Notes table configuration
+// ─────────────────────────────────────────────────────────────────────────────
+const MF_USE_NOTES_TABLE = ['MF06', 'MF07'];
+const NOTES_TABLE_FALLBACK_LENGTH = 40;
+
+// ─────────────────────────────────────────────────────────────────────
+// F-COL-ABBREVIATIONS (2026-05-21) — Display-only shortenings to prevent
+// 7-/11-letter labels from wrapping in narrow table columns.
+// Underlying DB fields (item.sku_type / item.assemble_status) are unchanged.
+// Mirror with pdf-builder.js / quote-detail.html.
+// ─────────────────────────────────────────────────────────────────────
+const TYPE_SHORT_MAP = {
+  'BASE':         'BAS',
+  'WALL':         'WAL',
+  'TALL':         'TAL',
+  'ACCESSORIES':  'ACC',
+  'OTHER':        'OTH',
+  'MODIFICATION': 'MOD',
+};
+const STATUS_SHORT_MAP = {
+  'ASSEMBLED': 'ASM',
+  'RTA':       'RTA',
+};
+function shortType(t) {
+  if (!t) return '—';
+  const key = String(t).toUpperCase();
+  return TYPE_SHORT_MAP[key] || key.slice(0, 3);
+}
+function shortStatus(s) {
+  if (!s) return '—';
+  const key = String(s).toUpperCase();
+  return STATUS_SHORT_MAP[key] || key.slice(0, 3);
+}
+
+// CB-5 需求3: RTA → 顯示 Unassembled(全字);DB value 不動
+function formatAssembleStatus(v) {
+  return v === 'RTA' ? 'Unassembled' : 'Assembled';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-9 (2026-06-02): Resolve a line-item's Tag from the SKU catalog.
+//   依該 item 的 construction_type 決定查 skus_framed 還是 skus_frameless,
+//   用 sku_code 比對拿 tag。Custom item / 查不到 → 回空字串(Tag 欄留空)。
+//   construction_type 可能是 'Framed'/'Frameless'(door_styles)或
+//   'framed'/'frameless'(custom),統一 toLowerCase 比較。
+// ─────────────────────────────────────────────────────────────────────────────
+function getTagForItem(item) {
+  if (!item || !item.sku_code) return '';
+  const ct     = (item.construction_type || '').toLowerCase();
+  const source = ct === 'frameless' ? allSkusFrameless : allSkusFramed;
+  const match  = source.find(function (s) { return s.sku_code === item.sku_code; });
+  return (match && match.tag) ? match.tag : '';
+  }
+  
+  // CB-25: 用 mapping SKU code 反查 skus_framed/frameless,取 type/description/tag。
+  //   construction 由父 item 決定(framed/frameless 不混單);查不到 → 三欄回空字串。
+  //   回傳的 type 僅供內部判斷 BOX/ROLL OUT TRAY 前綴,不直接顯示成欄位。
+  function getMappingSkuInfo(mappingCode, constructionType) {
+    const empty = { type: '', description: '', tag: '' };
+    if (!mappingCode) return empty;
+    const ct     = (constructionType || '').toLowerCase();
+    const source = ct === 'frameless' ? allSkusFrameless : allSkusFramed;
+    const match  = source.find(function (s) { return s.sku_code === mappingCode; });
+    if (!match) return empty;
+    return {
+          type:        match.type || '',
+          description: match.description || '',
+          tag:         match.tag || '',
+          needs_confirmation: !!match.needs_confirmation,  // CB-29
+        };
+  }
+
+  // CB-25 (PDF): 把每個 mapping mod 的 type/description/tag 掛進 payload。
+  //   pdf-builder.js 無 DB,需由此處用 getMappingSkuInfo 查好後餵進去。
+  //   非破壞性:複製 sub_groups / modifications,不動 live step2Data
+  //   (避免多餘欄位被 saveDraft 寫進 DB)。
+  //   constructionType 用整單解析值(Framed/Frameless 不混單),與 on-screen 對齊。
+  function enrichSubGroupsForPdf(subGroups, constructionType) {
+    return (Array.isArray(subGroups) ? subGroups : []).map(function (sub) {
+      const mods = Array.isArray(sub.modifications) ? sub.modifications : [];
+      const enrichedMods = mods.map(function (m) {
+        if (!m || !m.mapping_sku) return m;
+        const info = getMappingSkuInfo(m.mapping_sku, constructionType);
+        return Object.assign({}, m, {
+                  mapping_type:        info.type,
+                  mapping_description: info.description,
+                  mapping_tag:         info.tag,
+                  mapping_needs_confirmation: !!info.needs_confirmation,  // CB-29
+                });
+      });
+      return Object.assign({}, sub, { modifications: enrichedMods });
+    });
+  }
+
+  // CB-5 需求1/2: 用 style_code join door_styles 判斷 non-stock / lead time
+function orderHasNonStock(items, doorStyles) {
+  if (!Array.isArray(items) || !Array.isArray(doorStyles)) return false;
+  return items.some(function (it) {
+    if (!it || !it.style_code) return false;
+    const s = doorStyles.find(function (d) { return d.style_code === it.style_code; });
+    return s ? (s.is_stock === false) : false;
+  });
+}
+
+// ── CB-29: 收集 non-stock + needs_confirmation 清單(彈窗用,選項 A 逐項) ──
+function getSpecialItemLists() {
+  const nonStock = [], needsConf = [];
+  const seenNS = {}, seenNC = {};
+  (step2Data || []).forEach(function (it) {
+    if (!it) return;
+    let isNS = false, ct = '';
+    if (it.style_code && Array.isArray(allDoorStyles)) {
+      const d = allDoorStyles.find(function (x) { return x.style_code === it.style_code; });
+      if (d) { isNS = (d.is_stock === false); ct = (d.construction_type || '').toLowerCase(); }
+    }
+    if (isNS && !seenNS[it.sku_code]) {
+      seenNS[it.sku_code] = true;
+      const lt = (ct === 'frameless') ? '~5 weeks' : '~2-3 weeks';
+      nonStock.push(it.sku_code + ' (' + lt + ' lead time)');
+    }
+    if (it.needs_confirmation && !seenNC[it.sku_code]) {
+      seenNC[it.sku_code] = true;
+      needsConf.push(it.sku_code);
+    }
+  });
+  return { nonStock: nonStock, needsConf: needsConf };
+}
+
+function orderHasSpecialItems() {
+  const r = getSpecialItemLists();
+  return r.nonStock.length > 0 || r.needsConf.length > 0;
+}
+
+// CB-29: 組彈窗提醒 HTML(NON-STOCK + NEEDING CONFIRMATION 兩區塊);無特殊品回 ''
+function buildSpecialItemsHtml() {
+  const r = getSpecialItemLists();
+  if (!r.nonStock.length && !r.needsConf.length) return '';
+  let html = '';
+  if (r.nonStock.length) {
+    html += '<div style="font-weight:600;margin-bottom:4px;">NON-STOCK ITEMS:</div>'
+          + r.nonStock.map(function (x) { return '<div>- ' + escapeHtml(x) + '</div>'; }).join('');
+  }
+  if (r.needsConf.length) {
+    if (html) html += '<div style="height:8px;"></div>';
+    html += '<div style="font-weight:600;margin-bottom:4px;">ITEMS NEEDING SALES CONFIRMATION:</div>'
+          + r.needsConf.map(function (x) { return '<div>- ' + escapeHtml(x) + '</div>'; }).join('');
+  }
+  html += '<div style="margin-top:8px;">These will be saved. Sales will follow up to confirm.</div>';
+  return html;
+}
+
+// CB-11 任務A: 整單 lead time(重寫 CB-5)
+// 任何 frameless → ~5 Weeks;有 non-stock → ~2~3 Weeks;全 framed 全 stock → null(整塊不顯示)
+// 查不到門花色(custom / accessory / 停產)的 item 不納入判斷
+function calculateLeadTime(items, doorStyles) {
+  let anyFrameless = false, anyNonStock = false, anyKnown = false;
+  (items || []).forEach(function (it) {
+    if (!it || !it.style_code || !Array.isArray(doorStyles)) return;
+    const s = doorStyles.find(function (d) { return d.style_code === it.style_code; });
+    if (!s) return;
+    const ct = (s.construction_type || '').toLowerCase();
+    if (ct === 'frameless') { anyFrameless = true; anyKnown = true; }
+    else if (ct === 'framed') { anyKnown = true; if (s.is_stock !== true) anyNonStock = true; }
+  });
+  if (!anyKnown) return null;
+  if (anyFrameless) return '~5 Weeks';
+  if (anyNonStock) return '~2~3 Weeks';
+  return null;  // CB-11: 全 framed 全 stock → 整塊不顯示
+}
+
+function renderLeadTimeLine() {
+  const el = document.getElementById('leadTimeLine');
+  if (!el) return;
+  const lt = calculateLeadTime(step2Data, allDoorStyles);
+  if (!lt) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'block';
+  el.innerHTML =
+    '<span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-right:8px;">Estimated Lead Time</span>' +
+    '<span style="font-size:13px;font-weight:600;color:var(--green-mid);">' + escapeHtml(lt) + '</span>';
+}
+
+function shouldUseNotesTable(mod) {
+  if (!mod) return false;
+  const code = (mod.mf_code || '').toUpperCase();
+  if (MF_USE_NOTES_TABLE.indexOf(code) !== -1) return true;
+  const valStr = formatModValue(mod.value);
+  if (valStr && valStr.length > NOTES_TABLE_FALLBACK_LENGTH) return true;
+  return false;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-HIDDEN-MODS (2026-05-18) — Display-layer filter for mods that should be
+// recorded in DB but NOT shown to user/PDF/admin.
+//
+// Currently filters:
+//   • MF01 value='none' (No Skin) — dealer actively chose "no skin", cost=0;
+//     showing "Skin: No Skin" in description is noise. Keeps F6 semantic
+//     distinction at DB level (configured vs skipped) but hides from display.
+//
+// Add more cases here if/when other mods need hide-on-display behavior.
+// Mirror this function in pdf-builder.js and quote-detail.html.
+// ─────────────────────────────────────────────────────────────────────────────
+function isHiddenMod(mod) {
+  if (!mod) return false;
+  if (mod.mf_code === 'MF01' && mod.value === 'none') return true;
+  return false;
+}
+
+function buildReturnedBannerStep3(roleMsg) {
+  return `
+    <div class="returned-revising-banner">
+      <div class="rrb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </div>
+      <div class="rrb-body">
+        <div class="rrb-title">Revising — Revision Requested</div>
+<div class="rrb-msg">${roleMsg}</div>
+      </div>
+    </div>`;
+}
+
+// CB-4: review banner (dealer reviewing a returned PO — read-only)
+function buildReviewBanner() {
+  return `
+    <div class="returned-revising-banner">
+      <div class="rrb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </div>
+      <div class="rrb-body">
+        <div class="rrb-title">Reviewing Revised Purchase Order</div>
+        <div class="rrb-msg">You are reviewing your revised Purchase Order. Details are shown for review only and cannot be changed here — confirm and resubmit below.</div>
+      </div>
+    </div>`;
+}
+
+// CB-4: admin-edit banner (admin editing a dealer's PO)
+function buildAdminEditBanner(ownerDealer) {
+  const name = ownerDealer
+    ? (ownerDealer.company_name || ownerDealer.contact_name || '—')
+    : '—';
+  return `
+    <div class="admin-editing-banner">
+      <div class="aeb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </div>
+      <div class="aeb-body">
+        <div class="aeb-title">Editing Dealer's Purchase Order</div>
+        <div class="aeb-msg">You are editing the Purchase Order belonging to <strong>${name}</strong>. Changes are buffered locally and only saved when you click <strong>Request Revision</strong> below.</div>
+      </div>
+    </div>`;
+}
+
+function getNormalizedSubGroups(item) {
+  if (Array.isArray(item.sub_groups) && item.sub_groups.length) {
+    return item.sub_groups;
+  }
+  const legacyStatus = item.modification_status
+    || (item.type === 'RTA' ? 'skipped' : 'unprocessed');
+  const legacyMods = Array.isArray(item.modifications) ? item.modifications : [];
+  return [{
+    sub_index:           1,
+    qty:                 item.quantity,
+    modifications:       legacyMods,
+    modification_status: legacyStatus,
+  }];
+}
+
+function calcPerSubModCost(sub) {
+  const mods = Array.isArray(sub.modifications) ? sub.modifications : [];
+  return mods.reduce(function (s, m) {
+    var c  = parseFloat(m && m.cost);
+    var mt = parseFloat(m && m.material_cost);   // CB-6: 加材料(per-unit)
+    return s + (isNaN(c) ? 0 : c) + (isNaN(mt) ? 0 : mt);
+  }, 0);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-TAX: per-sub TAXABLE mod cost (only mods where tax_status === true)
+// ─────────────────────────────────────────────────────────────────────────────
+function calcPerSubTaxableModCost(sub) {
+  const mods = Array.isArray(sub.modifications) ? sub.modifications : [];
+  return mods.reduce(function (s, m) {
+    if (!m || m.tax_status !== true) return s;
+      var c  = parseFloat(m.cost);
+      var mt = parseFloat(m.material_cost);   // CB-6: 課稅 mod 才把材料計入稅基
+      return s + (isNaN(c) ? 0 : c) + (isNaN(mt) ? 0 : mt);
+  }, 0);
+}
+
+function calcTotalModsCost(items) {
+  let total = 0;
+  items.forEach(function (item) {
+    const subs = getNormalizedSubGroups(item);
+    subs.forEach(function (sub) {
+      const perSub = calcPerSubModCost(sub);
+      const qty    = parseInt(sub.qty, 10) || 0;
+      total += perSub * qty;
+    });
+  });
+  return total;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-TAX: Sum of all TAXABLE mods (× sub.qty) across the whole quote.
+// Used for tax base only. Mods without tax_status===true are excluded.
+// undefined / null / false are all treated as NOT taxable (conservative fallback).
+// ─────────────────────────────────────────────────────────────────────────────
+function calcTaxableModsCost(items) {
+  let total = 0;
+  items.forEach(function (item) {
+    const subs = getNormalizedSubGroups(item);
+    subs.forEach(function (sub) {
+      const perSub = calcPerSubTaxableModCost(sub);
+      const qty    = parseInt(sub.qty, 10) || 0;
+      total += perSub * qty;
+    });
+  });
+  return total;
+}
+
+// Format mod value: handles MF01 (string), MF07 ({selected, description, ...}), MF06 (free text), etc.
+function formatModValue(v) {
+  if (v == null) return '';
+  if (typeof v === 'string')  return v;
+  if (typeof v === 'number')  return String(v);
+  if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+  if (typeof v === 'object') {
+    // F-QTY-SELECTOR: MF03 toggle-with-qty 的 value { enabled, qty }。
+    // 限定「有 enabled、且無 value/selected/label」才走這支,避免吃到
+    // MF04 {enabled,value} 或 MF07 {selected,...}。
+    if ('enabled' in v && !('value' in v) && !('selected' in v) && !('label' in v)) {
+      if (v.enabled !== true) return '';
+      return (typeof v.qty === 'number') ? ('Qty ' + v.qty) : 'Yes';
+    }
+    const parts = [];
+    if ('selected' in v && v.selected) parts.push(String(v.selected));
+    else if ('label' in v && v.label)  parts.push(String(v.label));
+    else if ('value' in v && v.value != null) parts.push(String(v.value));
+
+    if ('description' in v && v.description) parts.push(String(v.description));
+    else if ('note' in v && v.note)          parts.push(String(v.note));
+
+    if (parts.length) return parts.join(' — ');
+    try { return JSON.stringify(v); } catch (e) { return ''; }
+  }
+  return String(v);
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F4.1 v2.1 — Render mods inside Description column (NO fees).
+//
+// B2 bugfix (2026-05-11):
+//   - skipped + empty mods   → return '' (no visual noise)
+//   - configured + empty mods → return '' (no visual noise — shouldn't happen
+//     in practice since configured implies mods exist, but defensive)
+//   - unprocessed + empty mods → KEEP "⚠ Modifications pending" warning
+//     (this is a real problem state — dealer forgot to configure)
+//
+// F-HIDDEN-MODS (2026-05-18):
+//   Filter mods via isHiddenMod() BEFORE the empty-check. If MF01 No Skin was
+//   the only mod, the visibleMods array becomes empty → same treatment as
+//   "skipped + empty" → return '' (no visual noise). This is intentional even
+//   for status='unprocessed' since the dealer DID make an active choice
+//   (entered modal, picked No Skin); we just don't surface it in description.
+//
+// Mods that match shouldUseNotesTable() are rendered as [See note №N below]
+// and collected into notesCollector for the Notes table.
+// ─────────────────────────────────────────────────────────────────────────────
+function renderModsBlock(sub, notesIndex, notesCollector, itemContext) {
+  const rawMods    = Array.isArray(sub.modifications) ? sub.modifications : [];
+  const visibleMods = rawMods.filter(function (m) { return !isHiddenMod(m); });  // F-HIDDEN-MODS
+  const status = sub.modification_status || 'unprocessed';
+
+  if (!visibleMods.length) {
+    // F-HIDDEN-MODS: if user-chosen route A is in effect, all-hidden-mods is
+    // treated the same as skipped/configured + empty (no visual noise).
+    if (rawMods.length > 0) {
+      return '';  // had mods but all hidden → suppress
+    }
+    // raw was already empty:
+    if (status === 'skipped' || status === 'configured') {
+      return '';
+    }
+    return `<div class="mods-list"><span class="mod-status-unprocessed">⚠ Modifications pending</span></div>`;
+  }
+
+  const lines = visibleMods.map(function (m) {
+    const label = m.display_label || m.mf_code || 'Modification';
+    // CB-12: Matching Interior(required MF03)— value 決定顯示文字
+    const isRequiredMf03 = m.mf_code === 'MF03' && (m.value === 'yes' || m.value === 'no');
+    const effectiveLabel = (isRequiredMf03 && m.value === 'no' && m.no_label)
+      ? m.no_label
+      : label;
+    const useNotes = shouldUseNotesTable(m);
+
+    if (useNotes) {
+      notesIndex.counter += 1;
+      const noteNum = notesIndex.counter;
+      notesCollector.push({
+        num:        noteNum,
+        skuCode:    itemContext.sku_code,
+        subIndex:   sub.sub_index || 1,
+        subTotal:   itemContext.totalSubs,
+        mfCode:     m.mf_code || '',
+        label:      label,
+        content:    formatModValue(m.value) || '(no detail)',
+      });
+      return `<div class="mod-line">${escapeHtml(label)}: <span class="mod-note-ref">[See note №${noteNum} below]</span></div>`;
+    }
+
+    const value = formatModValue(m.value);
+        const valStr = (!isRequiredMf03 && value) ? `: ${escapeHtml(value)}` : '';   // CB-12
+        // CB-25: 材料金額子行(N × MappingSKU: $...)移除 — material 改在獨立 mapping SKU row 顯示。
+        //        此處只保留 mod 說明文字(label[: value]),金額不再出現在父 row 子項。
+        return `<div class="mod-line">${escapeHtml(effectiveLabel)}${valStr}</div>`;   // CB-12
+  });
+
+  return `<div class="mods-list">${lines.join('')}</div>`;
+}
+
+function renderNotesTable(notes) {
+  if (!notes.length) return '';
+  const rows = notes.map(function (n) {
+    const subSuffix = (n.subTotal > 1) ? ` (Sub ${n.subIndex}/${n.subTotal})` : '';
+    return `
+      <tr>
+        <td class="note-num">№${n.num}</td>
+        <td class="note-item">${escapeHtml(n.skuCode)}${escapeHtml(subSuffix)}</td>
+        <td class="note-mf">${escapeHtml(n.label)}${n.mfCode ? ` <span style="color:#bbb;">(${escapeHtml(n.mfCode)})</span>` : ''}</td>
+        <td class="note-content">${escapeHtml(n.content)}</td>
+      </tr>`;
+  }).join('');
+  return `
+    <div class="notes-table-wrap">
+      <div class="notes-table-title">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+        Modification Notes &amp; Custom Details
+      </div>
+      <table class="notes-table">
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Item</th>
+            <th>Modification</th>
+            <th>Detail / Note</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// Shipping logic (unchanged)
+function getShippingBracket(subtotal) {
+  if (subtotal == null) return null;
+  if (subtotal <= 3000)  return 'tier1';
+  if (subtotal <= 6000)  return 'tier2';
+  if (subtotal <= 9000)  return 'tier3';
+  if (subtotal <= 12000) return 'tier4';
+  return 'tier5';
+}
+
+function calcShippingByFormula(subtotal) {
+  // 新規格 (2026-06): Shipping 一律由 Sales Team 報價,不再依 subtotal 級距自動算。
+  // 一律回 null → 走既有 pending / "Contact Sales Team" 路徑:shipping_cost 存 null、
+  // 不計入 Grand Total;admin 之後可在 quote-detail 手填覆寫(override 邏輯不變)。
+  // resolveShippingForDb 的 resuming 分支(oldBracket===newBracket → 保留 oldShipping)
+  // 不受影響,既有單與 admin 值安全。
+  // 廢棄的舊級距保留註解供歷史參考:
+  //   <=3000 → null / <=6000 → ×0.15 / <=9000 → ×0.12 / <=12000 → ×0.10 / >12000 → 0
+  return null;
+}
+
+function resolveShippingForDb(opts) {
+  const newLogistic   = opts.newLogistic;
+  const newSubtotal   = opts.newSubtotal;
+  const newDeliveryFee= opts.newDeliveryFee;
+  const isResuming    = !!opts.isResuming;
+
+  if (!isResuming) {
+    if (newLogistic === 'pickup')   return 0;
+    if (newLogistic === 'delivery') return newDeliveryFee;
+    if (newLogistic === 'shipping') return calcShippingByFormula(newSubtotal);
+    return 0;
+  }
+
+  const oldLogistic = _existingLogisticType;
+  const oldShipping = _existingShippingCost;
+  const oldSubtotal = _existingSubtotal;
+
+  if (newLogistic === 'pickup') return 0;
+
+  if (newLogistic === 'delivery') {
+    if (oldLogistic === 'delivery') {
+      return (oldShipping == null) ? newDeliveryFee : oldShipping;
+    }
+    return newDeliveryFee;
+  }
+
+  if (newLogistic === 'shipping') {
+    if (oldLogistic === 'shipping') {
+      const oldBracket = getShippingBracket(oldSubtotal);
+      const newBracket = getShippingBracket(newSubtotal);
+      if (oldBracket === newBracket) {
+        return oldShipping;
+      }
+    }
+    return calcShippingByFormula(newSubtotal);
+  }
+
+  return 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-3 (2026-05-29): Shared helper to obtain a PO# on first save.
+// CB-14 (2026-06): PO# is now a company-wide sequential number (P + 5-digit
+//   zero-padded, e.g. P09001), aligned with the internal ERP. The RPC takes
+//   NO parameters and draws from a single company-wide pool, so no dealer uid
+//   is needed. The dealerId argument is kept only for call-site compatibility
+//   (it is now unused).
+// ─────────────────────────────────────────────────────────────────────────────
+// 雙編號制: 取得 Draft ID (D + 5碼)。全公司同一池流水號 (generate_draft_number RPC)。
+// 舊 generate_po_number RPC 不再呼叫(保留在 DB 當保險)。
+async function obtainDraftNumber() {
+  const { data, error } = await _supabase.rpc('generate_draft_number');
+  if (error) throw error;
+  if (!data) throw new Error('Failed to generate Draft ID.');
+  return data;
+}
+
+async function init() {
+  const { data:{ session } } = await _supabase.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  const params = new URLSearchParams(window.location.search);
+  draftId = params.get('draft') || null;
+  const adminDraft = params.get('adminDraft') === '1';
+
+  const s1 = sessionStorage.getItem('quoteStep1');
+  const s2 = sessionStorage.getItem('quoteStep2');
+  if (!s1 || !s2) { window.location.href = 'new-quote.html'; return; }
+
+  step1Data = JSON.parse(s1);
+  step2Data = JSON.parse(s2);
+
+  _isResumingReturned = !!step1Data.isResumingReturned;
+
+  const { data: meRow } = await _supabase
+    .from('dealers').select('is_active, role').eq('id', session.user.id).single();
+  if (!meRow?.is_active) { await _supabase.auth.signOut(); window.location.href = 'login.html'; return; }
+
+  const isAdminRole = meRow?.role === 'admin' || meRow?.role === 'super_admin';
+
+let dealerIdToLoad = session.user.id;
+  let quoteStatus    = null;   // CB-4: server-side status drives viewMode
+  let quoteOwnerId   = null;   // CB-4: quote owner for isOwner check
+  if (draftId) {
+  const { data: q } = await _supabase
+      .from('quotes')
+      .select('dealer_id, revision_number, po_number, draft_number, status, logistic_type, shipping_cost, subtotal, admin_notified_at')
+      .eq('id', draftId).single();
+    if (q?.dealer_id) dealerIdToLoad = q.dealer_id;
+    if (q) {
+      quoteStatus            = q.status || null;
+      quoteOwnerId           = q.dealer_id || null;
+      _currentRevisionNumber = q.revision_number || 1;
+      _existingPoNumber      = q.po_number || null;
+      _existingDraftNumber   = q.draft_number || null;   // 雙編號制
+      _existingAdminNotifiedAt = q.admin_notified_at || null;   // CB-36: 已通知時間(驅動 Notify 是否首次)
+      _existingLogisticType  = q.logistic_type || null;
+      _existingShippingCost  = (q.shipping_cost === null || q.shipping_cost === undefined)
+                                 ? null
+                                 : parseFloat(q.shipping_cost);
+      _existingSubtotal      = (q.subtotal === null || q.subtotal === undefined)
+                                 ? null
+                                 : parseFloat(q.subtotal);
+      if (q.status === 'Returned') _isResumingReturned = true;
+    }
+  } else if (step1Data.dealerIdForQuote) {
+    dealerIdToLoad = step1Data.dealerIdForQuote;
+  }
+
+  // CB-4: resolve view mode from server data (status + owner + role).
+  // admin-draft is param-driven (not status-driven), so layer it on top.
+  isAdminViewer = isAdminRole;
+  const isOwner = quoteOwnerId && quoteOwnerId === session.user.id;
+  viewMode = resolveViewMode(quoteStatus, isOwner, isAdminRole);
+  const adminDraftMode = (adminDraft || step1Data.adminDraft);
+  if (adminDraftMode && viewMode === 'normal') viewMode = 'admin-draft';
+  console.log('[CB-4] step3 viewMode:', { viewMode, quoteStatus, isAdminRole, isOwner, adminDraftMode });
+
+  const { data:d } = await _supabase
+    .from('dealers').select('*').eq('id', dealerIdToLoad).single();
+  if (!d) {
+    alert('Could not load dealer data. Please go back and try again.');
+    return;
+  }
+  dealer = d;
+
+  // CB-5 需求1/2: 載入 door_styles(整單 lead time + non-stock 判斷)
+  // CB-9: 同時載入 skus_framed / skus_frameless 的 tag(Order List Tag 欄查表用)。
+  //       不加 active 篩選,避免已下架但仍在舊報價裡的 SKU 查不到 tag。
+  const [styleRes, framedRes, framelessRes] = await Promise.all([
+    _supabase.from('door_styles').select('style_code, construction_type, is_stock').eq('is_active', true),
+    _supabase.from('skus_framed').select('sku_code, tag, type, description, needs_confirmation'),
+    _supabase.from('skus_frameless').select('sku_code, tag, type, description, needs_confirmation'),
+  ]);
+  allDoorStyles    = styleRes.data     || [];
+  allSkusFramed    = framedRes.data    || [];
+  allSkusFrameless = framelessRes.data || [];
+
+  setInterval(async () => {
+    const { data: check } = await _supabase
+      .from('dealers').select('is_active').eq('id', session.user.id).single();
+    if (!check?.is_active) { await _supabase.auth.signOut(); window.location.href = 'login.html'; }
+  }, 60000);
+
+  if (step1Data.shippingMode === 'different' && step1Data.shippingAddressId) {
+    const { data:addr } = await _supabase.from('addresses').select('*').eq('id', step1Data.shippingAddressId).single();
+    shippingAddress = addr;
+  }
+
+if (draftId) {
+    const mp = buildModeParam();  // CB-4: carry mode across step navigation
+    document.getElementById('editStep1Link').href     = 'new-quote.html?draft=' + draftId + mp;
+    document.getElementById('editStep1LinkShip').href = 'new-quote.html?draft=' + draftId + mp;
+    document.getElementById('editStep2Link').href     = 'new-quote-modifications.html?draft=' + draftId + mp;
+    document.getElementById('backToStep2').href       = 'new-quote-modifications.html?draft=' + draftId + mp;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // CB-4: drive banner + action buttons + read-only by viewMode.
+  //   normal       → Submit PO + Save as Quote (default HTML state)
+  //   admin-draft  → hide Submit, Save as Quote only (admin builds for dealer)
+  //   admin-edit   → hide Submit + Save, show Request Revision
+  //   review       → Resubmit PO only, read-only (hide Edit links + Save)
+  // Note: _isResumingReturned (engine flag) is left untouched — it still drives
+  // submitQuote / PDF / revision_number exactly as before.
+  // ───────────────────────────────────────────────────────────────────────────
+  const elBtnSubmit  = document.getElementById('btnSubmit');
+  const elBtnDraft   = document.getElementById('btnDraft');
+  const elBtnRev     = document.getElementById('btnRequestRevision');
+  const elSubmitNote = document.getElementById('submitNote');
+  const elDraftBan   = document.getElementById('draftBanner');
+
+  if (viewMode === 'admin-edit') {
+    document.getElementById('returnedBannerMount').innerHTML = buildAdminEditBanner(dealer);
+    elDraftBan.style.display  = 'none';
+    elBtnSubmit.style.display = 'none';
+    elBtnDraft.style.display  = 'none';
+    elBtnRev.style.display    = 'inline-flex';
+    document.getElementById('btnAdminSubmit').style.display = 'inline-flex';  // CB-32
+    elSubmitNote.innerHTML =
+      'Review the changes, then either send this Purchase Order back to the dealer for revision, or submit it on the dealer\'s behalf.';
+
+  } else if (viewMode === 'review') {
+    document.getElementById('returnedBannerMount').innerHTML = buildReviewBanner();
+    elDraftBan.style.display = 'none';
+    elBtnDraft.style.display = 'none';   // no Save in review
+    elBtnRev.style.display   = 'none';
+    document.getElementById('btnSubmitText').textContent = 'Resubmit Purchase Order';
+    elBtnSubmit.onclick = openResubmitModal;   // CB-4: confirm before resubmit
+    elSubmitNote.innerHTML =
+      'Please review your revised Purchase Order carefully, then resubmit when ready.';
+    // read-only: hide the three Edit links (Markup % stays usable)
+    ['editStep1Link','editStep1LinkShip','editStep2Link'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+  } else if (viewMode === 'admin-draft') {
+        elBtnSubmit.style.display = 'none';
+        document.getElementById('btnAdminSubmit').style.display = 'inline-flex';  // CB-32
+        // CB-36: 三按鈕 — Save Internal Draft / Save & Notify Dealer / Submit (Admin)
+        document.querySelector('#btnDraft span.draft-btn-text').textContent = 'Save Internal Draft';
+        document.getElementById('btnNotify').style.display = 'inline-flex';
+        elDraftBan.style.display  = 'flex';
+        document.getElementById('draftBannerText').innerHTML =
+          '<strong>Admin mode</strong> — Save an internal draft, notify the dealer to review, or submit the Purchase Order on the dealer\'s behalf.';
+  
+    } else if (draftId) {
+    // normal mode, editing an existing draft
+    elDraftBan.style.display = 'flex';
+  }
+
+  // Terms-of-use gate:只在會出現「送出/重送 PO」按鈕的模式顯示勾選列
+  // (normal + review)。btnSubmit 已預設 disabled,勾了才放開。
+  if (viewMode === 'normal' || viewMode === 'review') {
+      const termsRow = document.getElementById('termsAgreeRow');
+      if (termsRow) termsRow.style.display = 'flex';
+    }
+  
+    // CB-33: admin shipping fee 輸入框(僅 admin mode + logistic=shipping)
+    setupAdminShippingInput();
+    refreshAdminSubmitGate();
+  
+    renderReview();
+  }
+
+// F-CUSTOM (Phase 4): Added 'OTHER' between ACCESSORIES and MODIFICATION.
+// Custom Other items get sku_type='OTHER' from step2; this ensures they sort
+// after accessories but before MODIFICATION group (mods are always last per spec).
+const TYPE_ORDER = ['BASE','WALL','TALL','ACCESSORIES','OTHER','MODIFICATION'];
+
+function typeRank(type) {
+  const idx = TYPE_ORDER.indexOf((type||'').toUpperCase());
+  return idx === -1 ? 99 : idx;
+}
+
+function groupAndSort(data) {
+  const grouped = {};
+  data.forEach(item => {
+    if (!grouped[item.style_name]) grouped[item.style_name] = [];
+    grouped[item.style_name].push(item);
+  });
+  Object.keys(grouped).forEach(style => {
+    grouped[style].sort((a,b) => typeRank(a.skuType) - typeRank(b.skuType));
+  });
+  return grouped;
+}
+
+function calcAsmByType(data) {
+  const byType = {};
+  data.forEach(item => {
+    if (item.type?.toLowerCase() !== 'assembled' || !item.assemble_fee) return;
+    const t = (item.skuType || 'OTHER').toUpperCase();
+    if (!byType[t]) byType[t] = { qty: 0, total: 0 };
+    byType[t].qty   += item.quantity;
+    byType[t].total += item.assemble_fee * item.quantity;
+  });
+  return byType;
+}
+
+function renderAsmBreakdown(byType, showPrices, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const entries = TYPE_ORDER.filter(t => byType[t]);
+  if (!entries.length) { el.innerHTML = ''; return; }
+  el.innerHTML = entries.map(t => {
+    const row = byType[t];
+    const priceStr = showPrices ? `<span style="color:#8B6914;">+$${row.total.toFixed(2)}</span>` : '';
+    return `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:2px 0;">
+      <span>${t} &nbsp;×${row.qty}</span>${priceStr}</div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-27: Modifications 按 type 分組(方案 B 明細用)。
+//   ⚠ 三檔逐字同步:pdf-builder.js / new-quote-step3.html / quote-detail.html
+//   • parentPerSubModCost = Σ(cost + 非mapping material) —— 與 Order List Mod Fee
+//     欄完全一致(mapping material 已搬去獨立 row,不算進來)。
+//   • modFee = parentPerSubModCost × subQty;只計 modFee > 0 的 sub。
+//   • type 取父 row,順序走 CB-22 getTypeOrder;不在清單 → OTHER(放最後)。
+//   回傳 { byType, ordered, modsDisplayTotal }。
+// ─────────────────────────────────────────────────────────────────────────────
+function calcModByType(items, constructionType) {
+  const order = getTypeOrder(constructionType).map(function (t) { return t.toUpperCase(); });
+  const byType = {};
+  let modsDisplayTotal = 0;
+  (items || []).forEach(function (item) {
+    const subs = getNormalizedSubGroups(item);
+    let ptype = (item.sku_type || item.skuType || OTHER_GROUP_LABEL).toUpperCase();
+    if (order.indexOf(ptype) === -1) ptype = OTHER_GROUP_LABEL;   // 不在清單 → OTHER
+    subs.forEach(function (sub) {
+      const subQty = parseInt(sub.qty, 10) || 0;
+      const mods   = Array.isArray(sub.modifications) ? sub.modifications : [];
+      let parentPerSubModCost = 0;
+      mods.forEach(function (m) {
+        const c  = parseFloat(m && m.cost);
+        const mt = parseFloat(m && m.material_cost);
+        const mq = parseInt(m && m.mapping_qty, 10) || 0;
+        const hasMapping = !!(m && m.mapping_sku) && mq > 0;
+        parentPerSubModCost += (isNaN(c) ? 0 : c);
+        if (!hasMapping) parentPerSubModCost += (isNaN(mt) ? 0 : mt);
+      });
+      const modFee = parentPerSubModCost * subQty;
+      if (modFee > 0) {
+        if (!byType[ptype]) byType[ptype] = { qty: 0, modFee: 0 };
+        byType[ptype].qty    += subQty;
+        byType[ptype].modFee += modFee;
+        modsDisplayTotal     += modFee;
+      }
+    });
+  });
+  const ordered = order.filter(function (t) { return byType[t]; });
+  if (byType[OTHER_GROUP_LABEL]) ordered.push(OTHER_GROUP_LABEL);
+  return { byType: byType, ordered: ordered, modsDisplayTotal: modsDisplayTotal };
+}
+
+// CB-27: 渲染 Modifications by-type 明細 + 末行 Total(仿 renderAsmBreakdown)。
+function renderModsBreakdown(modBreakdown, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const ordered = modBreakdown.ordered || [];
+  if (!ordered.length) { el.innerHTML = ''; return; }
+  let html = ordered.map(function (t) {
+    const row = modBreakdown.byType[t];
+    return `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:2px 0;">
+      <span>${t} &nbsp;×${row.qty}</span><span style="color:#8B6914;">+$${row.modFee.toFixed(2)}</span></div>`;
+  }).join('');
+  html += `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:4px 0 0;border-top:1px solid var(--border);margin-top:2px;">
+    <span>Total</span><span style="color:#8B6914;">+$${modBreakdown.modsDisplayTotal.toFixed(2)}</span></div>`;
+  el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-22 (2026-06-11): Order List type-group 排序 — 業務指定固定順序。
+//   廢棄 CB-7 的（BASE 最前 / ACCESSORIES 最後 / 中間字母序）。
+//   改為依 construction 走固定清單；不在清單的 type → OTHER，放最後。
+//   組內排序維持 style_code 字母序 stable sort（CB-7 行為不變）。
+//   空 group 仍只在有 item 時才 push。
+//   ⚠ 三檔逐字同步：new-quote-step3.html / quote-detail.html / pdf-builder.js
+// ─────────────────────────────────────────────────────────────────────────────
+const FRAMED_TYPE_ORDER    = ['BASE','WALL','TALL','DOOR & FRAME','BOX','ROLL OUT TRAY','ACCESSORIES'];
+const FRAMELESS_TYPE_ORDER = ['BASE','VANITY','WALL','TALL','MBOX','ROLL OUT TRAY','PANELS','MOLDINGS'];
+const OTHER_GROUP_LABEL    = 'OTHER';
+
+function getTypeOrder(constructionType) {
+  return (String(constructionType || '').toLowerCase() === 'frameless')
+    ? FRAMELESS_TYPE_ORDER
+    : FRAMED_TYPE_ORDER;   // 預設 framed
+}
+
+// 掃第一個能在 door_styles 對到的 item，取其 construction_type 當整單依據。
+// （frameless / framed 不混單；accessory / custom 對不到 → 跳過；全對不到 → framed）
+function resolveQuoteConstructionType(items, doorStyles) {
+  if (!Array.isArray(items) || !Array.isArray(doorStyles)) return 'framed';
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    if (!it || !it.style_code) continue;
+    const ds = doorStyles.find(function (d) { return d.style_code === it.style_code; });
+    if (ds && ds.construction_type) return String(ds.construction_type).toLowerCase();
+  }
+  return 'framed';
+}
+
+function groupByTypeOrdered(data, constructionType) {
+  const order    = getTypeOrder(constructionType).map(function (t) { return t.toUpperCase(); });
+  const orderSet = new Set(order);
+
+  const buckets = {};
+  (data || []).forEach(function (item) {
+    let t = (item.skuType || OTHER_GROUP_LABEL).toUpperCase();
+    if (!orderSet.has(t)) t = OTHER_GROUP_LABEL;   // 不在清單 → 併入 OTHER
+    if (!buckets[t]) buckets[t] = [];
+    buckets[t].push(item);
+  });
+
+  Object.keys(buckets).forEach(function (t) {
+    buckets[t].sort(function (a, b) {
+      const sa = String(a.style_code || '').toUpperCase();
+      const sb = String(b.style_code || '').toUpperCase();
+      if (sa < sb) return -1;
+      if (sa > sb) return 1;
+      return 0;  // 同 style_code → stable sort 保留原順序
+    });
+  });
+
+  const result = [];
+  order.forEach(function (t) {
+    if (buckets[t] && buckets[t].length) result.push({ type: t, items: buckets[t] });
+  });
+  if (buckets[OTHER_GROUP_LABEL] && buckets[OTHER_GROUP_LABEL].length) {
+    result.push({ type: OTHER_GROUP_LABEL, items: buckets[OTHER_GROUP_LABEL] });
+  }
+  return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-7 / CB-9: Order List 表格重構（10 欄 + type divider）。
+//   欄序：# / Tag / SKU / Description / Qty / Assembled? / Unit Price /
+//         Mod Fee / Assemble Fee / Total
+//   - 全單依 type 分組打 divider，Item 編號全單連續、divider 不佔號。
+//   - CB-9: Tag 欄在 # 與 SKU 中間,讀 getTagForItem();只有主行顯示,子項留空。
+//   - SKU 欄顯示 {style_code}-{sku_code}，並保留 CUSTOM badge、Sub x of y。
+//   - Assembled?：Assembled → Yes、RTA → No（純文字）。
+//   - Total = (Unit Price × Qty) + Mod Fee + Assemble Fee
+//     （Mod/Asm Fee 已在前階段含 ×Qty，此處不再乘）。
+// ─────────────────────────────────────────────────────────────────────────────
+function buildItemRowsHtml(markupPct) {
+  markupPct = markupPct || 0;
+  const _constructionType = resolveQuoteConstructionType(step2Data, allDoorStyles);  // CB-22
+
+  let itemNum = 0;
+  const rows = [];
+  const notes = [];
+  const notesIndex = { counter: 0 };
+
+  // ── CB-25 改動 A:三層分組 ───────────────────────────────────────────────
+  // Tier1: Assembled → Unassembled(Assembled 在上);step3 以 item.type==='RTA' 判斷未組裝。
+  // Tier2: 各 section 內依 style_code 字母序。
+  // Tier3: 各 style 內沿用 CB-22 groupByTypeOrdered(type 順序不變)。
+  // 空 section / 空 style / 空 type 一律不顯示。itemNum 全程連續、divider 不佔號。
+  const sections = [
+    { label: 'ASSEMBLED',   items: step2Data.filter(function (it) { return it.type !== 'RTA'; }) },
+    { label: 'UNASSEMBLED', items: step2Data.filter(function (it) { return it.type === 'RTA'; }) },
+  ];
+
+  sections.forEach(function (section) {
+    if (!section.items.length) return;  // 空 section 不顯示
+
+    // CB-31 改動A:隱藏 Assembled/Unassembled divider（保留程式,日後移除註解即可 unhide）
+    // rows.push(`
+    //   <tr class="section-divider">
+    //     <td colspan="10">===== ${escapeHtml(section.label)} =====</td>
+    //   </tr>`);
+
+    // Tier2: style_code 字母序分組
+    const byStyle = {};
+    section.items.forEach(function (it) {
+      const sk = String(it.style_code || '').toUpperCase();
+      (byStyle[sk] || (byStyle[sk] = [])).push(it);
+    });
+
+    Object.keys(byStyle).sort().forEach(function (styleKey) {
+      const styleItems = byStyle[styleKey];
+      if (!styleItems.length) return;  // 空 style 不顯示
+      // CB-31 改動B:Door Style divider 顯示 style_name 全名,空值 fallback style_code
+      const styleLabel = styleItems[0].style_name || styleItems[0].style_code || '—';
+
+      rows.push(`
+        <tr class="style-divider">
+          <td colspan="10">--- ${escapeHtml(styleLabel)} ---</td>
+        </tr>`);
+
+      // Tier3: CB-22 type 分組(原封沿用)
+      const typeGroups = groupByTypeOrdered(styleItems, _constructionType);
+
+      typeGroups.forEach(function (group) {
+        // CB-7 / CB-9: 橫跨 10 欄的 type divider，不佔 Item 編號
+        rows.push(`
+          <tr class="type-divider">
+            <td colspan="10">========== ${escapeHtml(group.type)} ==========</td>
+          </tr>`);
+
+        group.items.forEach(function (item) {
+          const subs = getNormalizedSubGroups(item);
+          const isSplit = subs.length > 1;
+          const markedUnitPrice = item.unit_price * (1 + markupPct);
+          const isCustom = !!item.is_custom;  // F-CUSTOM
+
+          // 父 row SKU 前綴:BOX / ROLL OUT TRAY 不加(CB-23 #1)
+          const _noPrefixType = (item.skuType || '').toUpperCase();
+          const _skipStylePrefix = (_noPrefixType === 'BOX' || _noPrefixType === 'ROLL OUT TRAY');
+          const skuPrefix = (item.style_code && !_skipStylePrefix) ? escapeHtml(item.style_code) + '-' : '';
+
+          subs.forEach(function (sub, subIdx) {
+            itemNum++;
+            const parentNum  = itemNum;          // CB-25: mapping row 用 parentNum.N 編號
+            const isFirstSub = subIdx === 0;
+            const subQty     = parseInt(sub.qty, 10) || 0;
+
+            // ── CB-25 改動 B:分離父 row Mod Fee 與 mapping rows ──────────────
+            // 父 row Mod Fee 只留「未搬走的成本」(工本費 + 無 mapping 的 material);
+            // 有 mapping_sku 的 material 搬到獨立 mapping row(Total = 材料費)。
+            const mods = Array.isArray(sub.modifications) ? sub.modifications : [];
+            let parentPerSubModCost = 0;
+            const mappingList = [];
+            mods.forEach(function (m) {
+              const c  = parseFloat(m && m.cost);
+              const mt = parseFloat(m && m.material_cost);
+              const mq = parseInt(m && m.mapping_qty, 10) || 0;
+              const hasMapping = !!(m && m.mapping_sku) && mq > 0;
+              parentPerSubModCost += (isNaN(c) ? 0 : c);
+              if (hasMapping) {
+                const matPerSub = isNaN(mt) ? 0 : mt;   // 每 sub-unit 材料費
+                mappingList.push({
+                  code:  m.mapping_sku,
+                  qty:   mq * subQty,
+                  unit:  mq > 0 ? (matPerSub / mq) : 0,
+                  total: matPerSub * subQty,
+                });
+              } else {
+                parentPerSubModCost += (isNaN(mt) ? 0 : mt);  // 防呆:無 mapping 的 material 留父 row
+              }
+            });
+
+            const modFeeTotal  = parentPerSubModCost * subQty;
+            const skuLineTotal = markedUnitPrice * subQty;   // CB-25 改動 C:Total 折前(不再套促銷折扣)
+            const asmFeeTotal  = (item.assemble_fee || 0) * subQty;
+            const lineTotal    = skuLineTotal + modFeeTotal + asmFeeTotal;
+
+            const subLabelHtml = isSplit
+              ? `<br><span class="sub-label">Sub ${subIdx + 1} of ${subs.length}</span>`
+              : '';
+            const customBadgeHtml = (isCustom && isFirstSub)
+              ? `<span class="custom-badge">CUSTOM</span>`
+              : '';
+
+            // CB-9: Tag 只在主行(第一個 sub)顯示,子項留空
+            const tagCellHtml = isFirstSub ? escapeHtml(getTagForItem(item)) : '';
+
+            const itemContext = { sku_code: item.sku_code, totalSubs: subs.length };
+            const modsBlockHtml = renderModsBlock(sub, notesIndex, notes, itemContext);
+
+            // CB-11 任務B: DOOR & FRAME 固定顯示「Hinge not included」
+            const hingeNoteHtml = ((item.skuType || '').toUpperCase() === 'DOOR & FRAME')
+              ? `<div class="hinge-note">Hinge not included</div>`
+              : '';
+
+            // CB-25: 移除 PROMO badge;mod 子項(無金額)仍放 SKU 欄
+            const skuCellHtml  = `${skuPrefix}${escapeHtml(item.sku_code)}${customBadgeHtml}${subLabelHtml}${hingeNoteHtml}${modsBlockHtml}`;
+            const descCellHtml = item.sku_desc ? `<div class="desc-main">${escapeHtml(item.sku_desc)}</div>` : '';
+
+            const assembledHtml = isFirstSub ? (item.type === 'RTA' ? 'No' : 'Yes') : '';
+            const trClass = isFirstSub ? '' : 'sub-continuation';
+
+            const modFeeCellHtml = modFeeTotal > 0
+              ? `<span class="td-modfee">+$${modFeeTotal.toFixed(2)}</span>`
+              : '<span style="color:var(--muted);">—</span>';
+
+            const asmFeeCellHtml = asmFeeTotal > 0
+              ? `<span style="color:var(--muted);">+$${asmFeeTotal.toFixed(2)}</span>`
+              : '<span style="color:var(--muted);">—</span>';
+
+            rows.push(`
+              <tr class="${trClass}">
+                <td style="font-size:11px;color:var(--muted);font-weight:500;white-space:nowrap;">#${parentNum}</td>
+                <td style="font-size:12px;white-space:nowrap;">${tagCellHtml}</td>
+                <td class="td-sku">${skuCellHtml}</td>
+                <td class="td-desc">${descCellHtml}</td>
+                <td class="td-right">${subQty}</td>
+                <td style="font-size:12px;">${assembledHtml}</td>
+                <td class="td-right">$${markedUnitPrice.toFixed(2)}</td>
+                <td class="td-right">${modFeeCellHtml}</td>
+                <td class="td-right">${asmFeeCellHtml}</td>
+                <td class="td-right td-total">$${lineTotal.toFixed(2)}</td>
+              </tr>`);
+
+            // ── CB-25 改動 B:mapping SKU 獨立 row,緊跟父 row,編號 parentNum.N ──
+            mappingList.forEach(function (map, k) {
+              const info = getMappingSkuInfo(map.code, _constructionType);  // CB-25-FIX: item.construction_type 未賦值,改用整單 construction(frameless 才不會查錯表)
+              const mt2 = (info.type || '').toUpperCase();
+              const mapSkip = (mt2 === 'BOX' || mt2 === 'ROLL OUT TRAY');   // CB-23 #1:mapping 也適用
+              const mapPrefix = (item.style_code && !mapSkip) ? escapeHtml(item.style_code) + '-' : '';
+              const mapSkuCell  = `${mapPrefix}${escapeHtml(map.code)}`;
+              const mapDescCell = info.description ? `<div class="desc-main">${escapeHtml(info.description)}</div>` : '';
+
+              rows.push(`
+                <tr class="mapping-row">
+                  <td>#${parentNum}.${k + 1}</td>
+                  <td style="font-size:12px;white-space:nowrap;">${escapeHtml(info.tag)}</td>
+                  <td class="td-sku">${mapSkuCell}</td>
+                  <td class="td-desc">${mapDescCell}</td>
+                  <td class="td-right">${map.qty}</td>
+                  <td style="font-size:12px;color:var(--muted);">—</td>
+                  <td class="td-right">$${map.unit.toFixed(2)}</td>
+                  <td class="td-right"><span style="color:var(--muted);">—</span></td>
+                  <td class="td-right"><span style="color:var(--muted);">—</span></td>
+                  <td class="td-right td-total">$${map.total.toFixed(2)}</td>
+                </tr>`);
+            });
+          });
+        });
+      });
+    });
+  });
+
+  return { rowsHtml: rows.join(''), notes: notes };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-TAX (2026-05-11): Tax base now uses ONLY taxable mods, not all mods.
+//   - taxBase     = skuSubtotal + taxableModsSubtotal  (for tax × rate)
+//   - billingBase = skuSubtotal + modsSubtotal         (for shipping bracket /
+//                                                       persisted "subtotal")
+//
+// Grand total still includes all mods (taxable or not), since non-taxable mods
+// are still real money charged to the customer — they just don't attract tax.
+//
+// Shipping bracket uses billingBase so shipping tier doesn't shift based on
+// whether mods are taxable (would be confusing and not aligned with the spec).
+// ─────────────────────────────────────────────────────────────────────────────
+function applyTotals(opts) {
+  const skuSubtotal         = opts.skuSubtotal;
+  const modsSubtotal        = opts.modsSubtotal;
+  const taxableModsSubtotal = opts.taxableModsSubtotal || 0;
+  const assembleTotal       = opts.assembleTotal;
+  const showMarkupNote      = !!opts.showMarkupNote;
+  const markupPct           = opts.markupPct || 0;
+
+  // ── CB-27: Modifications by-type 明細 + Subtotal 顯示分桶對齊 CB-25 ──
+  //   只改「顯示」:把 mapping material 從 Modifications 搬到 Subtotal 顯示,
+  //   兩顯示值之和 = 原(skuSubtotal + modsSubtotal)不變 → tax/billing/grand 全不動。
+  const _ct                  = resolveQuoteConstructionType(step2Data, allDoorStyles);
+  const modBreakdown         = calcModByType(step2Data, _ct);
+  const mappingMaterialTotal = modsSubtotal - modBreakdown.modsDisplayTotal;
+
+  const taxBase     = skuSubtotal + taxableModsSubtotal;
+  const billingBase = skuSubtotal + modsSubtotal;
+
+  const taxRate = dealer?.tax_exempt ? 0 : parseFloat(dealer?.tax_rate || 0);
+  const logisticType = step1Data?.logisticType || 'pickup';
+  const deliveryFee  = parseFloat(step1Data?.deliveryFee || 0);
+
+  const previewShippingForDb = resolveShippingForDb({
+    newLogistic:    logisticType,
+    newSubtotal:    billingBase,   // F-TAX: shipping uses billing base
+    newDeliveryFee: deliveryFee,
+    isResuming:     _isResumingReturned,
+  });
+
+  let shippingForTotal = 0;
+  let shippingLabel = '';
+  let shippingNote  = '';
+  let isPendingShipping = false;
+
+  if (logisticType === 'pickup') {
+    shippingForTotal = 0;
+    shippingLabel    = 'FREE';
+    shippingNote     = '✓ Pick Up @ ProCraft DC';
+  } else if (logisticType === 'delivery') {
+    shippingForTotal = previewShippingForDb || 0;
+    shippingLabel    = `$${shippingForTotal.toFixed(2)}`;
+    if (_isResumingReturned && _existingLogisticType === 'delivery' && _existingShippingCost != null
+        && _existingShippingCost === shippingForTotal && _existingShippingCost !== deliveryFee) {
+      shippingNote   = '✓ Sales-confirmed delivery fee';
+    } else {
+      shippingNote   = 'Delivery fee based on distance';
+    }
+    } else if (logisticType === 'shipping') {
+        // CB-33: admin mode 可直接指定 shipping fee(null=pending / 0=FREE / >0=金額)
+        const _adminShip = isAdminShippingMode() ? getAdminShippingOverride() : undefined;
+        if (isAdminShippingMode()) {
+          if (_adminShip === null) {
+            isPendingShipping = true;
+            shippingForTotal  = 0;
+            shippingLabel     = 'Contact Sales Team';
+            shippingNote      = '⚠ Enter shipping fee to submit (or Save Draft)';
+          } else if (_adminShip === 0) {
+            shippingForTotal = 0;
+            shippingLabel    = 'FREE';
+            shippingNote     = '✓ Free shipping (set by admin)';
+          } else {
+            shippingForTotal = _adminShip;
+            shippingLabel    = `$${_adminShip.toFixed(2)}`;
+            shippingNote     = '✓ Shipping fee set by admin';
+          }
+        } else if (previewShippingForDb === null) {
+          isPendingShipping = true;
+          shippingForTotal  = 0;
+          shippingLabel     = 'Contact Sales Team';
+          shippingNote      = '⚠ Shipping fee quoted separately by our Sales Team';
+        } else if (previewShippingForDb === 0 && billingBase > 12000) {
+      shippingForTotal = 0;
+      shippingLabel    = 'FREE';
+      shippingNote     = '✓ Free shipping on orders over $12,000';
+    } else if (previewShippingForDb === 0) {
+      shippingForTotal = 0;
+      shippingLabel    = 'FREE';
+      shippingNote     = '✓ Sales-confirmed free shipping';
+    } else {
+      shippingForTotal = previewShippingForDb;
+      shippingLabel    = `$${shippingForTotal.toFixed(2)}`;
+      const isPreservedAdminValue = (
+        _isResumingReturned &&
+        _existingLogisticType === 'shipping' &&
+        getShippingBracket(_existingSubtotal) === getShippingBracket(billingBase) &&
+        _existingShippingCost === shippingForTotal
+      );
+      if (isPreservedAdminValue) {
+        shippingNote = '✓ Sales-confirmed shipping fee';
+      } else if (billingBase <= 6000)       shippingNote = '15% shipping rate';
+      else if (billingBase <= 9000)         shippingNote = '12% shipping rate';
+      else if (billingBase <= 12000)        shippingNote = '10% shipping rate';
+    }
+  }
+
+  const tax   = taxBase * taxRate;
+  const grand = billingBase + assembleTotal + shippingForTotal + tax;
+
+  document.getElementById('totalSubtotal').textContent = `$${(skuSubtotal + mappingMaterialTotal).toFixed(2)}`;
+
+  const modsRow = document.getElementById('modsRow');
+  if (modBreakdown.modsDisplayTotal > 0) {
+    modsRow.style.display = 'block';
+    document.getElementById('totalMods').textContent = '';   // CB-27: 金額移到 Total 行
+    renderModsBreakdown(modBreakdown, 'modsBreakdown');
+  } else {
+    modsRow.style.display = 'none';
+  }
+
+  if (assembleTotal > 0) {
+    document.getElementById('assembleRow').style.display = 'block';
+    document.getElementById('totalAssemble').textContent = `+$${assembleTotal.toFixed(2)}`;
+    const byType = calcAsmByType(step2Data);
+    renderAsmBreakdown(byType, true, 'assembleBreakdown');
+  } else {
+    document.getElementById('assembleRow').style.display = 'none';
+  }
+
+  const shipEl = document.getElementById('totalShipping');
+  shipEl.textContent = shippingLabel;
+  shipEl.classList.toggle('tbd', isPendingShipping);
+  document.getElementById('shippingNote').innerHTML = isPendingShipping
+    ? `<span style="color:#E07B39;font-size:11px;">${shippingNote}</span>`
+    : `<span style="color:var(--green-mid);font-size:11px;">${shippingNote}</span>`;
+
+  if (dealer?.tax_exempt) {
+    document.getElementById('totalTax').textContent = '$0.00';
+    document.getElementById('taxNote').innerHTML = '<span class="tax-exempt">✓ Tax exempt</span>';
+  } else {
+    document.getElementById('totalTax').textContent = `$${tax.toFixed(2)}`;
+    // F-TAX: note shows tax rate + taxable base hint when mods are partially taxable
+    const taxRateLabel = `${(taxRate * 100).toFixed(2)}% tax rate`;
+    if (modsSubtotal > 0 && taxableModsSubtotal !== modsSubtotal) {
+      const nonTaxableMods = modsSubtotal - taxableModsSubtotal;
+      document.getElementById('taxNote').innerHTML =
+        `${taxRateLabel}<br>` +
+        `<span style="color:#7A8C82;">Taxable base: $${taxBase.toFixed(2)} ` +
+        `(excludes $${nonTaxableMods.toFixed(2)} non-taxable mods)</span>`;
+    } else {
+      document.getElementById('taxNote').textContent = taxRateLabel;
+    }
+  }
+
+  document.getElementById('totalGrand').textContent = `$${grand.toFixed(2)}`;
+  document.getElementById('pendingGrandNote').style.display = isPendingShipping ? 'block' : 'none';
+
+  let noteEl = document.getElementById('markupNote');
+  if (showMarkupNote && markupPct > 0) {
+    if (!noteEl) {
+      noteEl = document.createElement('div');
+      noteEl.id = 'markupNote';
+      noteEl.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;margin-top:8px;padding:0 20px 12px;';
+      document.querySelector('.totals-section').appendChild(noteEl);
+    }
+    noteEl.textContent = `* Preview includes ${(markupPct*100).toFixed(1)}% markup on Unit Price only. Modifications and Assembly are not marked up. Portal prices unchanged.`;
+  } else if (noteEl) {
+    noteEl.textContent = '';
+  }
+}
+
+// ── Ship To 區塊(5 檔鏡像同一份 resolver)──
+const PROCRAFT_PICKUP_LINES = [
+  'ProCraft Cabinetry DC LLC',
+  '6750 Santa Barbara Court Suite B',
+  'Elkridge, MD 21075',
+  'Hours: Mon-Fri 8:00 AM - 4:30 PM',
+];
+// 依 logistic_type 回傳 { title, lines[] }。pickup 一律 ProCraft(忽略 addr);
+// delivery/shipping 用正規化後的 addr 物件。
+function resolveShipTo(logisticType, addr) {
+  const t = String(logisticType || '').toLowerCase();
+  if (t === 'pickup') {
+    return { title: 'PICK UP LOCATION', lines: PROCRAFT_PICKUP_LINES.slice() };
+  }
+  const title = (t === 'delivery') ? 'DELIVERY TO' : 'SHIP TO';
+  const a = addr || {};
+  const cityLine = [
+    [a.city, a.state].filter(Boolean).join(', '),
+    a.zip_code
+  ].filter(Boolean).join(' ');
+  const lines = [a.recipient_name, a.address_line, a.address_line2, cityLine, a.phone]
+    .filter(function (l) { return l && String(l).trim(); });
+  return { title: title, lines: lines };
+}
+
+function renderReview() {
+  const poDisplay = _existingPoNumber || _existingDraftNumber || '—';  // 雙編號制: 有 P 顯 P,否則顯 Draft ID
+  document.getElementById('reviewPO').textContent       = poDisplay;
+  document.getElementById('reviewJobName').textContent  = step1Data.jobName  || '—';
+  document.getElementById('reviewDealer').textContent   = dealer?.company_name || '—';
+  document.getElementById('reviewContact').textContent  = dealer?.contact_name || '—';
+
+// Ship To 新規格:依 logistic_type 決定標題 + 內容(pickup 顯示 ProCraft,忽略地址)
+  const _lt = step1Data.logisticType || 'pickup';
+  let _shipAddr = null;
+  if (_lt !== 'pickup') {
+    if (step1Data.shippingMode === 'same') {
+      _shipAddr = {
+        recipient_name: dealer?.company_name,
+        city:           dealer?.city,
+        state:          dealer?.state,
+        phone:          dealer?.phone,
+      };
+    } else if (shippingAddress) {
+      _shipAddr = shippingAddress;
+    }
+  }
+  const _shipTo = resolveShipTo(_lt, _shipAddr);
+  const _titleEl = document.getElementById('shipToTitle');
+  if (_titleEl) _titleEl.textContent = _shipTo.title;
+  const shippingEl = document.getElementById('reviewShipping');
+  shippingEl.innerHTML = _shipTo.lines
+    .map(function (l, i) { return i === 0 ? `<strong>${escapeHtml(l)}</strong>` : escapeHtml(l); })
+    .join('<br>');
+
+  if (step1Data.notes) {
+    document.getElementById('notesCard').style.display = 'block';
+    document.getElementById('reviewNotes').textContent = step1Data.notes;
+  }
+
+  const skuSubtotal          = step2Data.reduce((s,i) => s + i.unit_price * i.quantity, 0);
+  const modsSubtotal         = calcTotalModsCost(step2Data);
+  const taxableModsSubtotal  = calcTaxableModsCost(step2Data);   // F-TAX
+  const assembleTotal        = step2Data.reduce((s,i) => s + (i.assemble_fee || 0) * i.quantity, 0);
+
+  // F-TAX: debug log for visibility
+  console.log('[F-TAX] renderReview totals:',
+    'sku=$' + skuSubtotal.toFixed(2),
+    'mods=$' + modsSubtotal.toFixed(2),
+    'taxableMods=$' + taxableModsSubtotal.toFixed(2),
+    'nonTaxableMods=$' + (modsSubtotal - taxableModsSubtotal).toFixed(2),
+    'assembly=$' + assembleTotal.toFixed(2)
+  );
+
+  // F-CUSTOM: debug log for custom item count
+  const customCount = step2Data.filter(i => i.is_custom).length;
+  if (customCount > 0) {
+    console.log('[F-CUSTOM] renderReview: ' + customCount + ' custom item(s) in this quote');
+  }
+
+  const result = buildItemRowsHtml(0);
+  document.getElementById('itemsTableBody').innerHTML = result.rowsHtml;
+  document.getElementById('notesTableMount').innerHTML = renderNotesTable(result.notes);
+  renderLeadTimeLine();  // CB-5 需求1
+
+  applyTotals({
+    skuSubtotal:          skuSubtotal,
+    modsSubtotal:         modsSubtotal,
+    taxableModsSubtotal:  taxableModsSubtotal,  // F-TAX
+    assembleTotal:        assembleTotal,
+    showMarkupNote:       false,
+    markupPct:            0,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-CUSTOM (Phase 4): buildItemsPayload now writes is_custom column to
+// quote_items so the DB knows which rows are admin-added custom items.
+// Schema: quote_items.is_custom BOOLEAN NOT NULL DEFAULT false (Phase 1)
+// ─────────────────────────────────────────────────────────────────────────────
+function buildItemsPayload(quoteId) {
+  const rows = [];
+
+  step2Data.forEach(function (item) {
+    let subs = item.sub_groups;
+    if (!Array.isArray(subs) || !subs.length) {
+      const legacyStatus = item.modification_status
+        || (item.type === 'RTA' ? 'skipped' : 'unprocessed');
+      const legacyMods = Array.isArray(item.modifications) ? item.modifications : [];
+      subs = [{
+        sub_index:           1,
+        qty:                 item.quantity,
+        modifications:       legacyMods,
+        modification_status: legacyStatus,
+      }];
+    }
+
+    subs.forEach(function (g, i) {
+      rows.push({
+        quote_id:            quoteId,
+        style_code:          item.style_code,
+        style_name:          item.style_name || null,
+        sku_code:            item.sku_code,
+        sku_desc:            item.sku_desc || null,
+        sku_type:            item.skuType || null,
+        assemble_status:     item.type,
+        sub_index:           g.sub_index || (i + 1),
+        quantity:            g.qty,
+        unit_price:          item.unit_price,
+        msrp:                item.msrp || null,
+        assemble_fee:        item.assemble_fee || 0,
+        // F-TAX: modifications array now includes tax_status per mod entry
+        // (snapshot from step2.5 handleMfSave). Step3 doesn't touch this — it
+        // just persists what step2.5 wrote.
+        //
+        // F-HIDDEN-MODS: We INTENTIONALLY do NOT filter MF01 No Skin here.
+        // The display-layer filter only suppresses visual rendering; DB still
+        // records "dealer actively chose No Skin" for audit/analytics.
+        modifications:       Array.isArray(g.modifications) ? g.modifications : [],
+        modification_status: g.modification_status || 'unprocessed',
+        // F-CUSTOM (Phase 4): all sub_groups of a custom item inherit is_custom
+        is_custom:           !!item.is_custom,
+      });
+    });
+  });
+
+  return rows;
+}
+
+async function resolveDealerId(session) {
+  if (draftId) {
+    const { data: existingQuote, error: fetchErr } = await _supabase
+      .from('quotes').select('dealer_id').eq('id', draftId).single();
+    if (fetchErr) throw fetchErr;
+    if (!existingQuote || !existingQuote.dealer_id) {
+      throw new Error('Draft not found or missing dealer_id.');
+    }
+    return existingQuote.dealer_id;
+  }
+  if (step1Data.dealerIdForQuote) {
+    return step1Data.dealerIdForQuote;
+  }
+  return session.user.id;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// F-CUSTOM (Phase 4): items.map now includes is_custom so the PDF builder
+// (Phase 6) can render the [CUSTOM] badge and skip MSRP display for custom rows.
+// ─────────────────────────────────────────────────────────────────────────────
+function buildQuoteDataForPdf(opts) {
+  opts = opts || {};
+  const _pdfConstructionType = resolveQuoteConstructionType(step2Data, allDoorStyles);  // CB-25: mapping enrich 用(與整單排序同源)
+
+  const items = step2Data.map(function(i) {
+    return {
+      style_name:      i.style_name,
+      style_code:      i.style_code,
+      sku_code:        i.sku_code,
+      sku_desc:        i.sku_desc || '',
+      sku_type:        i.skuType || null,
+      assemble_status: i.type,
+      quantity:        i.quantity,
+      unit_price:      i.unit_price,
+      msrp:            i.msrp || null,
+      assemble_fee:    i.assemble_fee || 0,
+      sub_groups:      enrichSubGroupsForPdf(getNormalizedSubGroups(i), _pdfConstructionType),  // CB-25: 掛 mapping type/desc/tag 給 PDF
+      is_custom:       !!i.is_custom,  // F-CUSTOM
+      tag:             getTagForItem(i),  // CB-9: 帶 tag 給 PDF
+      needs_confirmation: !!i.needs_confirmation,  // CB-29: 帶 needs_confirmation 給 PDF
+    };
+  });
+
+  const skuSubtotalNow         = step2Data.reduce((s,i) => s + i.unit_price * i.quantity, 0);
+  const modsSubtotalNow        = calcTotalModsCost(step2Data);
+  const taxableModsSubtotalNow = calcTaxableModsCost(step2Data);  // F-TAX
+
+  const out = {
+    po_number:     _existingPoNumber || null,           // submit 後才有
+    draft_number:  _existingDraftNumber || null,         // 雙編號制: Draft Quote PDF 用(實際 D/P 切換在階段 6 pdf-builder)
+    job_name:      step1Data?.jobName || null,
+    logistic_type: step1Data?.logisticType || 'pickup',
+    delivery_fee:  parseFloat(step1Data?.deliveryFee || 0),
+    items:         items,
+    estimated_lead_time: calculateLeadTime(step2Data, allDoorStyles),  // CB-9 後續: 帶 lead time 給 PDF
+    construction_type:   resolveQuoteConstructionType(step2Data, allDoorStyles),  // CB-22: PDF Order List 排序依據
+    _taxRate:    dealer?.tax_exempt ? 0 : parseFloat(dealer?.tax_rate || 0),
+    _taxExempt:  !!dealer?.tax_exempt,
+    modifications_total:         parseFloat(modsSubtotalNow.toFixed(2)),
+    modifications_total_taxable: parseFloat(taxableModsSubtotalNow.toFixed(2)),  // F-TAX
+  };
+
+  if (Object.prototype.hasOwnProperty.call(opts, 'shippingCostOverride')) {
+    out.shipping_cost = opts.shippingCostOverride;
+  } else {
+    // F-TAX: shipping uses billing base
+    const billingBaseNow = skuSubtotalNow + modsSubtotalNow;
+    out.shipping_cost = resolveShippingForDb({
+      newLogistic:    out.logistic_type,
+      newSubtotal:    billingBaseNow,
+      newDeliveryFee: out.delivery_fee,
+      isResuming:     _isResumingReturned,
+    });
+  }
+  out._isPendingShipping = (out.logistic_type === 'shipping' && out.shipping_cost === null);
+
+  return out;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-3 (2026-05-29): saveDraft now generates PO# on FIRST save.
+// CB-14 (2026-06): PO# format changed to company-wide sequential (P + 5-digit
+//   zero-padded, e.g. P09001) via the no-arg generate_po_number() RPC.
+//
+// PO# lifecycle:
+//   • _existingPoNumber empty → call generate_po_number() RPC to get the next
+//     sequential number (e.g. P09001), write to quotes.po_number
+//   • _existingPoNumber set    → reuse it (resume draft, second save, etc.)
+// After write, sync to _existingPoNumber + step1Data.poNumber so PDF/Step1
+// resume see it immediately.
+//
+// Resuming Returned quotes already have po_number → fallthrough reuses it,
+// no regeneration.
+// ─────────────────────────────────────────────────────────────────────────────
+async function saveDraft() {
+  // CB-5 / CB-29: 含 non-stock 或 needs_confirmation 先跳提醒;OK 後 _saveNonStockAck=true 再續跑
+  if (!_saveNonStockAck && orderHasSpecialItems()) {
+    openSaveNoticeModal();
+    return;
+  }
+  _saveNonStockAck = false;
+
+  // CB-36: loading 轉圈要落在實際按下的按鈕(Notify → btnNotify;否則 btnDraft)
+  const btn    = document.getElementById(_pendingNotify ? 'btnNotify' : 'btnDraft');
+  const errMsg = document.getElementById('errorMsg');
+  btn.classList.add('loading'); btn.disabled = true;
+  errMsg.classList.remove('show');
+
+  try {
+    const { data:{ session } } = await _supabase.auth.getSession();
+    const dealerId = await resolveDealerId(session);
+
+    // 雙編號制: 首次儲存生成 Draft ID (D)。po_number 保持 null,直到 Submit。
+    const _wasFirstDraftSave = !_existingDraftNumber;   // CB-20: 首存判斷(必須在 reassign 前抓)
+    let draftNumberForSave = _existingDraftNumber;
+    if (!draftNumberForSave) {
+      draftNumberForSave = await obtainDraftNumber();
+      console.log('[雙編號] saveDraft: generated new Draft ID', draftNumberForSave);
+    } else {
+      console.log('[雙編號] saveDraft: reusing existing Draft ID', draftNumberForSave);
+    }
+
+    const skuSubtotal          = step2Data.reduce(function(s,i) { return s + i.unit_price * i.quantity; }, 0);
+    const modsSubtotal         = calcTotalModsCost(step2Data);
+    const taxableModsSubtotal  = calcTaxableModsCost(step2Data);   // F-TAX
+    const assembleTotal        = step2Data.reduce(function(s,i) { return s + (i.assemble_fee || 0) * i.quantity; }, 0);
+
+    // F-TAX: tax base = SKU + taxable mods; billing base = SKU + all mods
+    const taxBase     = skuSubtotal + taxableModsSubtotal;
+    const billingBase = skuSubtotal + modsSubtotal;
+
+    const logisticType  = step1Data.logisticType || 'pickup';
+    const deliveryFee   = parseFloat(step1Data.deliveryFee || 0);
+
+    let shippingForDb = resolveShippingForDb({
+          newLogistic:    logisticType,
+          newSubtotal:    billingBase,    // F-TAX: shipping bracket uses billing base
+          newDeliveryFee: deliveryFee,
+          isResuming:     _isResumingReturned,
+        });
+        // CB-33: admin mode + shipping → 用 admin 輸入值覆寫(null=維持 pending,允許 save draft)
+        if (isAdminShippingMode()) {
+          shippingForDb = getAdminShippingOverride();
+        }
+        const shippingForTotal = shippingForDb || 0;
+
+    const taxRate = dealer?.tax_exempt ? 0 : parseFloat(dealer?.tax_rate || 0);
+    const tax     = taxBase * taxRate;
+    const grand   = billingBase + assembleTotal + shippingForTotal + tax;
+
+    console.log('[F-TAX] saveDraft:',
+      'sku=$' + skuSubtotal.toFixed(2),
+      'mods=$' + modsSubtotal.toFixed(2),
+      'taxableMods=$' + taxableModsSubtotal.toFixed(2),
+      'taxBase=$' + taxBase.toFixed(2),
+      'billingBase=$' + billingBase.toFixed(2),
+      'tax=$' + tax.toFixed(2),
+      'grand=$' + grand.toFixed(2)
+    );
+
+    const targetStatus = _isResumingReturned ? 'Returned' : 'Draft';
+
+    const payload = {
+      dealer_id:           dealerId,
+      job_name:            step1Data.jobName,
+      draft_number:        draftNumberForSave,  // 雙編號制: Draft ID 從首次儲存寫入;po_number 留待 Submit
+      shipping_address_id: step1Data.shippingAddressId || null,
+      status:              targetStatus,
+      notes:               step1Data.notes || null,
+      logistic_type:       logisticType,
+      delivery_fee:        parseFloat(deliveryFee.toFixed(2)),
+      subtotal:            parseFloat(skuSubtotal.toFixed(2)),
+      assemble_total:      parseFloat(assembleTotal.toFixed(2)),
+      shipping_cost:       (shippingForDb === null) ? null : parseFloat(shippingForDb.toFixed(2)),
+      tax_amount:          parseFloat(tax.toFixed(2)),
+      grand_total:         parseFloat(grand.toFixed(2)),
+    };
+
+    // ── CB-36: admin_notified_at 寫入規則 ──
+    // Save & Notify(admin,首次通知):NOW()
+    // Dealer 首存:NOW()(Option A — dealer 自建即可見)
+    // Save Internal / 已通知後再存 / dealer 非首存:不帶 key,保留 DB 既有值
+    const _nowIso = new Date().toISOString();
+    const _isAdminDraftMode = (viewMode === 'admin-draft');
+    const _willNotifyNow = _isAdminDraftMode && _pendingNotify && (_existingAdminNotifiedAt == null);
+    if (_willNotifyNow) {
+      payload.admin_notified_at = _nowIso;            // admin 首次通知
+    } else if (!_isAdminDraftMode && !draftId) {
+      payload.admin_notified_at = _nowIso;            // dealer 首存(Option A)
+    }
+    // 其餘情況不帶 key:insert 時為 NULL(admin internal),update 時保留 DB 值
+
+    let quoteId;
+    let _savedCreatedAt = null;   // CB-20: 從 insert 回傳抓 created_at(僅首存走 insert 分支)
+
+    if (draftId) {
+      const { error } = await _supabase.from('quotes').update(payload).eq('id', draftId);
+      if (error) throw error;
+      await _supabase.from('quote_items').delete().eq('quote_id', draftId);
+      quoteId = draftId;
+
+      _existingLogisticType = logisticType;
+      _existingShippingCost = payload.shipping_cost;
+      _existingSubtotal     = payload.subtotal;
+    } else {
+      const { data: numData, error: numError } = await _supabase.rpc('generate_quote_number');
+      if (numError) throw numError;
+      payload.quote_number = numData;
+
+      const { data: quote, error: quoteError } = await _supabase
+        .from('quotes').insert(payload).select().single();
+      if (quoteError) throw quoteError;
+      quoteId = quote.id;
+      draftId = quoteId;
+      _savedCreatedAt = quote.created_at || null;   // CB-20: admin-draft email 用
+    }
+
+    const { error: itemsError } = await _supabase.from('quote_items').insert(buildItemsPayload(quoteId));
+    if (itemsError) throw itemsError;
+
+    // 雙編號制: sync Draft ID 到 module state,讓本頁 review / Draft PDF 看得到。
+    _existingDraftNumber = draftNumberForSave;
+
+    sessionStorage.removeItem('quoteStep1');
+    sessionStorage.removeItem('quoteStep2');
+
+    if (_isResumingReturned) {
+      document.getElementById('draftTitle').textContent = 'Changes Saved';
+      document.getElementById('draftMsg').innerHTML =
+        'Your changes have been saved. The quote is still in <strong>Returned</strong> status.<br>' +
+        'You can continue editing later or resubmit when ready.';
+    }
+    document.getElementById('draftQuoteNum').textContent = step1Data.jobName || '';
+    document.getElementById('draftOverlay').classList.add('show');
+
+    // ── CB-36: Admin 按 Save & Notify Dealer → 通知 dealer 進來 review ──
+    // 條件: admin-draft + 本次按了 Notify + 之前未通知過(_existingAdminNotifiedAt==null)。
+    // 取代 CB-20 的 _wasFirstDraftSave 自動寄信:現在「存」與「通知」由按鈕解耦。
+    // 發信失敗只 log,不影響 saveDraft(DB 此時已寫入成功)。
+    if (_willNotifyNow) {
+      try {
+        await fetch(
+          `${window.SB_URL}/functions/v1/send-quote-email`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({
+              notification_type: 'admin_draft_created',
+              quote: {
+                id:           quoteId,
+                draft_number: draftNumberForSave,
+                job_name:     step1Data.jobName,
+                created_at:   _savedCreatedAt || _nowIso,
+              },
+              dealer: {
+                company_name:            dealer.company_name,
+                contact_name:            dealer.contact_name,
+                email:                   dealer.email,
+                secondary_email:         dealer.secondary_email || null,
+                secondary_email_notify:  dealer.secondary_email_notify || false,
+                optional_email_2:        dealer.optional_email_2 || null,
+                optional_email_2_notify: dealer.optional_email_2_notify || false,
+              },
+            }),
+          }
+        );
+        _existingAdminNotifiedAt = _nowIso;   // CB-36: 同步 module state,防呆避免同頁重複通知
+        console.log('[CB-20] admin draft created email sent:', draftNumberForSave);
+      } catch (emailError) {
+        console.error('[CB-20] Failed to send admin draft email:', emailError);
+        // 不 rethrow — email 失敗不擋 saveDraft
+      }
+    }
+
+  } catch (err) {
+    console.error(err);
+    btn.classList.remove('loading'); btn.disabled = false;
+    errMsg.textContent = err.message || 'Something went wrong. Please try again.';
+    errMsg.classList.add('show');
+    window.scrollTo(0, 0);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CB-3 (2026-05-29): submitQuote no longer generates PO#.
+//
+// PO# resolution (in priority order):
+//   1. _existingPoNumber (normal case — set by saveDraft or by init() when
+//      resuming a draft / returned quote)
+//   2. If draftId exists but _existingPoNumber empty, refetch from DB
+//      (defensive — shouldn't happen, but cheap to check)
+//   3. A-mode fallback: dealer clicked Submit without ever saving and there's
+//      no draftId → generate PO# inline (one-shot, equivalent to auto-save)
+//
+// quote_number resolution:
+//   - Resuming Returned → fetch existing from DB
+//   - Draft → Submit    → fetch existing from DB (don't regenerate, draft
+//                         already has a quote_number from saveDraft)
+//   - Brand new (A-mode) → generate fresh
+//
+// Revisions: nextRevisionNumber logic unchanged from prior version.
+// ─────────────────────────────────────────────────────────────────────────────
+async function submitQuote() {
+  // CB-33: admin mode + shipping 必填擋 submit(按鈕已 disable,這裡再保險一層)
+  if ((viewMode === 'admin-draft' || viewMode === 'admin-edit')
+      && step1Data && step1Data.logisticType === 'shipping'
+      && getAdminShippingOverride() === null) {
+    alert('Please enter a shipping fee before submitting, or use Save Draft.');
+    return;
+  }
+  const _isAdminSubmit = (viewMode === 'admin-draft' || viewMode === 'admin-edit');  // CB-32
+  const btn     = document.getElementById(_isAdminSubmit ? 'btnAdminSubmit' : 'btnSubmit');
+  const errMsg  = document.getElementById('errorMsg');
+  const overlay = document.getElementById('progressOverlay');
+  const stepEl  = document.getElementById('progressStep');
+  const titleEl = document.getElementById('progressTitle');
+  const setStep = (txt) => { if (stepEl) stepEl.textContent = txt; };
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+  errMsg.classList.remove('show');
+
+  if (_isResumingReturned) {
+    titleEl.textContent = 'Resubmitting Your Purchase Order';
+    setStep('Updating your quote...');
+  } else {
+    titleEl.textContent = 'Submitting Your Purchase Order';
+    setStep('Saving your quote...');
+  }
+  overlay.classList.add('show');
+
+  try {
+    const { data:{ session } } = await _supabase.auth.getSession();
+    const dealerId = await resolveDealerId(session);
+
+    const skuSubtotal          = step2Data.reduce((s,i) => s + i.unit_price * i.quantity, 0);
+    const modsSubtotal         = calcTotalModsCost(step2Data);
+    const taxableModsSubtotal  = calcTaxableModsCost(step2Data);   // F-TAX
+    const assembleTotal        = step2Data.reduce((s,i) => s + (i.assemble_fee || 0) * i.quantity, 0);
+
+    // F-TAX
+    const taxBase     = skuSubtotal + taxableModsSubtotal;
+    const billingBase = skuSubtotal + modsSubtotal;
+
+    const taxRate      = dealer?.tax_exempt ? 0 : parseFloat(dealer?.tax_rate || 0);
+    const logisticType = step1Data.logisticType || 'pickup';
+    const deliveryFee  = parseFloat(step1Data.deliveryFee || 0);
+
+    let shippingForDb = resolveShippingForDb({
+          newLogistic:    logisticType,
+          newSubtotal:    billingBase,    // F-TAX
+          newDeliveryFee: deliveryFee,
+          isResuming:     _isResumingReturned,
+        });
+        // CB-33: admin mode + shipping → 用 admin 輸入值覆寫(submit 已 gate 必填,這裡必為數字)
+        if (isAdminShippingMode()) {
+          shippingForDb = getAdminShippingOverride();
+        }
+        const shippingForTotal = (shippingForDb === null) ? 0 : shippingForDb;
+
+    const tax   = taxBase * taxRate;
+    const grand = billingBase + assembleTotal + shippingForTotal + tax;
+
+    console.log('[F-TAX] submitQuote:',
+      'sku=$' + skuSubtotal.toFixed(2),
+      'mods=$' + modsSubtotal.toFixed(2),
+      'taxableMods=$' + taxableModsSubtotal.toFixed(2),
+      'taxBase=$' + taxBase.toFixed(2),
+      'billingBase=$' + billingBase.toFixed(2),
+      'tax=$' + tax.toFixed(2),
+      'grand=$' + grand.toFixed(2)
+    );
+
+    // ── 雙編號制: 解析編號 + 寫入 ──
+    //   Resubmit (Returned→重送): 保留原 po_number,plain UPDATE,不呼叫 RPC。
+    //   Draft→Submit: 先存內容(不含 po_number/status)→ submit_purchase_order 生 P# + 設 status='Pending'。
+    //   A-mode (沒按 Save 直接 Submit): 先生 Draft ID + INSERT row → 再 submit_purchase_order。
+    const shippingCostWrite = (shippingForDb === null)
+      ? null
+      : parseFloat(shippingForDb.toFixed(2));
+
+    const baseFields = {
+      dealer_id:           dealerId,
+      job_name:            step1Data.jobName,
+      shipping_address_id: step1Data.shippingAddressId || null,
+      notes:               step1Data.notes || null,
+      logistic_type:       logisticType,
+      delivery_fee:        parseFloat(deliveryFee.toFixed(2)),
+      subtotal:            parseFloat(skuSubtotal.toFixed(2)),
+      assemble_total:      parseFloat(assembleTotal.toFixed(2)),
+      shipping_cost:       shippingCostWrite,
+      tax_amount:          parseFloat(tax.toFixed(2)),
+      grand_total:         parseFloat(grand.toFixed(2)),
+    };
+
+    let poNumber;
+    let quoteNum;
+    let quoteId;
+    let nextRevisionNumber = 1;
+
+    if (_isResumingReturned && draftId) {
+      // ── Resubmit: 保留原 po_number,不生新號 ──
+      const { data: q } = await _supabase
+        .from('quotes').select('po_number, quote_number, revision_number').eq('id', draftId).single();
+      poNumber = _existingPoNumber || q?.po_number;
+      quoteNum = q?.quote_number;
+      _currentRevisionNumber = q?.revision_number || _currentRevisionNumber || 1;
+      if (!poNumber) throw new Error('Original PO number missing — cannot resubmit.');
+      nextRevisionNumber = (_currentRevisionNumber || 1) + 1;
+
+      const { error: updateError } = await _supabase.from('quotes').update({
+        ...baseFields,
+        po_number:       poNumber,
+        status:          'Pending',
+        quote_number:    quoteNum,
+        revision_number: nextRevisionNumber,
+        return_reason:   null,
+      }).eq('id', draftId);
+      if (updateError) throw updateError;
+      await _supabase.from('quote_items').delete().eq('quote_id', draftId);
+      quoteId = draftId;
+
+  } else if (draftId && _existingPoNumber) {
+        // ── CB-32: Admin-edit 送出「已有 PO# 的 Pending 單」 ──
+        //   這種單已經有 po_number(submit 過、status=Pending),且非 Returned 重送
+        //   (Returned 已被上面分支1 接走)。若掉進下面的 Draft→Submit 分支會呼叫
+        //   submit_purchase_order RPC → 配「新」號,導致 PO# 跳號。
+        //   正解:比照 Resubmit 分支,保留原 po_number、plain UPDATE、status='Pending',
+        //   不呼叫 RPC。revision_number 不 bump(admin 編輯 live 單,非 dealer 重送)。
+        const { data: q } = await _supabase
+          .from('quotes').select('po_number, quote_number, revision_number').eq('id', draftId).single();
+        poNumber = _existingPoNumber || q?.po_number;
+        quoteNum = q?.quote_number;
+        _currentRevisionNumber = q?.revision_number || _currentRevisionNumber || 1;
+        nextRevisionNumber = _currentRevisionNumber;   // 不 bump
+        if (!poNumber) throw new Error('PO number missing — cannot submit.');
+  
+        const { error: updateError } = await _supabase.from('quotes').update({
+          ...baseFields,
+          po_number:    poNumber,
+          status:       'Pending',
+          quote_number: quoteNum,
+        }).eq('id', draftId);
+        if (updateError) throw updateError;
+        await _supabase.from('quote_items').delete().eq('quote_id', draftId);
+        quoteId = draftId;
+  
+      } else if (draftId) {
+        // ── Draft → Submit: 先存內容,再 atomic 生 P# ──
+      const { data: q } = await _supabase
+        .from('quotes').select('quote_number').eq('id', draftId).single();
+      quoteNum = q?.quote_number;
+      if (!quoteNum) {
+        const { data: numData, error: numError } = await _supabase.rpc('generate_quote_number');
+        if (numError) throw numError;
+        quoteNum = numData;
+      }
+
+      const { error: updateError } = await _supabase.from('quotes').update({
+        ...baseFields,
+        quote_number: quoteNum,
+        // po_number + status='Pending' 由 submit_purchase_order RPC 設定
+      }).eq('id', draftId);
+      if (updateError) throw updateError;
+      await _supabase.from('quote_items').delete().eq('quote_id', draftId);
+      quoteId = draftId;
+
+      const { data: poData, error: poError } = await _supabase
+        .rpc('submit_purchase_order', { p_quote_id: quoteId });
+      if (poError) throw poError;
+      poNumber = poData;
+      console.log('[雙編號] submitQuote: Draft→Submit, PO#', poNumber);
+
+    } else {
+      // ── A-mode: 沒按過 Save 直接 Submit ──
+      //   先生 Draft ID(供內部存檔)+ INSERT row 拿 id,再 atomic 生 P#。
+      const draftNumberForSave = await obtainDraftNumber();
+      const { data: numData, error: numError } = await _supabase.rpc('generate_quote_number');
+      if (numError) throw numError;
+      quoteNum = numData;
+
+      const { data: newQuote, error: insError } = await _supabase.from('quotes').insert({
+        ...baseFields,
+        quote_number: quoteNum,
+        draft_number: draftNumberForSave,
+        status:       'Draft',   // 立刻被 submit_purchase_order 翻成 'Pending'
+      }).select().single();
+      if (insError) throw insError;
+      quoteId  = newQuote.id;
+      draftId  = quoteId;
+      _existingDraftNumber = draftNumberForSave;
+
+      const { data: poData, error: poError } = await _supabase
+        .rpc('submit_purchase_order', { p_quote_id: quoteId });
+      if (poError) throw poError;
+      poNumber = poData;
+      console.log('[雙編號] submitQuote: A-mode, Draft ID', draftNumberForSave, 'PO#', poNumber);
+    }
+
+    const { error: itemsError } = await _supabase.from('quote_items').insert(buildItemsPayload(quoteId));
+    if (itemsError) throw itemsError;
+
+    step1Data.poNumber = poNumber;
+    _existingPoNumber  = poNumber;  // CB-3: keep module state in sync
+
+    setStep('Generating PDF documents...');
+    const quoteDataForPdf = buildQuoteDataForPdf({
+      shippingCostOverride: shippingCostWrite,
+      markupPercent:        0,
+    });
+    quoteDataForPdf.po_number = poNumber;
+    const packingDoc = await ProCraftPDF.buildPackingListPdf(quoteDataForPdf, dealer, shippingAddress);
+    const invoiceDoc = await ProCraftPDF.buildInvoicePdf(quoteDataForPdf, dealer, shippingAddress, { markupPercent: 0 });
+
+    const pdfA = packingDoc.output('datauristring').split(',')[1];
+    const pdfB = invoiceDoc.output('datauristring').split(',')[1];
+
+    const pdfRevisionNumber = _isResumingReturned ? nextRevisionNumber : 1;
+    const packingFilename = ProCraftPDF.getPdfFilename('packing-list', { poNumber: poNumber, revisionNumber: pdfRevisionNumber });
+    const invoiceFilename = ProCraftPDF.getPdfFilename('invoice',      { poNumber: poNumber, revisionNumber: pdfRevisionNumber });
+
+    let shippingAddressPayload = null;
+    if (logisticType === 'pickup') {
+      shippingAddressPayload = { mode: 'pickup' };
+    } else if (step1Data.shippingMode === 'same') {
+      shippingAddressPayload = {
+        mode:           'same',
+        recipient_name: dealer.company_name,
+        address_line:   dealer.address_line1 || '',    
+        address_line2:  dealer.address_line2 || null,  
+        city:           dealer.city || '',
+        state:          dealer.state || '',
+        zip_code:       dealer.zip_code || dealer.zip || '',
+        phone:          dealer.phone || '',
+      };
+    } else if (shippingAddress) {
+      shippingAddressPayload = {
+        mode:           'different',
+        recipient_name: shippingAddress.recipient_name || '',
+        address_line:   shippingAddress.address_line || '',
+        address_line2:  shippingAddress.address_line2 || null,
+        city:           shippingAddress.city || '',
+        state:          shippingAddress.state || '',
+        zip_code:       shippingAddress.zip_code || '',
+        phone:          shippingAddress.phone || '',
+      };
+    }
+
+  setStep(_isResumingReturned ? 'Sending resubmission email...' : 'Sending confirmation email...');
+    const { data: { session: currentSession } } = await _supabase.auth.getSession();
+    await fetch(
+      `${window.SB_URL}/functions/v1/send-quote-email`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentSession.access_token}`,
+        },
+    body: JSON.stringify({
+              ...((viewMode === 'admin-draft' || viewMode === 'admin-edit') ? { notification_type: 'admin_submitted_po' } : {}),  // CB-32
+            quote: {
+            id:                          quoteId,
+            quote_number:                quoteNum,
+            po_number:                   poNumber,
+            job_name:                    step1Data.jobName,
+            logistic_type:               logisticType,
+            shipping_address:            shippingAddressPayload,
+            assemble_total:              assembleTotal.toFixed(2),
+            subtotal:                    skuSubtotal.toFixed(2),
+            modifications_total:         modsSubtotal.toFixed(2),
+            modifications_total_taxable: taxableModsSubtotal.toFixed(2),  // F-TAX
+            tax_base:                    taxBase.toFixed(2),               // F-TAX
+            shipping_cost:               (shippingCostWrite === null) ? null : shippingCostWrite.toFixed(2),
+            shipping_pending:            (shippingCostWrite === null),
+            tax_amount:                  tax.toFixed(2),
+            grand_total:                 grand.toFixed(2),
+            revision_number:             pdfRevisionNumber,
+            is_resubmit:                 _isResumingReturned,
+            estimated_lead_time:         calculateLeadTime(step2Data, allDoorStyles),  // email 顯示交期(NEW)
+          },
+          dealer: {
+            company_name:           dealer.company_name,
+            contact_name:           dealer.contact_name,
+            email:                  dealer.email,
+            secondary_email:        dealer.secondary_email || null,
+            secondary_email_notify: dealer.secondary_email_notify || false,
+            optional_email_2:       dealer.optional_email_2 || null,
+            optional_email_2_notify: dealer.optional_email_2_notify || false,
+          },
+          // F-CUSTOM (Phase 4): is_custom flag synced to email payload so the
+          // Edge Function / email template can render [CUSTOM] badge and skip
+          // MSRP display for custom items.
+          items: step2Data.map(i => ({
+            style_code:   i.style_code,
+            style_name:   i.style_name || null,
+            sku_code:     i.sku_code,
+            sku_desc:     i.sku_desc || null,
+            sku_type:     i.skuType || null,
+            type:         i.type,
+            quantity:     i.quantity,
+            unit_price:   i.unit_price,
+            assemble_fee: i.assemble_fee || 0,
+            sub_groups:   getNormalizedSubGroups(i),
+            is_custom:    !!i.is_custom,  // F-CUSTOM
+          })),
+          attachments: [
+            { filename: packingFilename, content: pdfA, type: 'application/pdf' },
+            { filename: invoiceFilename, content: pdfB, type: 'application/pdf' },
+          ],
+        }),
+      }
+    );
+
+    sessionStorage.removeItem('quoteStep1');
+    sessionStorage.removeItem('quoteStep2');
+
+    overlay.classList.remove('show');
+
+    if (_isResumingReturned) {
+      document.getElementById('successTitle').textContent = 'Purchase Order Resubmitted!';
+      document.getElementById('successMsg').innerHTML =
+        'Thank you! Your revised quote has been resubmitted.<br>' +
+        'Our team will review it and get back to you shortly.<br>' +
+        'A confirmation has been sent to your email.';
+    }
+    document.getElementById('successQuoteNum').textContent = poNumber;
+    document.getElementById('successOverlay').classList.add('show');
+
+  } catch (err) {
+    console.error(err);
+    overlay.classList.remove('show');
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    errMsg.textContent = err.message || 'Something went wrong. Please try again.';
+errMsg.classList.add('show');
+    window.scrollTo(0,0);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-4: Request Revision (admin-edit mode)
+//   Admin's edits live in sessionStorage. "Request Revision" snapshots
+//   them to DB (status=Returned + return_reason), regenerates the revised
+//   PDFs, and emails the dealer to review & resubmit.
+//   revision_number is NOT bumped here — the dealer's Resubmit bumps it.
+// ═══════════════════════════════════════════════════════════════════
+function openRevisionModal() {
+  const err = document.getElementById('revisionModalError');
+  err.textContent = ''; err.classList.remove('show');
+  document.getElementById('revisionSendBtn').classList.remove('loading');
+  document.getElementById('revisionSendBtn').disabled = false;
+  document.getElementById('revisionCancelBtn').disabled = false;
+  document.getElementById('revisionModal').classList.add('show');
+  const ta = document.getElementById('revisionNote');
+  setTimeout(function () { ta.focus(); }, 50);
+}
+
+function closeRevisionModal() {
+  // block closing while a send is in flight
+  if (document.getElementById('revisionSendBtn').classList.contains('loading')) return;
+  document.getElementById('revisionModal').classList.remove('show');
+}
+
+function sendRevision() {
+  const note = (document.getElementById('revisionNote').value || '').trim();
+  const err  = document.getElementById('revisionModalError');
+  if (!note) {
+    err.textContent = 'Please enter a revision note for the dealer.';
+    err.classList.add('show');
+    return;
+  }
+  err.classList.remove('show');
+  requestRevision(note);
+}
+
+async function requestRevision(note) {
+  const sendBtn   = document.getElementById('revisionSendBtn');
+  const cancelBtn = document.getElementById('revisionCancelBtn');
+  const errEl     = document.getElementById('revisionModalError');
+  sendBtn.classList.add('loading'); sendBtn.disabled = true; cancelBtn.disabled = true;
+
+  try {
+    const { data: { session } } = await _supabase.auth.getSession();
+    const dealerId = await resolveDealerId(session);   // returns the quote OWNER, not admin
+
+    // ── financials (identical to submitQuote) ──
+    const skuSubtotal         = step2Data.reduce((s,i) => s + i.unit_price * i.quantity, 0);
+    const modsSubtotal        = calcTotalModsCost(step2Data);
+    const taxableModsSubtotal = calcTaxableModsCost(step2Data);
+    const assembleTotal       = step2Data.reduce((s,i) => s + (i.assemble_fee || 0) * i.quantity, 0);
+
+    const taxBase     = skuSubtotal + taxableModsSubtotal;
+    const billingBase = skuSubtotal + modsSubtotal;
+
+    const taxRate      = dealer?.tax_exempt ? 0 : parseFloat(dealer?.tax_rate || 0);
+    const logisticType = step1Data.logisticType || 'pickup';
+    const deliveryFee  = parseFloat(step1Data.deliveryFee || 0);
+
+    let shippingForDb = resolveShippingForDb({
+          newLogistic:    logisticType,
+          newSubtotal:    billingBase,
+          newDeliveryFee: deliveryFee,
+          isResuming:     _isResumingReturned,
+        });
+        // CB-33 (Y): admin mode + shipping → 套用 admin 輸入值。空=null 維持 pending
+        // (Request Revision 不擋空值,admin 可先退回、運費留待之後);有填則寫進去,
+        // 與畫面 applyTotals 顯示一致,dealer 收到正式運費數字。
+        if (isAdminShippingMode()) {
+          shippingForDb = getAdminShippingOverride();
+        }
+        const shippingForTotal  = (shippingForDb === null) ? 0 : shippingForDb;
+        const shippingCostWrite = (shippingForDb === null) ? null : parseFloat(shippingForDb.toFixed(2));
+
+    const tax   = taxBase * taxRate;
+    const grand = billingBase + assembleTotal + shippingForTotal + tax;
+
+    // ── resolve PO# / quote_number (admin-edit always has an existing draft) ──
+    let poNumber = _existingPoNumber;
+    let quoteNum;
+    if (!poNumber) {
+      const { data: q } = await _supabase
+        .from('quotes').select('po_number, quote_number').eq('id', draftId).single();
+      poNumber = q?.po_number; quoteNum = q?.quote_number;
+    } else {
+      const { data: q } = await _supabase
+        .from('quotes').select('quote_number').eq('id', draftId).single();
+      quoteNum = q?.quote_number;
+    }
+    if (!poNumber) throw new Error('PO number missing — cannot request revision.');
+
+    // ── write DB: snapshot edits, send back to dealer (status=Returned) ──
+    const updatePayload = {
+      dealer_id:           dealerId,
+      job_name:            step1Data.jobName,
+      po_number:           poNumber,
+      shipping_address_id: step1Data.shippingAddressId || null,
+      status:              'Returned',        // CB-4: send back to dealer
+      return_reason:       note,              // CB-4: revision note
+      notes:               step1Data.notes || null,
+      logistic_type:       logisticType,
+      delivery_fee:        parseFloat(deliveryFee.toFixed(2)),
+      subtotal:            parseFloat(skuSubtotal.toFixed(2)),
+      assemble_total:      parseFloat(assembleTotal.toFixed(2)),
+      shipping_cost:       shippingCostWrite,
+      tax_amount:          parseFloat(tax.toFixed(2)),
+      grand_total:         parseFloat(grand.toFixed(2)),
+      quote_number:        quoteNum,
+      // revision_number intentionally NOT changed — dealer's Resubmit bumps it.
+    };
+
+    const { error: updateError } = await _supabase
+      .from('quotes').update(updatePayload).eq('id', draftId);
+    if (updateError) throw updateError;
+    await _supabase.from('quote_items').delete().eq('quote_id', draftId);
+    const { error: itemsError } = await _supabase
+      .from('quote_items').insert(buildItemsPayload(draftId));
+    if (itemsError) throw itemsError;
+
+    // ── regenerate revised PDFs (no markup) ──
+    const quoteDataForPdf = buildQuoteDataForPdf({ shippingCostOverride: shippingCostWrite, markupPercent: 0 });
+    quoteDataForPdf.po_number = poNumber;
+    const packingDoc = await ProCraftPDF.buildPackingListPdf(quoteDataForPdf, dealer, shippingAddress);
+    const invoiceDoc = await ProCraftPDF.buildInvoicePdf(quoteDataForPdf, dealer, shippingAddress, { markupPercent: 0 });
+    const pdfA = packingDoc.output('datauristring').split(',')[1];
+    const pdfB = invoiceDoc.output('datauristring').split(',')[1];
+
+    const pdfRevisionNumber = _currentRevisionNumber || 1;
+    const packingFilename = ProCraftPDF.getPdfFilename('packing-list', { poNumber: poNumber, revisionNumber: pdfRevisionNumber });
+    const invoiceFilename = ProCraftPDF.getPdfFilename('invoice',      { poNumber: poNumber, revisionNumber: pdfRevisionNumber });
+
+    let shippingAddressPayload = null;
+    if (logisticType === 'pickup') {
+      shippingAddressPayload = { mode: 'pickup' };
+    } else if (step1Data.shippingMode === 'same') {
+      shippingAddressPayload = {
+        mode:           'same',
+        recipient_name: dealer.company_name,
+        address_line:   dealer.address_line1 || '',
+        address_line2:  dealer.address_line2 || null,
+        city:           dealer.city || '',
+        state:          dealer.state || '',
+        zip_code:       dealer.zip_code || dealer.zip || '',
+        phone:          dealer.phone || '',
+      };
+    } else if (shippingAddress) {
+      shippingAddressPayload = {
+        mode:           'different',
+        recipient_name: shippingAddress.recipient_name || '',
+        address_line:   shippingAddress.address_line || '',
+        address_line2:  shippingAddress.address_line2 || null,
+        city:           shippingAddress.city || '',
+        state:          shippingAddress.state || '',
+        zip_code:       shippingAddress.zip_code || '',
+        phone:          shippingAddress.phone || '',
+      };
+    }
+
+    // ── email dealer (reuse send-quote-email; flagged as a revision request) ──
+    // ⬇⬇⬇ If a DB trigger already emails on status→Returned, delete this fetch block. ⬇⬇⬇
+    const { data: { session: currentSession } } = await _supabase.auth.getSession();
+    await fetch(
+      `${window.SB_URL}/functions/v1/send-quote-email`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentSession.access_token}`,
+        },
+        body: JSON.stringify({
+          notification_type: 'return',
+          quote: {
+            id:                          draftId,
+            quote_number:                quoteNum,
+            po_number:                   poNumber,
+            job_name:                    step1Data.jobName,
+            logistic_type:               logisticType,
+            shipping_address:            shippingAddressPayload,
+            assemble_total:              assembleTotal.toFixed(2),
+            subtotal:                    skuSubtotal.toFixed(2),
+            modifications_total:         modsSubtotal.toFixed(2),
+            modifications_total_taxable: taxableModsSubtotal.toFixed(2),
+            tax_base:                    taxBase.toFixed(2),
+            shipping_cost:               (shippingCostWrite === null) ? null : shippingCostWrite.toFixed(2),
+            shipping_pending:            (shippingCostWrite === null),
+            tax_amount:                  tax.toFixed(2),
+            grand_total:                 grand.toFixed(2),
+            revision_number:             pdfRevisionNumber,
+            is_resubmit:                 false,
+            // CB-4: revision-request signals for the email template
+            return_reason:               note,   // Edge Function 的 return 模板讀這個 key
+            is_revision_request:         true,
+            revision_note:               note,
+          },
+          dealer: {
+            company_name:            dealer.company_name,
+            contact_name:            dealer.contact_name,
+            email:                   dealer.email,
+            secondary_email:         dealer.secondary_email || null,
+            secondary_email_notify:  dealer.secondary_email_notify || false,
+            optional_email_2:        dealer.optional_email_2 || null,
+            optional_email_2_notify: dealer.optional_email_2_notify || false,
+          },
+          items: step2Data.map(i => ({
+            style_code:   i.style_code,
+            style_name:   i.style_name || null,
+            sku_code:     i.sku_code,
+            sku_desc:     i.sku_desc || null,
+            sku_type:     i.skuType || null,
+            type:         i.type,
+            quantity:     i.quantity,
+            unit_price:   i.unit_price,
+            assemble_fee: i.assemble_fee || 0,
+            sub_groups:   getNormalizedSubGroups(i),
+            is_custom:    !!i.is_custom,
+          })),
+          attachments: [
+            { filename: packingFilename, content: pdfA, type: 'application/pdf' },
+            { filename: invoiceFilename, content: pdfB, type: 'application/pdf' },
+          ],
+        }),
+      }
+    );
+    // ⬆⬆⬆ end deletable email block ⬆⬆⬆
+
+    sessionStorage.removeItem('quoteStep1');
+    sessionStorage.removeItem('quoteStep2');
+
+    document.getElementById('revisionModal').classList.remove('show');
+    document.getElementById('successTitle').textContent = 'Revision Sent to Dealer';
+    document.getElementById('successMsg').innerHTML =
+      'The dealer has been notified to review the revised Purchase Order and resubmit.<br>' +
+      'A copy with the updated documents has been emailed to them.';
+    document.getElementById('successQuoteNum').textContent = poNumber;
+    document.getElementById('successOverlay').classList.add('show');
+
+  } catch (err) {
+    console.error(err);
+    sendBtn.classList.remove('loading');
+    sendBtn.disabled = false;
+    cancelBtn.disabled = false;
+    errEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errEl.classList.add('show');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-4: Resubmit confirm (dealer review mode)
+//   The dealer's main button opens this confirm modal; Confirm hands off
+//   to the existing submitQuote() resubmit engine (status Returned→Pending
+//   + revision_number bump + PDF + email).
+// ═══════════════════════════════════════════════════════════════════
+function openResubmitModal() {
+  const err = document.getElementById('resubmitModalError');
+  err.textContent = ''; err.classList.remove('show');
+  document.getElementById('resubmitConfirmBtn').classList.remove('loading');
+  document.getElementById('resubmitConfirmBtn').disabled = false;
+  document.getElementById('resubmitCancelBtn').disabled = false;
+  // CB-5 / CB-29: 含特殊品(non-stock / needs_confirmation)逐項顯示
+  const rBox = document.getElementById('resubmitSpecialItems');
+  if (rBox) {
+    const html = buildSpecialItemsHtml();
+    rBox.innerHTML = html;
+    rBox.style.display = html ? 'block' : 'none';
+  }
+  document.getElementById('resubmitModal').classList.add('show');
+}
+
+function closeResubmitModal() {
+  if (document.getElementById('resubmitConfirmBtn').classList.contains('loading')) return;
+  document.getElementById('resubmitModal').classList.remove('show');
+}
+
+function confirmResubmit() {
+  // hand off to the existing submitQuote() engine — it shows the progress
+  // overlay and runs the resubmit path (status Returned→Pending + PDF + email).
+  document.getElementById('resubmitModal').classList.remove('show');
+  submitQuote();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-5 需求2 階段2: Save Draft 前的 Special Order 通知(單 OK,不擋)
+// ═══════════════════════════════════════════════════════════════════
+function openSaveNoticeModal() {
+  const box = document.getElementById('saveNoticeSpecialItems');
+  if (box) box.innerHTML = buildSpecialItemsHtml();
+  document.getElementById('saveNoticeModal').classList.add('show');
+}
+function closeSaveNoticeModal() {
+  document.getElementById('saveNoticeModal').classList.remove('show');
+}
+function confirmSaveNotice() {
+  closeSaveNoticeModal();
+  _saveNonStockAck = true;
+  saveDraft();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-5 需求2 階段3: Submit 確認 modal(永遠跳;含 non-stock 加 ⚠)
+// ═══════════════════════════════════════════════════════════════════
+function openSubmitConfirmModal() {
+  const box = document.getElementById('submitSpecialItems');
+  if (box) {
+    const html = buildSpecialItemsHtml();
+    box.innerHTML = html;
+    box.style.display = html ? 'block' : 'none';
+  }
+  document.getElementById('submitConfirmModal').classList.add('show');
+}
+function closeSubmitConfirmModal() {
+  document.getElementById('submitConfirmModal').classList.remove('show');
+}
+function confirmSubmitFromModal() {
+  closeSubmitConfirmModal();
+  submitQuote();
+}
+
+// Terms gate: dealer 必須先勾同意才能送出 / 重送 PO
+function onAgreeTermsChange() {
+  const cb  = document.getElementById('agreeTerms');
+  const btn = document.getElementById('btnSubmit');
+  if (!cb || !btn) return;
+  btn.disabled = !cb.checked;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-33: Admin 在 step3 直接設定 shipping fee(僅 admin mode + logistic=shipping)
+//   getAdminShippingOverride: null=未填(維持 pending,只能 Save Draft) / 數字(含0)=指定運費
+//   onAdminShippingInput:     即時重算總額 + 更新 Admin Submit 按鈕 disable
+//   setupAdminShippingInput:  init 時顯示輸入框 + 預帶 _existingShippingCost
+//   refreshAdminSubmitGate:   admin+shipping+未填 → btnAdminSubmit disable + 顯示提示
+// ═══════════════════════════════════════════════════════════════════
+function isAdminShippingMode() {
+  return (viewMode === 'admin-draft' || viewMode === 'admin-edit')
+    && (step1Data && step1Data.logisticType === 'shipping');
+}
+function getAdminShippingOverride() {
+  if (!isAdminShippingMode()) return null;
+  const el = document.getElementById('adminShippingFee');
+  if (!el) return null;
+  const raw = (el.value == null ? '' : String(el.value)).trim();
+  if (raw === '') return null;            // 未填
+  const v = parseFloat(raw);
+  if (isNaN(v) || v < 0) return null;     // 非法值當未填
+  return v;                               // 含 0
+}
+function setupAdminShippingInput() {
+  const wrap = document.getElementById('adminShippingWrap');
+  if (!wrap) return;
+  if (isAdminShippingMode()) {
+    wrap.style.display = 'flex';
+    const el = document.getElementById('adminShippingFee');
+    // 預帶既有值(admin-edit 之前在 quote-detail 設過的 shipping_cost)
+    if (el && (el.value === '' || el.value == null) && _existingShippingCost != null) {
+      el.value = String(_existingShippingCost);
+    }
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+function refreshAdminSubmitGate() {
+  const btn  = document.getElementById('btnAdminSubmit');
+  const hint = document.getElementById('adminShippingHint');
+  if (!btn) return;
+  if (isAdminShippingMode() && getAdminShippingOverride() === null) {
+    btn.disabled = true;
+    if (hint) hint.style.display = 'block';
+  } else {
+    btn.disabled = false;
+    if (hint) hint.style.display = 'none';
+  }
+}
+function onAdminShippingInput() {
+  updateMarkupPreview();      // 即時重算總額(applyTotals 會讀 getAdminShippingOverride)
+  refreshAdminSubmitGate();   // 即時更新按鈕 disable
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-32: Admin Submit 流程
+//   階段1: needs_confirmation modal(僅當整單有特殊品才跳)
+//   階段2: admin checklist modal(兩項 acknowledge 才放行)
+//   → 交給共用 submitQuote() 引擎。dealer 流程(openSubmitConfirmModal /
+//     submitConfirmModal / saveNoticeModal)完全不動。
+// ═══════════════════════════════════════════════════════════════════
+function openAdminSubmitFlow() {
+  if (orderHasSpecialItems()) {
+    const box = document.getElementById('adminNeedsConfirmItems');
+    if (box) box.innerHTML = buildSpecialItemsHtml();
+    document.getElementById('adminNeedsConfirmModal').classList.add('show');
+  } else {
+    openAdminChecklistModal();
+  }
+}
+
+function closeAdminNeedsConfirmModal() {
+  document.getElementById('adminNeedsConfirmModal').classList.remove('show');
+}
+
+function continueAdminNeedsConfirm() {
+  document.getElementById('adminNeedsConfirmModal').classList.remove('show');
+  openAdminChecklistModal();
+}
+
+function openAdminChecklistModal() {
+  const cb1 = document.getElementById('adminCheck1');
+  const cb2 = document.getElementById('adminCheck2');
+  const btn = document.getElementById('adminChecklistConfirmBtn');
+  if (cb1) cb1.checked = false;
+  if (cb2) cb2.checked = false;
+  if (btn) btn.disabled = true;
+  document.getElementById('adminChecklistModal').classList.add('show');
+}
+
+function closeAdminChecklistModal() {
+  document.getElementById('adminChecklistModal').classList.remove('show');
+}
+
+function onAdminChecklistChange() {
+  const cb1 = document.getElementById('adminCheck1');
+  const cb2 = document.getElementById('adminCheck2');
+  const btn = document.getElementById('adminChecklistConfirmBtn');
+  if (!cb1 || !cb2 || !btn) return;
+  btn.disabled = !(cb1.checked && cb2.checked);
+}
+
+function confirmAdminSubmit() {
+  document.getElementById('adminChecklistModal').classList.remove('show');
+  submitQuote();
+}
+
+// CB-32: ESC 關閉 admin submit modal(backdrop 點擊維持禁用)。
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  const acm = document.getElementById('adminChecklistModal');
+  const ncm = document.getElementById('adminNeedsConfirmModal');
+  if (acm && acm.classList.contains('show')) { closeAdminChecklistModal(); return; }
+  if (ncm && ncm.classList.contains('show')) { closeAdminNeedsConfirmModal(); return; }
+});
+
+function updateMarkupPreview() {
+  const markupPct = parseFloat(document.getElementById('markupPct').value || 0) / 100;
+  if (!step2Data || !step2Data.length) return;
+
+  const result = buildItemRowsHtml(markupPct);
+  document.getElementById('itemsTableBody').innerHTML = result.rowsHtml;
+  document.getElementById('notesTableMount').innerHTML = renderNotesTable(result.notes);
+
+  const markedSkuSubtotal    = step2Data.reduce((s,i) => s + i.unit_price*(1+markupPct)*i.quantity, 0);
+  const modsSubtotal         = calcTotalModsCost(step2Data);
+  const taxableModsSubtotal  = calcTaxableModsCost(step2Data);   // F-TAX
+  const assembleTotal        = step2Data.reduce((s,i) => s + (i.assemble_fee||0)*i.quantity, 0);
+
+  applyTotals({
+    skuSubtotal:          markedSkuSubtotal,
+    modsSubtotal:         modsSubtotal,
+    taxableModsSubtotal:  taxableModsSubtotal,  // F-TAX
+    assembleTotal:        assembleTotal,
+    showMarkupNote:       true,
+    markupPct:            markupPct,
+  });
+}
+
+async function downloadPDF() {
+  const markupPct = parseFloat(document.getElementById('markupPct').value || 0) / 100;
+  // CB-33: 只在 admin+shipping 時帶 override(草稿 PDF 與畫面/submit 一致);
+  //   ⚠ 必須 gate isAdminShippingMode() —— 否則 dealer 的 pickup/delivery 會
+  //   因 hasOwnProperty 分支跳過 resolveShippingForDb,被誤寫成 null。
+  const _pdfOpts = { markupPercent: markupPct };
+  if (isAdminShippingMode()) {
+    _pdfOpts.shippingCostOverride = getAdminShippingOverride();  // null=pending / 0=FREE / >0=金額
+  }
+  const quoteDataForPdf = buildQuoteDataForPdf(_pdfOpts);
+  const doc = await ProCraftPDF.buildDraftQuotePdf(
+    quoteDataForPdf, dealer, shippingAddress, { markupPercent: markupPct }
+  );
+  const previewRevisionNumber = _isResumingReturned ? (_currentRevisionNumber || 1) + 1 : 1;
+  const filename = ProCraftPDF.getPdfFilename('draft-quote', {
+    poNumber: _existingPoNumber || _existingDraftNumber || 'Draft',  // 雙編號制
+    dealerUid: dealer?.uid,
+    revisionNumber: previewRevisionNumber,
+  });
+  doc.save(filename);
+}
+
+init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>

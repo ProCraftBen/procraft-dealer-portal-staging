@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft Dealer Portal — New Quote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:       #C9A84C;
+      --green-dark: #3e5a42;
+      --green-mid:  #4a6b4f;
+      --cream:      #F5F2EC;
+      --text:       #2C3A32;
+      --muted:      #7A8C82;
+      --border:     #DDD8CC;
+      --white:      #FFFFFF;
+      --error:      #C0392B;
+    }
+    html, body {
+      min-height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    /* ── Page ── */
+    .page {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 400;
+      color: var(--green-dark);
+      margin-bottom: 24px;
+    }
+
+    /* ── CB-4: Mode banners (review / admin-edit) ── */
+    .mode-banner {
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .mode-banner .mb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .mode-banner .mb-icon-wrap svg {
+      width: 16px; height: 16px;
+    }
+    .mode-banner .mb-body { flex: 1; min-width: 0; }
+    .mode-banner .mb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .mode-banner .mb-msg {
+      font-size: 13px;
+      color: #2C3A32;
+      line-height: 1.55;
+    }
+    .mode-banner .mb-reason {
+      font-size: 12px;
+      color: #5e6962;
+      line-height: 1.55;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 3px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .mode-banner .mb-reason-label {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* Review mode — orange */
+    .mode-banner.review {
+      background: rgba(224,123,57,0.07);
+      border: 1px solid rgba(224,123,57,0.3);
+      border-left: 4px solid #E07B39;
+    }
+    .mode-banner.review .mb-icon-wrap { background: rgba(224,123,57,0.14); }
+    .mode-banner.review .mb-icon-wrap svg { fill: #E07B39; }
+    .mode-banner.review .mb-title { color: #E07B39; }
+    .mode-banner.review .mb-reason { background: rgba(224,123,57,0.05); }
+    .mode-banner.review .mb-reason-label { color: #E07B39; }
+
+    /* Admin-edit mode — gold */
+    .mode-banner.admin-edit {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-left: 4px solid var(--gold);
+    }
+    .mode-banner.admin-edit .mb-icon-wrap { background: rgba(201,168,76,0.18); }
+    .mode-banner.admin-edit .mb-icon-wrap svg { fill: var(--gold); }
+    .mode-banner.admin-edit .mb-title { color: #8B6914; }
+    .mode-banner.admin-edit .mb-reason { background: rgba(201,168,76,0.05); }
+    .mode-banner.admin-edit .mb-reason-label { color: #8B6914; }
+
+    /* ── Admin acting-as-dealer banner (Bug D-StepBilling fix) ── */
+    .admin-acting-banner {
+      background: rgba(62,90,66,0.06);
+      border: 1px solid rgba(62,90,66,0.25);
+      border-left: 4px solid var(--green-dark);
+      border-radius: 4px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--green-dark);
+      line-height: 1.55;
+    }
+    .admin-acting-banner strong { font-weight: 600; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 28px 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--green-dark);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 7px;
+    }
+    .field label .req { color: var(--gold); margin-left: 2px; }
+    .field input, .field textarea, .field select {
+      width: 100%;
+      background: #FAFAFA;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 12px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder { color: #C4C0B8; }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--green-mid);
+      background: #fff;
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+    /* ── CB-4: Review mode disabled visual ── */
+    .field input:disabled,
+    .field textarea:disabled,
+    .field select:disabled {
+      background: var(--cream);
+      color: var(--muted);
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    /* ── Address Cards ── */
+    .address-toggle {
+      display: flex; gap: 12px; margin-bottom: 16px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .toggle-btn.active {
+      border-color: var(--green-dark);
+      background: rgba(62,90,66,0.04);
+      color: var(--green-dark);
+      font-weight: 500;
+    }
+    .toggle-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .address-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .address-card {
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .address-card:hover { border-color: var(--green-mid); }
+    .address-card.selected {
+      border-color: var(--green-dark);
+      background: rgba(62,90,66,0.04);
+    }
+    .address-card .addr-name {
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--green-dark);
+    }
+    .address-card .addr-detail {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    /* CB-4: Review mode — address card is non-interactive */
+    .address-card.readonly {
+      cursor: default;
+      pointer-events: none;
+    }
+    .address-card.readonly:hover { border-color: var(--border); }
+    .address-card.readonly.selected { border-color: var(--green-dark); background: rgba(62,90,66,0.04); }
+
+    .btn-add-address {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--gold);
+      background: transparent; border: none;
+      cursor: pointer; padding: 0;
+      transition: opacity 0.2s;
+    }
+    .btn-add-address:hover { opacity: 0.7; }
+
+    /* ── New address form ── */
+    .new-address-form {
+      border: 1.5px dashed var(--border);
+      border-radius: 3px;
+      padding: 20px;
+      margin-top: 12px;
+      display: none;
+    }
+    .new-address-form.show { display: block; }
+    .new-address-form .form-title {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+    }
+
+    /* ── Billing info display (read-only — edit in Profile) ── */
+    .billing-display {
+      background: #FAFAFA;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .billing-display strong { color: var(--green-dark); }
+    .billing-hint {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .billing-hint a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .billing-hint a:hover { text-decoration: underline; }
+    .billing-warning {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(224,123,57,0.07);
+      border: 1px solid rgba(224,123,57,0.25);
+      border-radius: 3px;
+      font-size: 11px;
+      color: #8B4513;
+      line-height: 1.5;
+    }
+    .billing-warning a {
+      color: #8B4513;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* ── Address card actions ── */
+    .address-card-wrap { position: relative; }
+    .address-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .addr-action-btn {
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 3px 8px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .addr-action-btn:hover { border-color: var(--green-dark); color: var(--green-dark); }
+    .addr-action-btn.delete:hover { border-color: var(--error); color: var(--error); }
+    .addr-action-btn.default-btn {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .addr-default-badge {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    /* ── Edit address modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(62,90,66,0.5);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--white);
+      border-radius: 4px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--green-dark);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-actions {
+      display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;
+    }
+    .btn-modal-cancel {
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; cursor: pointer;
+      color: var(--muted);
+    }
+    .btn-modal-save {
+      padding: 10px 18px;
+      background: var(--green-dark);
+      border: none;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; cursor: pointer;
+      color: #fff;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      z-index: 600;
+    }
+    .btn-next {
+      background: var(--green-dark);
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 13px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 48px;
+    }
+    .btn-next:hover { background: var(--green-mid); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .error-msg {
+      background: rgba(192,57,43,0.07);
+      border: 1px solid rgba(192,57,43,0.25);
+      border-radius: 3px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--error);
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Quote Flow Header -->
+<div id="pcd-quote-flow-header" data-step="1"></div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-title">New Estimate</div>
+
+  <!-- CB-4: Mode banner mount (review / admin-edit) -->
+  <div id="modeBannerMount"></div>
+
+  <!-- Admin acting-as-dealer banner (Bug D-StepBilling fix) -->
+  <div id="adminActingBannerMount"></div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- Order Info -->
+  <div class="card">
+    <div class="card-title">Order Information</div>
+    <div class="field-row">
+      <div class="field">
+        <label id="poNumberLabel">Draft ID</label>
+        <!-- CB-3 (2026-05-29): PO# now generated at first Save as Quote (random
+             alphanumeric P{uid}XXXXXX, e.g. PUWV8F3K2P). On resume of a saved
+             draft / returned quote, this field is populated by loadDraftData()
+             or by sessionStorage on back-from-Step2. -->
+        <input type="text" id="poNumber" disabled style="background:var(--cream);color:var(--muted);cursor:not-allowed;font-style:italic;" placeholder="Generated when you save as quote"/>
+      </div>
+      <div class="field">
+        <label>Job Name <span class="req">*</span></label>
+        <input type="text" id="jobName" placeholder="e.g. Smith Kitchen Remodel"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Notes (Optional)</label>
+      <textarea id="notes" placeholder="Any special instructions or comments..."></textarea>
+    </div>
+    <div class="field">
+      <label>Logistic <span class="req">*</span></label>
+      <select id="logisticType" onchange="handleLogisticChange()" style="width:100%;height:44px;border:1px solid var(--border);border-radius:3px;padding:0 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--white);">
+        <option value="pickup">Pick Up @ ProCraft DC — Free</option>
+        <option value="delivery">Delivery (up to 3 hours from ProCraft DC)</option>
+        <option value="shipping">Shipping (3+ hours / Warehouse)</option>
+      </select>
+    </div>
+    <div class="field" id="deliveryDistanceField" style="display:none;">
+      <label>Delivery Distance</label>
+      <select id="deliveryDistance" style="width:100%;height:44px;border:1px solid var(--border);border-radius:3px;padding:0 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--white);">
+        <option value="150">0-30 mins — $150</option>
+        <option value="250">30-60 mins — $250</option>
+        <option value="350">1 hr - 2 hr — $350</option>
+        <option value="500">2 hr - 3 hr — $500</option>
+      </select>
+    </div>
+    <div id="shippingTierNote" style="display:none;font-size:12px;color:var(--muted);margin-top:8px;">
+          <div style="padding:12px 14px;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:3px;background:rgba(201,168,76,0.06);line-height:1.55;">
+            <strong style="color:var(--green-dark);">Shipping — Contact Sales Team</strong><br>
+            Freight shipping is quoted individually. Our Sales team will confirm the shipping fee for your order; it is not added to your total in the portal.
+            </div>
+      </div>
+  </div>
+  
+  <!-- Shipping Address -->
+  <div class="card">
+  <div class="card-title">Shipping / Delivery Address</div>
+
+    <!-- Pick Up Location — 唯讀,僅 logistic = pickup 時顯示 -->
+    <div id="pickupLocationDisplay" style="display:none;">
+      <div style="padding:14px 16px;border:1px solid var(--border);border-left:3px solid var(--green-dark);border-radius:3px;background:#FAFAF8;line-height:1.6;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Pick Up Location</div>
+        <div style="font-size:13px;color:var(--text);">
+          <strong>ProCraft Cabinetry DC LLC</strong><br>
+          6750 Santa Barbara Court Suite B<br>
+          Elkridge, MD 21075<br>
+          Hours: Mon-Fri 8:00 AM - 4:30 PM
+        </div>
+      </div>
+    </div>
+
+    <div class="address-toggle" id="addressToggle">
+      <button class="toggle-btn active" id="btnSameBilling" onclick="setShippingMode('same')">
+        Same as Billing
+      </button>
+      <button class="toggle-btn" id="btnDiffShipping" onclick="setShippingMode('different')">
+        Different Address
+      </button>
+    </div>
+
+    <!-- Saved addresses -->
+    <div id="savedAddressSection" style="display:none;">
+      <div class="address-grid" id="addressGrid">
+        <!-- populated by JS -->
+      </div>
+      <button class="btn-add-address" id="btnAddNewAddress" onclick="toggleNewAddressForm()">
+        + Add New Address
+      </button>
+
+      <!-- New address form -->
+      <div class="new-address-form" id="newAddressForm">
+        <div class="form-title">New Shipping Address</div>
+        <div class="field">
+          <label>Recipient Name <span class="req">*</span></label>
+          <input type="text" id="newRecipient" placeholder="Full name"/>
+        </div>
+        <div class="field">
+          <label>Address Line 1 <span class="req">*</span></label>
+          <input type="text" id="newAddress" placeholder="Start typing street address…" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label>Address Line 2</label>
+          <input type="text" id="newAddressLine2" placeholder="Suite, unit, floor (optional)"/>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="newCity" placeholder="City"/>
+          </div>
+          <div class="field">
+            <label>State <span class="req">*</span></label>
+            <input type="text" id="newState" placeholder="e.g. MD" maxlength="2"/>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>ZIP Code <span class="req">*</span></label>
+            <input type="text" id="newZip" placeholder="00000"/>
+          </div>
+          <div class="field">
+            <label>Phone</label>
+            <input type="tel" id="newPhone" placeholder="2025550100" maxlength="10"
+              oninput="this.value = this.value.replace(/\D/g,'').slice(0,10)"/>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+          <button onclick="saveNewAddress()" style="background:var(--green-dark);color:#fff;border:none;border-radius:3px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.1em;cursor:pointer;">Save Address</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Billing Address — read-only (edit in Profile) -->
+  <div class="card">
+    <div class="card-title">Billing Address</div>
+    <div class="billing-display" id="billingDisplay">Loading...</div>
+    <div class="billing-hint" id="billingHint">
+      To update billing information, please edit it in <a href="profile.html">your Profile</a>.
+    </div>
+    <div class="billing-warning" id="billingWarning" style="display:none;">
+      ⚠ Your billing address appears incomplete. Please go to
+      <a href="profile.html">your Profile</a> to add Address Line 1 and ZIP Code before proceeding.
+    </div>
+  </div>
+</div>
+
+<!-- Edit Address Modal -->
+<div class="modal-overlay" id="editAddrModal">
+  <div class="modal-box">
+    <div class="modal-title">Edit Address</div>
+    <input type="hidden" id="editAddrId"/>
+    <div class="field">
+      <label>Recipient Name</label>
+      <input type="text" id="editRecipient" placeholder="Full name"/>
+    </div>
+    <div class="field">
+      <label>Address Line 1</label>
+      <input type="text" id="editAddressLine1" placeholder="Street address" autocomplete="off"/>
+    </div>
+    <div class="field">
+      <label>Address Line 2</label>
+      <input type="text" id="editAddressLine2" placeholder="Suite, unit, floor (optional)"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>City</label>
+        <input type="text" id="editCity" placeholder="City"/>
+      </div>
+      <div class="field">
+        <label>State</label>
+        <input type="text" id="editState" placeholder="MD" maxlength="2"/>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>ZIP Code</label>
+        <input type="text" id="editZip" placeholder="00000"/>
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" id="editPhone" placeholder="2025550100" maxlength="10"
+          oninput="this.value = this.value.replace(/\D/g,'').slice(0,10)"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-modal-save" onclick="saveEditAddress()">Save Address</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar">
+  <button class="btn-next" id="btnNext" onclick="goNext()">Next: Select Products →</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7PvXRsQ5r5KAIyLYQ1uZvgdaqGQ_pkA0&libraries=places"></script>
+<script src="components/quote-flow-header.js"></script>
+<script>
+  const { createClient } = supabase;
+  const _supabase = createClient(
+    window.SB_URL,
+    window.SB_KEY
+  );
+
+  let dealer = null;                // The dealer that OWNS the quote (may differ from logged-in user when admin edits)
+  let currentUser = null;           // The logged-in dealers row (could be admin)
+  let isAdminViewer = false;        // True when logged-in user is admin/super_admin
+  let savedAddresses = [];
+  let selectedAddressId = null;
+  let shippingMode = 'same';
+  let draftId      = null;
+  let adminDraft   = false;
+  let adminDealerId = null;
+  let returnReason       = null;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CB-4: viewMode — drives banners, locks, and Step 2/3 behavior.
+  //
+  // Possible values:
+  //   'normal'      — dealer building a fresh quote / editing own Draft
+  //   'admin-draft' — admin creating a quote on behalf of a dealer
+  //   'admin-edit'  — admin editing a dealer's Pending/Returned PO (revision flow)
+  //   'review'      — dealer reviewing a returned PO (read-only except Markup % in Step 3)
+  //
+  // resolveViewMode() is called inside init() AFTER the quote is loaded so we
+  // know the actual status + owner. URL ?mode= is a hint but never authoritative
+  // — server-side data + viewer role win.
+  // ─────────────────────────────────────────────────────────────────────────
+  let viewMode = 'normal';
+
+  // ── Utility ──
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CB-4: Mode banner builders
+  // ─────────────────────────────────────────────────────────────────────────
+
+  function buildReviewBanner(reason) {
+    return `
+      <div class="mode-banner review">
+        <div class="mb-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+        <div class="mb-body">
+          <div class="mb-title">Review Revised Purchase Order</div>
+          <div class="mb-msg">You are reviewing your revised Purchase Order. Click Next to review item details, then resubmit on the final step. Contact your sales rep if you have questions.</div>
+          ${reason ? `
+            <div class="mb-reason">
+              <div class="mb-reason-label">Revision Note</div>
+              ${escapeHtml(reason)}
+            </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function buildAdminEditBanner(ownerDealer, reason) {
+    const dealerName = ownerDealer
+      ? escapeHtml(ownerDealer.company_name || ownerDealer.contact_name || '—')
+      : '—';
+    return `
+      <div class="mode-banner admin-edit">
+        <div class="mb-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </div>
+        <div class="mb-body">
+          <div class="mb-title">Editing Dealer's Purchase Order</div>
+          <div class="mb-msg">You are editing the Purchase Order belonging to <strong>${dealerName}</strong>. Your changes are buffered locally and will only be saved when you click <strong>Request Revision</strong> on the final step.</div>
+          ${reason ? `
+            <div class="mb-reason">
+              <div class="mb-reason-label">Previous Revision Note</div>
+              ${escapeHtml(reason)}
+            </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  // ── Admin acting-as-dealer banner (kept for admin-draft mode) ──
+  function buildAdminActingBanner(targetDealer) {
+    if (!targetDealer) return '';
+    return `
+      <div class="admin-acting-banner">
+        <strong>Admin mode:</strong> Creating a quote on behalf of
+        <strong>${escapeHtml(targetDealer.company_name || '—')}</strong>
+        (${escapeHtml(targetDealer.contact_name || targetDealer.email || '—')}).
+        Billing and shipping addresses below belong to this dealer.
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CB-4: Resolve effective viewMode from URL hint + viewer role + quote state.
+  //
+  // Authoritative rules (server data wins over URL):
+  //   - If quote is Returned + viewer is admin     → admin-edit  (Q2 decision)
+  //   - If quote is Returned + viewer is owner     → review      (Q1: defensive,
+  //     even if URL didn't carry ?mode=review)
+  //   - If quote is Pending  + viewer is admin     → admin-edit
+  //   - If quote is Draft    + adminDraft flag     → admin-draft
+  //   - Otherwise                                  → normal
+  //
+  // Note: dealer cannot enter admin-edit. URL hint is ignored if role mismatch.
+  // Returns the resolved mode string.
+  // ─────────────────────────────────────────────────────────────────────────
+  function resolveViewMode(urlMode, quote) {
+    // No quote loaded → only normal or admin-draft are possible
+    if (!quote) {
+      if (adminDraft) return 'admin-draft';
+      return 'normal';
+    }
+
+    const status = quote.status;
+    const isOwner = currentUser && quote.dealer_id === currentUser.id;
+
+    // Returned quote
+    if (status === 'Returned') {
+      if (isAdminViewer && !isOwner) return 'admin-edit';
+      if (isOwner) return 'review';
+      // Edge case: admin who happens to own the quote (rare) → still admin-edit
+      if (isAdminViewer) return 'admin-edit';
+      return 'review';
+    }
+
+    // Pending quote — admin can edit; dealer shouldn't be in Step 1 at all
+    // (Pending is locked from dealer's side), but if it happens, fall through
+    // to normal as a safety net.
+    if (status === 'Pending') {
+      if (isAdminViewer) return 'admin-edit';
+      return 'normal';
+    }
+
+    // Draft quote
+    if (status === 'Draft') {
+      if (adminDraft) return 'admin-draft';
+      return 'normal';
+    }
+
+    return 'normal';
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CB-4: Apply review-mode lock — disable all inputs except Next button.
+  //
+  // Markup % is a Step 3 concern, so this Step 1 lock disables everything.
+  // ─────────────────────────────────────────────────────────────────────────
+  function applyReviewModeLock() {
+    // Disable form fields
+    ['jobName', 'notes', 'logisticType', 'deliveryDistance'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = true;
+    });
+
+    // Disable shipping toggle
+    const sameBtn = document.getElementById('btnSameBilling');
+    const diffBtn = document.getElementById('btnDiffShipping');
+    if (sameBtn) sameBtn.disabled = true;
+    if (diffBtn) diffBtn.disabled = true;
+
+    // Hide "Add New Address" button + new address form
+    const addBtn = document.getElementById('btnAddNewAddress');
+    if (addBtn) addBtn.style.display = 'none';
+    const newForm = document.getElementById('newAddressForm');
+    if (newForm) newForm.style.display = 'none';
+    // CB-4 fix: viewMode 此時已是 'review',重繪地址卡讓它套上唯讀樣式
+    // (移除 Edit/Delete/Set Default、加上 .readonly)
+    renderAddresses();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CB-4: Mount the appropriate mode banner.
+  // ─────────────────────────────────────────────────────────────────────────
+  function mountModeBanner() {
+    const mount = document.getElementById('modeBannerMount');
+    if (!mount) return;
+    if (viewMode === 'review') {
+      mount.innerHTML = buildReviewBanner(returnReason);
+    } else if (viewMode === 'admin-edit') {
+      mount.innerHTML = buildAdminEditBanner(dealer, returnReason);
+    } else {
+      mount.innerHTML = '';
+    }
+  }
+
+  // ── Render billing display panel for the given dealer ──
+  function renderBillingDisplay(d) {
+    if (!d) return;
+    const line2 = d.address_line2 ? `<br>${escapeHtml(d.address_line2)}` : '';
+    document.getElementById('billingDisplay').innerHTML = `
+      <strong>${escapeHtml(d.company_name || '—')}</strong><br>
+      ${escapeHtml(d.contact_name || '—')}<br>
+      ${escapeHtml(d.address_line1 || d.address_formatted || '—')}${line2}<br>
+      ${escapeHtml(d.city || '')}, ${escapeHtml(d.state || '')} ${escapeHtml(d.zip_code || '')}<br>
+      ${escapeHtml(d.phone || '')}
+    `;
+
+    // Show warning if billing looks incomplete (required fields are usually
+    // enforced at signup; this is a defensive check for legacy records).
+    const incomplete = !d.address_line1 || !d.zip_code;
+    const warnEl = document.getElementById('billingWarning');
+    const hintEl = document.getElementById('billingHint');
+    if (warnEl && hintEl) {
+      if (incomplete) {
+        warnEl.style.display = 'block';
+        hintEl.style.display = 'none';
+        console.warn('[Billing] Dealer billing incomplete:', {
+          dealer_id: d.id,
+          company_name: d.company_name,
+          has_address_line1: !!d.address_line1,
+          has_zip_code: !!d.zip_code,
+        });
+      } else {
+        warnEl.style.display = 'none';
+        hintEl.style.display = 'block';
+      }
+    }
+  }
+
+  // ── Load saved addresses for a given dealer id ──
+  async function loadSavedAddressesFor(dealerOwnerId) {
+    const { data: addrs } = await _supabase
+      .from('addresses')
+      .select('*')
+      .eq('dealer_id', dealerOwnerId)
+      .eq('is_deleted', false);
+    savedAddresses = addrs || [];
+    renderAddresses();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Bug D-StepBilling fix (path B):
+  // Resolve the TARGET dealer when admin acts on behalf of someone else.
+  // ─────────────────────────────────────────────────────────────────────────
+  function resolveAdminTargetDealerId(userId, isAdmin, adminDraftFlag) {
+    const adminDraftDealerId = sessionStorage.getItem('adminDraftDealerId');
+    const actingAsDealerId   = sessionStorage.getItem('actingAsDealerId');
+
+    if (adminDraftFlag && adminDraftDealerId && adminDraftDealerId !== userId) {
+      return { targetId: adminDraftDealerId, source: 'adminDraft flag + sessionStorage' };
+    }
+    if (isAdmin && adminDraftDealerId && adminDraftDealerId !== userId) {
+      return { targetId: adminDraftDealerId, source: 'sessionStorage fallback (no ?adminDraft=1)' };
+    }
+    if (isAdmin && actingAsDealerId && actingAsDealerId !== userId) {
+      return { targetId: actingAsDealerId, source: 'actingAsDealerId fallback' };
+    }
+    return { targetId: null, source: 'none' };
+  }
+
+  async function init() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const userId = session.user.id;
+    const params = new URLSearchParams(window.location.search);
+    draftId    = params.get('draft') || null;
+    adminDraft = params.get('adminDraft') === '1';
+    const urlModeHint = params.get('mode') || null;  // CB-4: URL hint, not authoritative
+
+    // Load logged-in user (could be dealer or admin)
+    const { data: me } = await _supabase
+      .from('dealers')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (!me?.is_active) {
+      await _supabase.auth.signOut();
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = me;
+    isAdminViewer = me?.role === 'admin' || me?.role === 'super_admin';
+
+    // Default: dealer = logged-in user (overridden below for admin/draft scenarios)
+    dealer = me;
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Bug D-StepBilling fix (path B):
+    // Try to resolve admin target dealer regardless of ?adminDraft=1 flag.
+    // ─────────────────────────────────────────────────────────────────────
+    const resolution = resolveAdminTargetDealerId(userId, isAdminViewer, adminDraft);
+    if (resolution.targetId) {
+      adminDealerId = resolution.targetId;
+      if (!adminDraft) {
+        adminDraft = true;
+        console.log('[StepBilling] Defensive: admin acting-as-dealer detected without ?adminDraft=1 flag. Source:', resolution.source);
+      }
+      const { data: targetDealer } = await _supabase
+        .from('dealers').select('*').eq('id', adminDealerId).single();
+      if (targetDealer) {
+        dealer = targetDealer;
+        console.log('[StepBilling] Admin acting as dealer:', {
+          admin_id: userId,
+          admin_company: me.company_name,
+          target_dealer_id: targetDealer.id,
+          target_dealer_company: targetDealer.company_name,
+          resolution_source: resolution.source,
+        });
+      } else {
+        console.warn('[StepBilling] adminDealerId resolved but dealer fetch returned no row:', adminDealerId);
+      }
+    } else if (isAdminViewer && !draftId) {
+      console.log('[StepBilling] Admin viewing own quote flow (no target dealer in sessionStorage).');
+    }
+
+    // Initial billing display + addresses use the resolved dealer's data
+    renderBillingDisplay(dealer);
+    await loadSavedAddressesFor(dealer.id);
+
+    if (draftId) {
+      // ── Resume Draft OR Returned: load from DB ──
+      // loadDraftData returns the quote so we can resolve viewMode after.
+      const draft = await loadDraftData();
+      viewMode = resolveViewMode(urlModeHint, draft);
+      console.log('[CB-4] Step 1 viewMode resolved:', {
+        viewMode,
+        urlModeHint,
+        quoteStatus: draft ? draft.status : null,
+        isAdminViewer,
+        isOwner: draft && currentUser && draft.dealer_id === currentUser.id,
+      });
+
+      // Admin-draft banner is incompatible with admin-edit (different surface);
+      // only show "acting-as" for admin-draft mode itself.
+      if (viewMode === 'admin-draft') {
+        document.getElementById('adminActingBannerMount').innerHTML =
+          buildAdminActingBanner(dealer);
+      }
+
+      mountModeBanner();
+
+      // Apply review lock if needed
+      if (viewMode === 'review') {
+        applyReviewModeLock();
+      }
+    } else {
+      // ── No draft: brand new quote (normal or admin-draft) ──
+      viewMode = adminDraft ? 'admin-draft' : 'normal';
+      console.log('[CB-4] Step 1 viewMode (no draft):', viewMode);
+
+      if (viewMode === 'admin-draft') {
+        document.getElementById('adminActingBannerMount').innerHTML =
+          buildAdminActingBanner(dealer);
+      }
+
+      // ── Restore Step 1 data if coming back from Step 2 Edit ──
+      const saved = sessionStorage.getItem('quoteStep1');
+      if (saved) {
+        try {
+          const s1 = JSON.parse(saved);
+          document.getElementById('poNumber').value = s1.poNumber || '';
+          setPoNumberLabel(s1.poNumber);   // 雙編號制: 動態 label
+          document.getElementById('jobName').value  = s1.jobName  || '';
+          document.getElementById('notes').value    = s1.notes    || '';
+          if (s1.logisticType) {
+            document.getElementById('logisticType').value = s1.logisticType;
+            handleLogisticChange();
+          if (s1.logisticType === 'delivery' && s1.deliveryFee) {
+              setDeliveryDistanceValue(s1.deliveryFee);
+            }
+          }
+          if (s1.shippingMode === 'different') {
+            setShippingMode('different');
+            if (s1.shippingAddressId) {
+              selectedAddressId = s1.shippingAddressId;
+              renderAddresses();
+            }
+          }
+          // CB-4: If sessionStorage carries a mode (back-from-Step 2), restore it
+          if (s1.viewMode && ['review', 'admin-edit', 'admin-draft'].includes(s1.viewMode)) {
+            viewMode = s1.viewMode;
+            returnReason = s1.returnReason || null;
+            mountModeBanner();
+            if (viewMode === 'review') applyReviewModeLock();
+            console.log('[CB-4] Step 1 viewMode restored from sessionStorage:', viewMode);
+          }
+        } catch(e) { /* ignore parse errors */ }
+      }
+    }
+
+    // Ship To 新規格:同步初始 logistic UI(全新報價預設 pickup 時也要帶出 ProCraft 區塊)
+    handleLogisticChange();
+
+    // Poll is_active every 60s — kick out if deactivated
+    setInterval(async () => {
+      const { data: check } = await _supabase
+        .from('dealers').select('is_active').eq('id', userId).single();
+      if (!check?.is_active) {
+        await _supabase.auth.signOut();
+        window.location.href = 'login.html';
+      }
+    }, 60000);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Load draft / returned data from DB → fill Step 1 form.
+  //
+  // CB-4: returns the loaded quote so init() can resolve viewMode after.
+  //       Now also accepts Pending status (for admin-edit flow), since admin
+  //       editing a dealer-submitted PO enters here with status=Pending.
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // 雙編號制: 依顯示編號字首決定 label。P → PO Number;D 或空白 → Draft ID。
+  function setPoNumberLabel(value) {
+    const lbl = document.getElementById('poNumberLabel');
+    if (!lbl) return;
+    lbl.textContent = (value && /^P/i.test(value)) ? 'PO Number' : 'Draft ID';
+  }
+
+  async function loadDraftData() {
+    const { data: draft, error } = await _supabase
+      .from('quotes')
+      .select('*')
+      .eq('id', draftId)
+      .in('status', ['Draft', 'Returned', 'Pending'])  // CB-4: added Pending
+      .single();
+
+    if (error || !draft) {
+      console.warn('Draft/Returned/Pending quote not found, starting fresh.', error);
+      draftId = null;
+      return null;
+    }
+
+    // If the quote belongs to a different dealer (admin viewing dealer's quote),
+    // reload the owner dealer + their saved addresses so billing/shipping context is correct.
+    if (draft.dealer_id && draft.dealer_id !== dealer.id) {
+      const { data: ownerDealer } = await _supabase
+        .from('dealers').select('*').eq('id', draft.dealer_id).single();
+      if (ownerDealer) {
+        dealer = ownerDealer;
+        renderBillingDisplay(dealer);
+        await loadSavedAddressesFor(dealer.id);
+      }
+    }
+
+    // Store revision note for banner rendering (used by mountModeBanner)
+    returnReason = (draft.status === 'Returned') ? (draft.return_reason || null) : null;
+
+    document.getElementById('poNumber').value = draft.po_number || draft.draft_number || '';  // 雙編號制: 有 P 顯 P,否則顯 Draft ID
+    setPoNumberLabel(draft.po_number || draft.draft_number);  // 雙編號制: 動態 label
+    document.getElementById('jobName').value  = draft.job_name  || '';
+    document.getElementById('notes').value    = draft.notes     || '';
+
+    if (draft.logistic_type) {
+      document.getElementById('logisticType').value = draft.logistic_type;
+      handleLogisticChange();
+    if (draft.logistic_type === 'delivery' && draft.delivery_fee) {
+        setDeliveryDistanceValue(draft.delivery_fee);
+      }
+    }
+
+    if (draft.shipping_address_id) {
+      setShippingMode('different');
+      selectedAddressId = draft.shipping_address_id;
+      renderAddresses();
+    }
+
+    // CB-4: viewMode is resolved by caller (init) after this returns; we
+    // pre-stage sessionStorage with the loaded data but mark mode as TBD.
+    // The caller will overwrite with the resolved mode.
+    const isAdminEditingOtherDealer = isAdminViewer && currentUser && draft.dealer_id && draft.dealer_id !== currentUser.id;
+
+    sessionStorage.setItem('quoteStep1', JSON.stringify({
+      poNumber:           draft.po_number || draft.draft_number || null,  // 雙編號制: 帶顯示編號給返回 restore
+      jobName:            draft.job_name,
+      notes:              draft.notes || '',
+      shippingMode:       draft.shipping_address_id ? 'different' : 'same',
+      shippingAddressId:  draft.shipping_address_id || null,
+      logisticType:       draft.logistic_type || 'pickup',
+      deliveryFee:        draft.delivery_fee  || 0,
+      dealerIdForQuote:   isAdminEditingOtherDealer ? draft.dealer_id : (adminDraft && adminDealerId ? adminDealerId : null),
+      adminDraft:         adminDraft,
+      returnReason:       returnReason,
+      viewMode:           null,  // resolved by init() right after
+      quoteStatus:        draft.status,  // CB-4: pass status downstream for Step 2/3
+    }));
+
+    return draft;
+  }
+
+  function renderAddresses() {
+    const grid = document.getElementById('addressGrid');
+    if (!savedAddresses.length) {
+      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">No saved addresses yet.</p>';
+      return;
+    }
+    // CB-4: in review mode, address cards are non-interactive (no Edit/Delete buttons)
+    const isReadOnly = (viewMode === 'review');
+    grid.innerHTML = savedAddresses.map(a => `
+      <div class="address-card-wrap">
+        <div class="address-card ${selectedAddressId === a.id ? 'selected' : ''}${isReadOnly ? ' readonly' : ''}"
+             ${isReadOnly ? '' : `onclick="selectAddress('${a.id}')"`}>
+          ${a.is_default ? '<div class="addr-default-badge">★ Default</div>' : ''}
+          <div class="addr-name">${a.recipient_name || dealer.contact_name}</div>
+          <div class="addr-detail">
+            ${a.address_line}<br>
+            ${a.address_line2 ? a.address_line2 + '<br>' : ''}
+            ${a.city}, ${a.state} ${a.zip_code}<br>
+            ${a.phone || ''}
+          </div>
+        </div>
+        ${isReadOnly ? '' : `
+        <div class="address-card-actions">
+          <button class="addr-action-btn" onclick="openEditAddress('${a.id}')">Edit</button>
+          <button class="addr-action-btn delete" onclick="deleteAddress('${a.id}')">Delete</button>
+          ${!a.is_default ? `<button class="addr-action-btn default-btn" onclick="setDefaultAddress('${a.id}')">Set Default</button>` : ''}
+        </div>`}
+      </div>
+    `).join('');
+  }
+
+  function selectAddress(id) {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    selectedAddressId = id;
+    renderAddresses();
+    document.getElementById('newAddressForm').classList.remove('show');
+  }
+
+  function setShippingMode(mode) {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    shippingMode = mode;
+    document.getElementById('btnSameBilling').classList.toggle('active', mode === 'same');
+    document.getElementById('btnDiffShipping').classList.toggle('active', mode === 'different');
+    document.getElementById('savedAddressSection').style.display = mode === 'different' ? 'block' : 'none';
+  }
+
+  function toggleNewAddressForm() {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    const form = document.getElementById('newAddressForm');
+    form.classList.toggle('show');
+    selectedAddressId = null;
+    renderAddresses();
+    if (form.classList.contains('show')) initNewAddressAutocomplete();
+  }
+
+  // ── Google Places — new address ──
+  let newAutocompleteInited = false;
+  function initNewAddressAutocomplete() {
+    if (newAutocompleteInited) return;
+    newAutocompleteInited = true;
+    const input = document.getElementById('newAddress');
+    const ac = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 'us' },
+      fields: ['address_components'],
+      types: ['address'],
+    });
+    ac.addListener('place_changed', () => {
+      const place = ac.getPlace();
+      let street = '', city = '', state = '', zip = '';
+      (place.address_components || []).forEach(c => {
+        if (c.types.includes('street_number'))               street = c.long_name + ' ';
+        if (c.types.includes('route'))                       street += c.long_name;
+        if (c.types.includes('locality'))                    city   = c.long_name;
+        if (c.types.includes('administrative_area_level_1')) state  = c.short_name;
+        if (c.types.includes('postal_code'))                 zip    = c.long_name;
+      });
+      input.value                                    = street.trim();
+      document.getElementById('newCity').value       = city;
+      document.getElementById('newState').value      = state;
+      document.getElementById('newZip').value        = zip;
+    });
+  }
+
+  // ── Google Places — edit address modal ──
+  let editAutocompleteInited = false;
+  function initEditAddressAutocomplete() {
+    if (editAutocompleteInited) return;
+    editAutocompleteInited = true;
+    const input = document.getElementById('editAddressLine1');
+    const ac = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 'us' },
+      fields: ['address_components'],
+      types: ['address'],
+    });
+    ac.addListener('place_changed', () => {
+      const place = ac.getPlace();
+      let street = '', city = '', state = '', zip = '';
+      (place.address_components || []).forEach(c => {
+        if (c.types.includes('street_number'))               street = c.long_name + ' ';
+        if (c.types.includes('route'))                       street += c.long_name;
+        if (c.types.includes('locality'))                    city   = c.long_name;
+        if (c.types.includes('administrative_area_level_1')) state  = c.short_name;
+        if (c.types.includes('postal_code'))                 zip    = c.long_name;
+      });
+      input.value                                      = street.trim();
+      document.getElementById('editCity').value        = city;
+      document.getElementById('editState').value       = state;
+      document.getElementById('editZip').value         = zip;
+    });
+  }
+
+  // ── Edit saved address ──
+  function openEditAddress(id) {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    const a = savedAddresses.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('editAddrId').value       = id;
+    document.getElementById('editRecipient').value    = a.recipient_name || '';
+    document.getElementById('editAddressLine1').value = a.address_line   || '';
+    document.getElementById('editAddressLine2').value = a.address_line2  || '';
+    document.getElementById('editCity').value         = a.city           || '';
+    document.getElementById('editState').value        = a.state          || '';
+    document.getElementById('editZip').value          = a.zip_code       || '';
+    document.getElementById('editPhone').value        = a.phone          || '';
+    document.getElementById('editAddrModal').classList.add('show');
+    initEditAddressAutocomplete();
+  }
+
+  function closeEditModal() {
+    document.getElementById('editAddrModal').classList.remove('show');
+  }
+
+  async function saveEditAddress() {
+    const id = document.getElementById('editAddrId').value;
+    const payload = {
+      recipient_name: document.getElementById('editRecipient').value.trim(),
+      address_line:   document.getElementById('editAddressLine1').value.trim(),
+      address_line2:  document.getElementById('editAddressLine2').value.trim(),
+      city:           document.getElementById('editCity').value.trim(),
+      state:          document.getElementById('editState').value.trim(),
+      zip_code:       document.getElementById('editZip').value.trim(),
+      phone:          document.getElementById('editPhone').value.trim(),
+    };
+    const { error } = await _supabase.from('addresses').update(payload).eq('id', id);
+    if (error) { alert('Error saving address.'); return; }
+    const idx = savedAddresses.findIndex(x => x.id === id);
+    if (idx >= 0) savedAddresses[idx] = { ...savedAddresses[idx], ...payload };
+    closeEditModal();
+    renderAddresses();
+  }
+
+  // ── Delete address ──
+  async function deleteAddress(id) {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    if (!confirm('Delete this address?')) return;
+    const { error } = await _supabase.from('addresses').update({ is_deleted: true }).eq('id', id);
+    if (error) { alert('Error deleting address.'); return; }
+    savedAddresses = savedAddresses.filter(x => x.id !== id);
+    if (selectedAddressId === id) selectedAddressId = null;
+    renderAddresses();
+  }
+
+  // ── Set default address ──
+  async function setDefaultAddress(id) {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    await _supabase.from('addresses')
+      .update({ is_default: false })
+      .eq('dealer_id', dealer.id);
+    await _supabase.from('addresses').update({ is_default: true }).eq('id', id);
+    savedAddresses = savedAddresses.map(a => ({ ...a, is_default: a.id === id }));
+    selectedAddressId = id;
+    renderAddresses();
+  }
+
+  
+// 既有 draft 相容:若存的 delivery_fee 不在目前選單(改價後的舊單),
+// 動態補一個 option 保住原金額,避免下拉變未選取 → goNext 讀到 NaN → 靜默變 $0。
+function setDeliveryDistanceValue(fee) {
+  const sel = document.getElementById('deliveryDistance');
+  if (!sel) return;
+  const val = String(fee);
+  const exists = Array.from(sel.options).some(function (o) { return o.value === val; });
+  if (!exists) {
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = 'Previous delivery fee — $' + (parseFloat(fee) || 0).toFixed(0);
+    sel.appendChild(opt);
+  }
+  sel.value = val;
+}
+
+  
+function handleLogisticChange() {
+    const type = document.getElementById('logisticType').value;
+    document.getElementById('deliveryDistanceField').style.display = type === 'delivery' ? 'block' : 'none';
+    document.getElementById('shippingTierNote').style.display = type === 'shipping' ? 'block' : 'none';
+    applyPickupShippingUI(type === 'pickup');
+  }
+
+  // Ship To 新規格:pickup 時隱藏地址選擇器、顯示唯讀 ProCraft 區塊並鎖住;
+  // 切走 pickup 時還原並解鎖。強制 shippingMode='same' + 清掉已選地址,
+  // 讓 goNext 驗證通過、DB 拿到正確 logistic_type。
+  function applyPickupShippingUI(isPickup) {
+    const toggleEl = document.getElementById('addressToggle');
+    const savedEl  = document.getElementById('savedAddressSection');
+    const pickupEl = document.getElementById('pickupLocationDisplay');
+    if (isPickup) {
+      if (toggleEl) toggleEl.style.display = 'none';
+      if (savedEl)  savedEl.style.display  = 'none';
+      if (pickupEl) pickupEl.style.display = 'block';
+      shippingMode = 'same';
+      selectedAddressId = null;
+      document.getElementById('btnSameBilling').classList.add('active');
+      document.getElementById('btnDiffShipping').classList.remove('active');
+    } else {
+      if (pickupEl) pickupEl.style.display = 'none';
+      if (toggleEl) toggleEl.style.display = '';
+      setShippingMode(shippingMode || 'same');
+    }
+  }
+
+  async function goNext() {
+    const errMsg   = document.getElementById('errorMsg');
+    const jobName  = document.getElementById('jobName').value.trim();
+    const notes    = document.getElementById('notes').value.trim();
+
+    if (!jobName) {
+      errMsg.textContent = 'Please fill in Job Name.';
+      errMsg.classList.add('show');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    errMsg.classList.remove('show');
+
+    let shippingAddressId = null;
+
+    if (shippingMode === 'different') {
+      const newAddrForm = document.getElementById('newAddressForm');
+      if (newAddrForm.classList.contains('show')) {
+        errMsg.textContent = 'Please save the new address before continuing.';
+        errMsg.classList.add('show');
+        window.scrollTo(0, 0);
+        return;
+      }
+      shippingAddressId = selectedAddressId;
+      if (!shippingAddressId) {
+        errMsg.textContent = 'Please select or add a shipping address.';
+        errMsg.classList.add('show');
+        window.scrollTo(0, 0);
+        return;
+      }
+    }
+
+    // Save to sessionStorage and go to step 2
+    const logisticType = document.getElementById('logisticType').value;
+    const deliveryFee  = logisticType === 'delivery' ? parseFloat(document.getElementById('deliveryDistance').value) : 0;
+
+    const isAdminEditingOtherDealer = isAdminViewer && dealer && currentUser && dealer.id !== currentUser.id;
+    let dealerIdForQuote = null;
+    if (isAdminEditingOtherDealer) dealerIdForQuote = dealer.id;
+    else if (adminDraft && adminDealerId) dealerIdForQuote = adminDealerId;
+
+    const poNumberFromInput = document.getElementById('poNumber').value.trim() || null;
+
+    // CB-4: Carry viewMode + returnReason forward to Step 2/3
+    const quoteData = {
+      poNumber: poNumberFromInput,
+      jobName, notes, shippingMode, shippingAddressId,
+      logisticType, deliveryFee,
+      adminDraft, dealerIdForQuote,
+      viewMode,           // CB-4: 'normal' | 'admin-draft' | 'admin-edit' | 'review'
+      returnReason,       // CB-4: for re-display on Step 2/3 if needed
+    };
+    sessionStorage.setItem('quoteStep1', JSON.stringify(quoteData));
+
+    // CB-4: URL forwarding — keep mode so Step 2 picks it up on direct refresh.
+    // Mapping: viewMode → URL ?mode= param
+    let modeParam = '';
+    if (viewMode === 'admin-edit') modeParam = '&mode=admin-edit';
+    else if (viewMode === 'review') modeParam = '&mode=review';
+
+    let nextUrl = 'new-quote-step2.html';
+    if (draftId) {
+      nextUrl += '?draft=' + draftId + modeParam;
+    } else if (adminDraft) {
+      nextUrl += '?adminDraft=1';
+    }
+    window.location.href = nextUrl;
+  }
+
+  async function saveNewAddress() {
+    if (viewMode === 'review') return;  // CB-4: safety net
+    const errMsg = document.getElementById('errorMsg');
+    const recipient = document.getElementById('newRecipient').value.trim();
+    const address   = document.getElementById('newAddress').value.trim();
+    const city      = document.getElementById('newCity').value.trim();
+    const state     = document.getElementById('newState').value.trim();
+    const zip       = document.getElementById('newZip').value.trim();
+
+    if (!recipient || !address || !city || !state || !zip) {
+      errMsg.textContent = 'Please fill in all required fields for the new address.';
+      errMsg.classList.add('show');
+      window.scrollTo(0, 0);
+      return;
+    }
+    errMsg.classList.remove('show');
+
+    const { data: newAddr, error } = await _supabase
+      .from('addresses')
+      .insert({
+        dealer_id:      dealer.id,
+        recipient_name: recipient,
+        address_line:   address,
+        address_line2:  document.getElementById('newAddressLine2').value.trim(),
+        city,
+        state,
+        zip_code:       zip,
+        phone:          document.getElementById('newPhone').value.trim(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      errMsg.textContent = 'Error saving address. Please try again.';
+      errMsg.classList.add('show');
+      return;
+    }
+
+    savedAddresses.push(newAddr);
+    selectedAddressId = newAddr.id;
+    document.getElementById('newAddressForm').classList.remove('show');
+    newAutocompleteInited = false;
+    renderAddresses();
+  }
+
+  init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>

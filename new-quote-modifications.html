@@ -1,0 +1,4714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft Dealer Portal — Configure Modifications</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:       #C9A84C;
+      --green-dark: #3e5a42;
+      --green-mid:  #4a6b4f;
+      --cream:      #F5F2EC;
+      --text:       #2C3A32;
+      --muted:      #7A8C82;
+      --border:     #DDD8CC;
+      --white:      #FFFFFF;
+      --error:      #C0392B;
+      --warn-orange: #E07B39;
+      --info-blue:  #5A7A95;
+    }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 20px 20px 80px; }
+
+    .returned-revising-banner {
+      background: rgba(224,123,57,0.07);
+      border: 1px solid rgba(224,123,57,0.3);
+      border-left: 4px solid var(--warn-orange);
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .returned-revising-banner .rrb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(224,123,57,0.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .returned-revising-banner .rrb-icon-wrap svg { width: 16px; height: 16px; fill: var(--warn-orange); }
+    .returned-revising-banner .rrb-body { flex: 1; min-width: 0; }
+    .returned-revising-banner .rrb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--warn-orange);
+      margin-bottom: 4px;
+    }
+    .returned-revising-banner .rrb-msg { font-size: 13px; color: #2C3A32; line-height: 1.55; }
+
+    .no-assembled-banner {
+      background: rgba(90,122,149,0.06);
+      border: 1px solid rgba(90,122,149,0.25);
+      border-left: 4px solid var(--info-blue);
+      border-radius: 4px;
+      padding: 14px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .no-assembled-banner .nab-icon-wrap {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: rgba(90,122,149,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .no-assembled-banner .nab-icon-wrap svg { width: 14px; height: 14px; fill: var(--info-blue); }
+    .no-assembled-banner .nab-body { flex: 1; min-width: 0; }
+    .no-assembled-banner .nab-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.13em; text-transform: uppercase;
+      color: var(--info-blue);
+      margin-bottom: 3px;
+    }
+    .no-assembled-banner .nab-msg { font-size: 13px; color: var(--text); line-height: 1.55; }
+
+    .page-heading { margin-bottom: 24px; }
+    .page-heading h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--green-dark);
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+    .page-heading .subtitle { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .progress-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+    .progress-card-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .progress-label {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .progress-count { font-size: 12px; font-weight: 500; color: var(--green-dark); }
+    .progress-count .progress-percent { color: var(--muted); margin-left: 6px; font-weight: 400; }
+    .progress-bar { width: 100%; height: 6px; background: var(--cream); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--green-dark); transition: width 0.3s ease; border-radius: 3px; }
+    .progress-bar-fill.complete { background: var(--gold); }
+    .progress-card.no-assembled .progress-count { color: var(--muted); font-weight: 400; }
+
+    .ds-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .ds-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .ds-thumb {
+      width: 64px;
+      flex-shrink: 0;
+      aspect-ratio: 355 / 601;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+      position: relative;
+    }
+    .ds-thumb.zoomable { cursor: zoom-in; }
+    .ds-thumb.zoomable:hover { border-color: var(--gold); }
+    .ds-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .ds-thumb-fallback { width: 100%; height: 100%; }
+    .ds-thumb-zoom-icon {
+      position: absolute;
+      right: 4px; bottom: 4px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .ds-thumb.zoomable:hover .ds-thumb-zoom-icon { background: rgba(255,255,255,1); transform: scale(1.08); }
+    .ds-thumb-zoom-icon svg { width: 10px; height: 10px; fill: none; stroke: var(--green-dark); stroke-width: 2.5; stroke-linecap: round; }
+
+    .ds-info { flex: 1; min-width: 0; }
+    .ds-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--green-dark);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .ds-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
+    .ds-code { font-weight: 500; }
+    .ds-construction-tag {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-weight: 500;
+    }
+    .ds-construction-tag.framed    { background: rgba(62,90,66,0.08);    color: var(--green-dark); }
+    .ds-construction-tag.frameless { background: rgba(201,168,76,0.12);  color: #8B6914; }
+    .ds-construction-tag.unknown   { background: rgba(122,140,130,0.12); color: var(--muted); }
+    .ds-discontinued-tag {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-weight: 500;
+      background: rgba(224,123,57,0.12);
+      color: var(--warn-orange);
+    }
+    /* CB-5 需求1: 單門 lead time */
+    .ds-lead-time {
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--green-mid);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .ds-progress { flex-shrink: 0; text-align: right; }
+    .ds-progress-count { font-size: 14px; font-weight: 500; color: var(--green-dark); }
+    .ds-progress-count.complete::after { content: ' ✓'; color: var(--gold); font-weight: 700; }
+    .ds-progress-count.no-assembled { color: var(--muted); font-weight: 400; }
+    .ds-progress-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+    .ds-discontinued-banner {
+      background: rgba(224,123,57,0.06);
+      border-bottom: 1px solid rgba(224,123,57,0.25);
+      padding: 10px 18px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .ds-discontinued-banner-icon {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .ds-discontinued-banner-icon svg { width: 14px; height: 14px; fill: var(--warn-orange); }
+    .ds-discontinued-banner-msg { font-size: 12px; color: #2C3A32; line-height: 1.5; flex: 1; }
+
+    /* CB-5 需求2: non-stock 提示(門卡片內) */
+    .ds-nonstock-banner {
+      background: rgba(90,122,149,0.06);
+      border-bottom: 1px solid rgba(90,122,149,0.22);
+      padding: 10px 18px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .ds-nonstock-banner-icon {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .ds-nonstock-banner-icon svg { width: 14px; height: 14px; fill: var(--info-blue); }
+    .ds-nonstock-banner-msg { font-size: 12px; color: #2C3A32; line-height: 1.5; flex: 1; }
+
+    .ds-group { padding: 12px 18px; }
+    .ds-group + .ds-group { border-top: 1px solid var(--border); }
+    .ds-group-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .ds-group.rta { background: #FAFAF8; }
+
+    /* CB-5 需求4: SKU 排序控制 */
+    .ds-group-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .ds-group-head .ds-group-label { margin-bottom: 0; }
+    .ds-sort-wrap { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .ds-sort-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .ds-sort-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 3px 6px;
+      cursor: pointer;
+      outline: none;
+    }
+    .ds-sort-select:focus { border-color: var(--green-dark); }
+
+    .sku-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .sku-row:last-child { border-bottom: none; }
+    .sku-row.assembled { cursor: pointer; transition: background 0.1s; }
+    .sku-row.assembled:hover {
+      background: rgba(62,90,66,0.04);
+      margin: 0 -10px;
+      padding: 10px;
+      border-radius: 3px;
+    }
+    /* F-RTA-SWITCH v3: RTA row is no longer clickable (static info row).
+       Switch happens via the [⇄ Assembled] button only. */
+    .sku-row.rta { cursor: default; }
+    .sku-code { font-weight: 500; color: var(--green-dark); white-space: nowrap; flex-shrink: 0; min-width: 110px; }
+    .sku-row.rta .sku-code { color: var(--muted); }
+    .sku-desc { flex: 1; color: var(--text); min-width: 0; }
+    .sku-row.rta .sku-desc { color: var(--muted); }
+    .sku-qty { flex-shrink: 0; font-size: 11px; color: var(--muted); min-width: 50px; text-align: right; }
+    .sku-status {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      min-width: 110px;
+      justify-content: center;
+      font-weight: 500;
+    }
+    .sku-status.unprocessed { background: rgba(122,140,130,0.12); color: var(--muted); }
+    .sku-status.configured  { background: rgba(62,90,66,0.1);    color: var(--green-dark); }
+    .sku-status.skipped     { background: rgba(90,122,149,0.1);  color: var(--info-blue); }
+    .sku-row .sku-arrow {
+      flex-shrink: 0;
+      color: var(--muted);
+      font-size: 14px;
+      width: 14px;
+      text-align: center;
+      transition: color 0.15s;
+    }
+    .sku-row.assembled:hover .sku-arrow { color: var(--green-dark); }
+
+    /* CB-35: Unassembled inline qty editor */
+    .sku-qty-edit {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 50px;
+    }
+    .sku-qty-edit-label { font-size: 11px; color: var(--muted); }
+    .sku-qty-input {
+      width: 52px; height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text);
+      background: var(--white);
+    }
+    .sku-qty-input:focus { outline: none; border-color: var(--green-dark); }
+
+    .sku-delete-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      width: 22px; height: 22px;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0;
+      transition: all 0.15s;
+    }
+    .sku-delete-btn:hover { color: var(--error); background: rgba(192,57,43,0.08); }
+    .sku-delete-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* F-RTA-SWITCH v3: per-row assembly switch button */
+    .sku-asm-switch-btn {
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 4px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      line-height: 1;
+      min-height: 24px;
+    }
+    .sku-asm-switch-btn:hover {
+      color: var(--green-dark);
+      border-color: var(--green-dark);
+      background: rgba(62,90,66,0.04);
+    }
+    .sku-asm-switch-btn svg {
+      width: 11px; height: 11px;
+      fill: none; stroke: currentColor;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .sku-split-badge {
+      flex-shrink: 0;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      background: rgba(201,168,76,0.15);
+      color: #8B6914;
+      font-weight: 600;
+    }
+
+    .sku-custom-badge {
+      flex-shrink: 0;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    .sku-row.custom-no-mod { cursor: not-allowed; opacity: 0.85; }
+    .sku-row.custom-no-mod:hover {
+      background: rgba(201,168,76,0.04);
+      margin: 0 -10px;
+      padding: 10px;
+      border-radius: 3px;
+    }
+    .sku-no-mod-label {
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--muted);
+      font-style: italic;
+      letter-spacing: 0.03em;
+    }
+
+    .ds-card.custom-standalone { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+    .ds-card.custom-standalone .ds-card-header {
+      background: rgba(201,168,76,0.1);
+      border-bottom-color: rgba(201,168,76,0.3);
+    }
+    .ds-card.custom-standalone .ds-name { color: #8B6914; }
+
+    .empty-state {
+      background: var(--white);
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .lightbox-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.show { display: flex; }
+    .lightbox-img {
+      max-width: 90vw; max-height: 90vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 20px; right: 24px;
+      background: none; border: none;
+      color: #fff; font-size: 28px;
+      cursor: pointer; line-height: 1;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* Modal */
+    .mf-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44, 58, 50, 0.55);
+      z-index: 800;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .mf-modal-overlay.show { display: flex; }
+    .mf-modal-container {
+      width: 90vw;
+      max-width: 900px;
+      max-height: 85vh;
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .mf-modal-header {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .mf-modal-title {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--green-dark);
+    }
+    .mf-modal-close {
+      background: none; border: none;
+      cursor: pointer; color: var(--muted);
+      font-size: 24px; line-height: 1;
+      padding: 0 4px; transition: color 0.15s;
+    }
+    .mf-modal-close:hover { color: var(--text); }
+
+    .mf-modal-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
+    .mf-modal-body::-webkit-scrollbar { width: 6px; }
+    .mf-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* CB-5 需求5: MF04 合併 dropdown(Increase/Reduce 互斥) */
+    .mf04-combined { font-family: 'DM Sans', sans-serif; }
+    .mf04-dir-select {
+      width: 100%; max-width: 280px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--text);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 7px 10px;
+      cursor: pointer; outline: none;
+    }
+    .mf04-dir-select:focus { border-color: var(--green-dark); }
+    .mf04-input-area {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      max-width: 280px;
+    }
+    .mf04-input-label { display: block; font-size: 12px; color: #555; margin-bottom: 6px; }
+    .mf04-input-row { display: flex; align-items: center; gap: 8px; }
+    .mf04-number {
+      width: 90px; padding: 7px 8px;
+      font-family: inherit; font-size: 14px;
+      color: var(--text); background: var(--white);
+      border: 1px solid var(--gold);
+      border-radius: 4px; outline: none; text-align: center;
+    }
+    .mf04-number:focus { border-color: var(--green-dark); }
+    .mf04-unit { font-size: 13px; color: var(--muted); }
+    .mf04-range { margin-top: 6px; font-size: 11px; color: #888; }
+    .mf04-cost { margin-top: 6px; font-size: 12px; color: var(--green-mid); font-weight: 500; }
+
+    .mf-sku-head {
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .mf-sku-head-row1 {
+      font-size: 13px; font-weight: 500;
+      color: var(--green-dark);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+    .mf-sku-head-code { font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.04em; }
+    .mf-sku-head-row2 {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex; gap: 8px;
+      flex-wrap: wrap; align-items: center;
+    }
+    .mf-sku-head-row2 .mf-pill {
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .mf-pill.framed     { background: rgba(62,90,66,0.08);    color: var(--green-dark); }
+    .mf-pill.frameless  { background: rgba(201,168,76,0.12);  color: #8B6914; }
+    .mf-pill.unknown    { background: rgba(122,140,130,0.12); color: var(--muted); }
+    .mf-pill.assembled  { background: rgba(201,168,76,0.15);  color: #8B6914; }
+
+    .mf-sku-head-qty { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; }
+    .mf-sku-head-qty-label { font-size: 11px; color: var(--muted); }
+    .mf-sku-head-qty-input {
+      width: 56px; height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text);
+      background: var(--white);
+    }
+    .mf-sku-head-qty-input:focus { outline: none; border-color: var(--green-dark); }
+    .mf-sku-head-qty-input.invalid { border-color: var(--error); background: rgba(192,57,43,0.04); }
+
+    /* Split panel */
+    .mf-split-panel {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      background: var(--white);
+    }
+    .mf-split-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mf-split-title {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--green-dark);
+    }
+    .mf-split-summary { font-size: 11px; color: var(--muted); }
+    .mf-split-summary.invalid { color: var(--error); font-weight: 500; }
+    .mf-split-summary.valid { color: var(--green-mid); }
+    .mf-split-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .mf-split-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px;
+      border-radius: 3px;
+      background: #FAFAF8;
+    }
+    .mf-split-row-label { font-size: 12px; font-weight: 500; color: var(--green-dark); min-width: 50px; }
+    .mf-split-row-qty-label { font-size: 11px; color: var(--muted); }
+    .mf-split-row-qty-input {
+      width: 52px; height: 26px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      text-align: center;
+      color: var(--text);
+      background: var(--white);
+    }
+    .mf-split-row-qty-input:focus { outline: none; border-color: var(--green-dark); }
+    .mf-split-row-status {
+      flex: 1;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 110px;
+      font-weight: 500;
+    }
+    .mf-split-row-status.unprocessed { background: rgba(122,140,130,0.12); color: var(--muted); }
+    .mf-split-row-status.configured  { background: rgba(62,90,66,0.1);    color: var(--green-dark); }
+    .mf-split-row-status.skipped     { background: rgba(90,122,149,0.1);  color: var(--info-blue); }
+    .mf-split-row-delete {
+      background: none; border: none;
+      cursor: pointer; color: var(--muted);
+      width: 24px; height: 24px;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .mf-split-row-delete:hover { color: var(--error); background: rgba(192,57,43,0.08); }
+    .mf-split-row-delete:disabled { opacity: 0.3; cursor: not-allowed; }
+    .mf-split-row-delete svg { width: 12px; height: 12px; fill: currentColor; }
+    .mf-split-add {
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      padding: 8px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+    .mf-split-add:hover { color: var(--green-dark); border-color: var(--green-dark); background: rgba(62,90,66,0.04); }
+    .mf-split-hint { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 8px; line-height: 1.5; }
+
+    .mf-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .mf-tab {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 3px 3px 0 0;
+      padding: 8px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      bottom: -1px;
+    }
+    .mf-tab:hover { color: var(--green-dark); }
+    .mf-tab.active {
+      background: var(--white);
+      color: var(--green-dark);
+      border-bottom: 1px solid var(--white);
+      font-weight: 600;
+    }
+    .mf-tab-qty { font-size: 9px; color: var(--muted); margin-left: 4px; font-weight: 400; }
+    .mf-tab.active .mf-tab-qty { color: var(--green-mid); }
+
+    .mf-group {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--white);
+    }
+    .mf-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mf-group-label {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .mf-group-qty { font-size: 11px; color: var(--green-dark); font-weight: 500; }
+    .mf-group-body { min-height: 80px; }
+
+    #mfElementsContainer { display: flex; flex-direction: column; gap: 14px; }
+
+    .mf-row {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 14px;
+      background: var(--white);
+      transition: border-color 0.15s;
+    }
+    .mf-row:hover { border-color: rgba(62,90,66,0.3); }
+    .mf-row.readonly { background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.3); }
+    .mf-row.readonly:hover { border-color: rgba(201,168,76,0.5); }
+    .mf-row.invalid {
+      background: rgba(192,57,43,0.04);
+      border-color: var(--error);
+      box-shadow: 0 0 0 1px rgba(192,57,43,0.15);
+    }
+    .mf-row.invalid:hover { border-color: var(--error); }
+    .mf-row-error-msg {
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: rgba(192,57,43,0.08);
+      border-left: 3px solid var(--error);
+      color: var(--error);
+      font-size: 11px;
+      line-height: 1.4;
+      border-radius: 2px;
+    }
+    .mf-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .mf-row-label-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--green-dark);
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mf-row-label-cost { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .mf-row-label-cost.admin-only {
+      background: rgba(201,168,76,0.15);
+      color: #8B6914;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .mf-row-admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(201,168,76,0.15);
+      color: #8B6914;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .mf-row-admin-badge svg { width: 10px; height: 10px; fill: currentColor; }
+    .mf-row-element { /* no padding */ }
+    /* CB-6: bundle material subline */
+    .mf-bundle-material {
+      margin-top: 8px; padding: 6px 10px;
+      background: rgba(62,90,66,0.06);
+      border-left: 3px solid var(--green-mid);
+      border-radius: 2px; font-size: 11px; color: var(--green-dark);
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .mf-bundle-material .bm-sku { font-weight: 600; letter-spacing: 0.03em; }
+    .mf-bundle-material .bm-sep { color: var(--muted); }
+    .mf-bundle-material .bm-qty { color: var(--muted); }
+    .mf-bundle-material .bm-mat { font-weight: 600; }
+    .mf-readonly-body { padding: 4px 0; font-size: 13px; color: var(--text); line-height: 1.5; }
+    .mf-readonly-body .mf-readonly-desc { white-space: pre-wrap; word-break: break-word; }
+    .mf-readonly-body .mf-readonly-cost {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      background: rgba(62,90,66,0.08);
+      color: var(--green-dark);
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .mf-no-rules {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      background: var(--cream);
+    }
+    .mf-no-rules-title {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .mf-loading { padding: 30px 20px; text-align: center; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .mf-loading-spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green-dark);
+      border-radius: 50%;
+      animation: mf-spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes mf-spin { to { transform: rotate(360deg); } }
+
+    .mf-running-total {
+      flex-shrink: 0;
+      padding: 10px 22px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+    .mf-running-total-label { color: var(--muted); letter-spacing: 0.05em; }
+    .mf-running-total-value { font-weight: 600; color: var(--green-dark); font-size: 14px; }
+    .mf-running-total-value.zero { color: var(--muted); font-weight: 400; }
+
+    .mf-modal-footer {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .mf-modal-footer-left  { display: flex; gap: 8px; }
+    .mf-modal-footer-right { display: flex; gap: 8px; }
+
+    .mf-btn {
+      padding: 9px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s;
+      min-height: 38px;
+      border: 1px solid transparent;
+    }
+    .mf-btn-skip { background: transparent; color: var(--info-blue); border-color: rgba(90,122,149,0.4); }
+    .mf-btn-skip:hover { background: rgba(90,122,149,0.08); border-color: var(--info-blue); }
+    .mf-btn-cancel { background: transparent; color: var(--muted); border-color: var(--border); }
+    .mf-btn-cancel:hover { color: var(--text); border-color: var(--text); }
+    .mf-btn-save { background: var(--green-dark); color: #fff; border-color: var(--green-dark); }
+    .mf-btn-save:hover { background: var(--green-mid); border-color: var(--green-mid); }
+    .mf-btn-save:disabled { background: var(--muted); border-color: var(--muted); cursor: not-allowed; opacity: 0.6; }
+
+    body.mf-modal-open { overflow: hidden; }
+
+    @media (max-width: 700px) {
+      .mf-modal-overlay { padding: 10px; }
+      .mf-modal-container { max-height: 92vh; }
+      .mf-modal-header { padding: 12px 16px; }
+      .mf-modal-body { padding: 14px 16px; }
+      .mf-running-total { padding: 8px 16px; font-size: 11px; }
+      .mf-modal-footer { padding: 12px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
+      .mf-modal-footer-left, .mf-modal-footer-right { width: 100%; justify-content: stretch; }
+      .mf-btn { flex: 1; padding: 9px 12px; font-size: 10px; letter-spacing: 0.12em; }
+      .mf-sku-head { padding: 12px 14px; }
+      .mf-row { padding: 10px 12px; }
+      .mf-row-label { flex-wrap: wrap; gap: 4px; }
+    }
+
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 150;
+      height: 56px;
+      gap: 12px;
+    }
+
+    .mods-total-bar {
+      position: fixed;
+      bottom: 56px;
+      left: 0; right: 0;
+      background: #FAFAF8;
+      border-top: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 150;
+      font-size: 12px;
+      gap: 10px;
+    }
+    .mods-total-bar-label { color: var(--muted); letter-spacing: 0.06em; font-weight: 500; }
+    .mods-total-bar-value { color: var(--green-dark); font-weight: 600; font-size: 14px; }
+    .mods-total-bar-value.zero { color: var(--muted); font-weight: 400; }
+    @media (max-width: 700px) {
+      .mods-total-bar { bottom: 88px; padding: 6px 14px; font-size: 11px; }
+    }
+
+    .ds-swap-btn {
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .ds-swap-btn:hover { color: var(--green-dark); border-color: var(--green-dark); background: rgba(62,90,66,0.04); }
+    .ds-swap-btn svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .swap-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44, 58, 50, 0.55);
+      z-index: 810;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .swap-modal-overlay.show { display: flex; }
+    .swap-modal-container {
+      width: 92vw;
+      max-width: 920px;
+      max-height: 88vh;
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .swap-modal-header {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .swap-modal-title {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--green-dark);
+    }
+    .swap-modal-close {
+      background: none; border: none;
+      cursor: pointer; color: var(--muted);
+      font-size: 24px; line-height: 1;
+      padding: 0 4px; transition: color 0.15s;
+    }
+    .swap-modal-close:hover { color: var(--text); }
+    .swap-modal-body { flex: 1; overflow-y: auto; padding: 18px 22px; }
+    .swap-modal-body::-webkit-scrollbar { width: 6px; }
+    .swap-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .swap-current-card {
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .swap-current-thumb {
+      width: 48px; flex-shrink: 0;
+      aspect-ratio: 355 / 601;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .swap-current-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .swap-current-info { flex: 1; min-width: 0; }
+    .swap-current-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .swap-current-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: var(--green-dark);
+      line-height: 1.2;
+    }
+    .swap-current-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .swap-section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 10px 0 8px;
+    }
+    .swap-style-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 700px) { .swap-style-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 460px) { .swap-style-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .swap-style-card {
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--white);
+    }
+    .swap-style-card:hover { border-color: var(--gold); transform: translateY(-1px); }
+    .swap-style-card.selected { border-color: var(--green-dark); border-width: 2px; }
+    .swap-style-card.current { opacity: 0.4; cursor: not-allowed; }
+    .swap-style-card.current:hover { border-color: var(--border); transform: none; }
+    .swap-style-img-wrap {
+      width: 100%;
+      aspect-ratio: 355 / 601;
+      overflow: hidden;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .swap-style-img-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .swap-style-info { padding: 6px 8px; border-top: 1px solid var(--border); }
+    .swap-style-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--green-dark);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .swap-style-code { font-size: 9px; color: var(--muted); margin-top: 1px; }
+
+    .swap-preview-empty {
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      background: var(--cream);
+    }
+    .swap-preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .swap-preview-table thead th {
+      background: #F5F3EF;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+    }
+    .swap-preview-table thead th.th-right { text-align: right; }
+    .swap-preview-table tbody td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .swap-preview-table tbody tr:last-child td { border-bottom: none; }
+    .swap-preview-table .td-right { text-align: right; }
+    .swap-preview-table .price-delta-pos { color: var(--error); }
+    .swap-preview-table .price-delta-neg { color: var(--green-mid); }
+    .swap-preview-table .price-delta-zero { color: var(--muted); }
+    .swap-preview-table .td-sku { font-weight: 500; color: var(--green-dark); white-space: nowrap; }
+    .swap-preview-table .td-desc { color: var(--text); }
+
+    .swap-preview-summary {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .swap-preview-summary-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .swap-preview-summary-value { font-size: 16px; font-weight: 600; color: var(--green-dark); }
+    .swap-preview-summary-value.pos { color: var(--error); }
+    .swap-preview-summary-value.neg { color: var(--green-mid); }
+
+    .swap-modal-footer {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+    @media (max-width: 700px) {
+      .swap-modal-overlay { padding: 10px; }
+      .swap-modal-container { max-height: 92vh; }
+      .swap-modal-header { padding: 12px 16px; }
+      .swap-modal-body { padding: 14px 16px; }
+.swap-modal-footer { padding: 12px 16px; flex-direction: column; align-items: stretch; }
+      .swap-modal-footer .mf-btn { flex: 1; }
+    }
+
+    /* F-SWAP: 最終確認 popup (CB-15) */
+    .swap-confirm-overlay { z-index: 1200; }
+    .swap-confirm-box {
+      width: 100%; max-width: 380px;
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .swap-confirm-head { padding: 16px 20px 0; }
+    .swap-confirm-title { font-size: 15px; font-weight: 600; color: var(--green-dark); }
+    .swap-confirm-body { padding: 12px 20px 4px; }
+    .swap-confirm-fromto {
+      font-size: 13px; font-weight: 500; color: var(--text);
+      margin-bottom: 14px; letter-spacing: 0.02em;
+    }
+    .swap-confirm-rows { display: flex; flex-direction: column; gap: 8px; }
+    .swap-confirm-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 13px; color: var(--text);
+    }
+    .swap-confirm-row span:first-child { color: var(--muted); letter-spacing: 0.04em; }
+    .swap-confirm-row.diff-row {
+      margin-top: 6px; padding-top: 10px;
+      border-top: 1px solid var(--border); font-weight: 600;
+    }
+    .swap-confirm-diff { font-size: 15px; font-weight: 700; }
+    .swap-confirm-diff.pos { color: var(--error); }
+    .swap-confirm-diff.neg { color: var(--green-mid); }
+    .swap-confirm-diff.zero { color: var(--muted); }
+    .swap-confirm-note { font-size: 11px; margin-left: 6px; }
+    .swap-confirm-note.pos { color: var(--error); }
+    .swap-confirm-note.neg { color: var(--green-mid); }
+    .swap-confirm-note.zero { color: var(--muted); }
+    .swap-confirm-foot {
+      padding: 14px 20px; border-top: 1px solid var(--border);
+      background: #FAFAF8; display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    .bottom-left { font-size: 12px; color: var(--muted); }
+    .bottom-left strong { color: var(--green-dark); }
+    .bottom-left.complete strong { color: var(--gold); }
+    .bottom-right { display: flex; gap: 10px; align-items: center; }
+    .btn-back {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 10px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 40px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-back:hover { color: var(--text); border-color: var(--text); }
+    .btn-next {
+      background: var(--green-dark);
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 10px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 40px;
+    }
+    .btn-next:hover { background: var(--green-mid); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .toast {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-dark);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 600;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--error); }
+
+    @media (max-width: 700px) {
+      .page { padding: 16px 14px 80px; }
+      .ds-card-header { flex-wrap: wrap; padding: 12px 14px; gap: 10px; }
+      .ds-info { flex: 1 0 calc(100% - 78px); }
+      .ds-progress { flex: 1 0 100%; text-align: left; padding-left: 78px; margin-top: -4px; }
+      .ds-name { font-size: 17px; }
+      .ds-thumb { width: 64px; }
+      .ds-discontinued-banner { padding: 10px 14px; }
+      .no-assembled-banner { padding: 12px 16px; }
+      .ds-group { padding: 10px 14px; }
+      .sku-row { flex-wrap: wrap; gap: 6px 10px; padding: 12px 0; }
+      .sku-code { min-width: 0; flex: 1 0 auto; }
+      .sku-desc { flex: 1 0 100%; font-size: 11px; }
+      .sku-qty { text-align: left; min-width: 0; }
+      .sku-status { min-width: 0; font-size: 9px; padding: 2px 7px; }
+      .sku-asm-switch-btn { font-size: 9px; padding: 3px 8px; letter-spacing: 0.08em; }
+      .page-heading h1 { font-size: 22px; }
+      .page-heading .subtitle { font-size: 12px; }
+      .bottom-bar { padding: 8px 14px; height: auto; flex-wrap: wrap; gap: 8px; }
+      .bottom-left { flex: 1 0 100%; font-size: 11px; }
+      .bottom-right { flex: 1 0 100%; justify-content: space-between; }
+      .btn-back, .btn-next { padding: 9px 14px; font-size: 10px; letter-spacing: 0.12em; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CB-4: Revision flow — admin-edit banner + review read-only
+       ═══════════════════════════════════════════════════════════════ */
+    .admin-editing-banner {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .admin-editing-banner .aeb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(201,168,76,0.18);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .admin-editing-banner .aeb-icon-wrap svg { width: 16px; height: 16px; fill: var(--gold); }
+    .admin-editing-banner .aeb-body { flex: 1; min-width: 0; }
+    .admin-editing-banner .aeb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #8B6914; margin-bottom: 4px;
+    }
+    .admin-editing-banner .aeb-msg { font-size: 13px; color: #2C3A32; line-height: 1.55; }
+    .admin-editing-banner .aeb-msg strong { font-weight: 600; }
+
+    /* review mode: block interaction inside the mf modal (visuals stay) */
+    body.review-lock #mfSplitPanel,
+    body.review-lock #mfElementsContainer,
+    body.review-lock #mfSkuHead .mf-sku-head-qty {
+      pointer-events: none;
+      opacity: 0.72;
+    }
+    /* hide editing-only controls in review mode */
+    body.review-lock .ds-swap-btn,
+    body.review-lock .sku-asm-switch-btn,
+    body.review-lock .sku-delete-btn,
+    body.review-lock #mfBtnSave,
+    body.review-lock .mf-btn-skip,
+    body.review-lock .mf-split-row-delete,
+    body.review-lock #mfSplitAddBtn {
+      display: none !important;
+    }
+    /* review-mode read-only note in the modal footer */
+    .mf-review-note {
+      font-size: 11px; color: var(--info-blue);
+      font-style: italic; letter-spacing: 0.03em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="pcd-quote-flow-header" data-step="3"></div>
+
+<div class="page">
+  <div id="returnedBannerMount"></div>
+  <div id="noAssembledBannerMount"></div>
+
+  <div class="page-heading">
+    <h1>Customize Your Order</h1>
+    <div class="subtitle">Configure modifications for assembled cabinets</div>
+  </div>
+
+  <div id="doorStyleList">
+    <div class="empty-state">Loading...</div>
+  </div>
+</div>
+
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt=""/>
+</div>
+
+<div class="mf-modal-overlay" id="mfModalOverlay">
+  <div class="mf-modal-container" role="dialog" aria-modal="true" aria-labelledby="mfModalTitle">
+    <div class="mf-modal-header">
+      <span class="mf-modal-title" id="mfModalTitle">Configure Modifications</span>
+      <button class="mf-modal-close" type="button" onclick="closeMfModal()" aria-label="Close">×</button>
+    </div>
+
+    <div class="mf-modal-body" id="mfModalBody">
+      <div class="mf-sku-head" id="mfSkuHead">
+        <div class="mf-sku-head-row1">
+          <span class="mf-sku-head-code" id="mfHeadCode">—</span>
+          <span id="mfHeadDescSep"> </span>
+          <span id="mfHeadDesc">—</span>
+        </div>
+        <div class="mf-sku-head-row2" id="mfHeadMeta"></div>
+      </div>
+
+      <div class="mf-split-panel" id="mfSplitPanel">
+        <div class="mf-split-header">
+          <span class="mf-split-title">Split this SKU</span>
+          <span class="mf-split-summary" id="mfSplitSummary">—</span>
+        </div>
+        <div class="mf-split-rows" id="mfSplitRows"></div>
+        <button class="mf-split-add" id="mfSplitAddBtn" type="button" onclick="addSubGroup()">+ Add sub-group</button>
+        <div class="mf-split-hint">
+          Tip: Sub-groups with no modifications selected will be saved as <em>skipped</em>.
+          Split when different units of this SKU need different modifications (e.g. some with a left skin, some with a right skin).
+        </div>
+      </div>
+
+      <div class="mf-tabs" id="mfTabs" style="display:none;"></div>
+
+      <div class="mf-group" data-group-no="1">
+        <div class="mf-group-header">
+          <span class="mf-group-label" id="mfGroupLabel">Modifications</span>
+          <span class="mf-group-qty" id="mfGroupQty">Qty: 0</span>
+        </div>
+        <div class="mf-group-body">
+          <div id="mfElementsContainer">
+            <div class="mf-loading">
+              <span class="mf-loading-spinner"></span>Loading modifications...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mf-running-total" id="mfRunningTotal">
+      <span class="mf-running-total-label" id="mfRunningTotalLabel">Modifications subtotal</span>
+      <span class="mf-running-total-value zero" id="mfRunningTotalValue">$0.00</span>
+    </div>
+
+    <div class="mf-modal-footer">
+      <div class="mf-modal-footer-left">
+        <button class="mf-btn mf-btn-skip" type="button" onclick="handleMfSkip()">Skip This SKU</button>
+      </div>
+      <div class="mf-modal-footer-right">
+        <button class="mf-btn mf-btn-cancel" type="button" onclick="closeMfModal()">Cancel</button>
+        <button class="mf-btn mf-btn-save" type="button" id="mfBtnSave" onclick="handleMfSave()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="mods-total-bar" id="modsTotalBar">
+  <span class="mods-total-bar-label">Modifications Total:</span>
+  <span class="mods-total-bar-value zero" id="modsTotalBarValue">$0.00</span>
+</div>
+
+<div class="swap-modal-overlay" id="swapModalOverlay">
+  <div class="swap-modal-container" role="dialog" aria-modal="true" aria-labelledby="swapModalTitle">
+    <div class="swap-modal-header">
+      <span class="swap-modal-title" id="swapModalTitle">Swap Door Style</span>
+      <button class="swap-modal-close" type="button" onclick="closeSwapModal()" aria-label="Close">×</button>
+    </div>
+    <div class="swap-modal-body">
+      <div class="swap-current-card" id="swapCurrentCard">
+        <div class="swap-current-thumb" id="swapCurrentThumb"></div>
+        <div class="swap-current-info">
+          <div class="swap-current-label">Current Style</div>
+          <div class="swap-current-name" id="swapCurrentName">—</div>
+          <div class="swap-current-meta" id="swapCurrentMeta">—</div>
+        </div>
+      </div>
+
+    <div class="swap-section-label" id="swapPickLabel">Pick a replacement style (same construction type)</div>
+      <div class="swap-style-grid" id="swapStyleGrid"></div>
+    </div>
+<div class="swap-modal-footer">
+      <button class="mf-btn mf-btn-cancel" type="button" onclick="closeSwapModal()">Cancel</button>
+      <button class="mf-btn mf-btn-save" type="button" id="swapConfirmBtn" onclick="confirmSwap()" disabled>Confirm Swap</button>
+    </div>
+  </div>
+</div>
+
+<!-- F-SWAP: 最終確認 popup (CB-15) -->
+<div class="swap-modal-overlay swap-confirm-overlay" id="swapConfirmOverlay">
+  <div class="swap-confirm-box" role="dialog" aria-modal="true" aria-labelledby="swapConfirmTitle">
+    <div class="swap-confirm-head">
+      <span class="swap-confirm-title" id="swapConfirmTitle">Confirm Door Style Change</span>
+    </div>
+<div class="swap-confirm-body">
+      <div class="swap-confirm-fromto" id="swapConfirmFromTo">—</div>
+      <div class="swap-confirm-rows">
+        <div class="swap-confirm-row">
+          <span>Unit Price</span>
+          <span><span id="swapConfirmOldUnit">$0.00</span> → <span id="swapConfirmNewUnit">$0.00</span></span>
+        </div>
+        <div class="swap-confirm-row">
+          <span>Modifications</span>
+          <span><span id="swapConfirmOldMod">$0.00</span> → <span id="swapConfirmNewMod">$0.00</span></span>
+        </div>
+        <div class="swap-confirm-row">
+          <span>Assembly Fee</span>
+          <span><span id="swapConfirmOldFee">$0.00</span> → <span id="swapConfirmNewFee">$0.00</span></span>
+        </div>
+        <div class="swap-confirm-row diff-row">
+          <span>Group Total</span>
+          <span><span id="swapConfirmOldTotal">$0.00</span> → <span id="swapConfirmNewTotal">$0.00</span></span>
+        </div>
+        <div class="swap-confirm-row">
+          <span>Change</span>
+          <span><span class="swap-confirm-diff" id="swapConfirmDiff">$0.00</span><span class="swap-confirm-note" id="swapConfirmNote"></span></span>
+        </div>
+      </div>
+    </div>
+    <div class="swap-confirm-foot">
+      <button class="mf-btn mf-btn-cancel" type="button" onclick="closeSwapConfirmPopup()">Cancel</button>
+      <button class="mf-btn mf-btn-save" type="button" onclick="commitSwap()">Confirm Change</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-left" id="bottomStatus">
+    <strong id="bottomStatusText">Loading...</strong>
+  </div>
+  <div class="bottom-right">
+    <a href="new-quote-step2.html" class="btn-back" id="btnBack">← Back to Products</a>
+    <button class="btn-next" id="btnNext" onclick="goReview()" disabled>Review →</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="components/quote-flow-header.js"></script>
+
+<script src="components/modifications/mf01-skin.js"></script>
+<script src="components/modifications/mf02-toggle-dropdown.js"></script>
+<script src="components/modifications/mf03-pure-toggle.js"></script>
+<script src="components/modifications/mf04-toggle-number.js"></script>
+<script src="components/modifications/mf05-pure-dropdown.js"></script>
+<script src="components/modifications/mf06-text-only.js"></script>
+<script src="components/modifications/mf07-super.js"></script>
+<script>
+const { createClient } = supabase;
+const _supabase = createClient(
+  window.SB_URL,
+  window.SB_KEY
+);
+
+// ── State ──
+let dealer           = null;
+let cartItems        = [];
+let allDoorStyles    = [];
+let doorStyleGroups  = [];
+let currentSortMode  = 'type';  // CB-5 需求4: type | az | price_asc | price_desc
+let draftId          = null;
+let pageProgress     = { done: 0, total: 0, percent: 0 };
+// CB-6: Modification Bundle(材料費)用
+let modificationBundles = [];   // modification_bundles 全部 active 列
+let allSkusFramed       = [];   // SKU master(價格來源)— framed
+let allSkusFrameless    = [];   // SKU master(價格來源)— frameless  
+
+// Modal state
+let activeMfModalKey   = null;
+let activeMfModalRules = [];
+let effectiveRole      = 'dealer';
+
+// CB-4: revision-flow view mode (server-resolved; never trusts URL/sessionStorage).
+//   'normal'      — dealer building / editing own Draft
+//   'admin-edit'  — admin editing a dealer's Pending/Returned PO
+//   'review'      — dealer reviewing a returned PO (read-only; can only proceed)
+let viewMode      = 'normal';
+let isAdminViewer = false;
+function isReviewLocked() { return viewMode === 'review'; }
+
+function resolveViewMode(status, isOwner, isAdmin) {
+  if (!status) return 'normal';
+  if (status === 'Returned') {
+    if (isAdmin && !isOwner) return 'admin-edit';
+    if (isOwner) return 'review';
+    if (isAdmin) return 'admin-edit';
+    return 'review';
+  }
+  if (status === 'Pending') return isAdmin ? 'admin-edit' : 'normal';
+  return 'normal';
+}
+
+function buildModeParam() {
+  if (viewMode === 'admin-edit') return '&mode=admin-edit';
+  if (viewMode === 'review')     return '&mode=review';
+  return '';
+}
+  
+
+// E5: sub-group state
+let activeSubGroups    = [];
+let activeSubGroupIdx  = 0;
+let activeSkuQty       = 1;
+
+const colorMap = {
+  black:'#2C2C2C', blue:'#3B5A8A', brown:'#7B5C3E',
+  grey:'#8A8A8A', white:'#F0EDE8', green:'#2D4A3A', beige:'#C8B89A',
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// F-BINDING-GROUP: automatic binding inference
+//
+// CSV doesn't manually tag _binding_group / _binding_role on
+// modification_assignments rows. Instead, after the RPC returns
+// rules, we infer binding markers from (mf_code, display_label)
+// and inject them into mf_params in-memory (DB stays untouched).
+//
+// To add a new binding pair (e.g. Drawer Front) later:
+//   1. Append a new entry to BINDING_RULES below
+//   2. Done — no other code changes needed
+//
+// Important: dependent label matching is checked BEFORE primary
+// because "Prep For Glass" string-contains "Glass". The check
+// order in inferBindingFromMfCode preserves this guarantee.
+// ═══════════════════════════════════════════════════════════════════
+const BINDING_RULES = [
+  {
+    group:       'GLASS',
+    primary:     {
+      mf_code:                   'MF02',
+      display_label_contains:    'Glass',
+      // F-GLASS-MULTIPLIER: derive _unit_price + _multiplier from
+      // the CSV row's subcategory. Only multipliers > 1 get injected
+      // (1Dr just shows "+$25.00" like a normal mod, no breakdown).
+      multiplier_by_subcategory: { '1Dr': 1, '2Dr': 2 },
+    },
+    dependent:   { mf_code: 'MF03', display_label_contains: 'Prep For Glass' },
+    lock_reason: 'Required with Glass',
+  },
+  // Future bindings (e.g. DRAWER_FRONT) — add here, no logic change.
+];
+
+// F-GLASS-MULTIPLIER (2026-06-10): Glass 雙門價拆解的倍率對照。
+//   與 binding 解耦 —— Glass 已不是 binding primary,multiplier 注入不再
+//   寄生在 inferBindingFromMfCode 的 primary 分支,改由獨立 pass 依此表
+//   注入 _unit_price/_multiplier(見 RPC 後的注入段)。
+const GLASS_MULTIPLIER_BY_SUBCATEGORY = { '1Dr': 1, '2Dr': 2 };
+
+function inferBindingFromMfCode(rule) {
+  if (!rule || !rule.mf_code) return null;
+  const label = (rule.display_label || '').trim();
+
+  // Dependent first — "Prep For Glass" also contains "Glass"
+  for (let i = 0; i < BINDING_RULES.length; i++) {
+    const br = BINDING_RULES[i];
+    if (rule.mf_code === br.dependent.mf_code &&
+        label.indexOf(br.dependent.display_label_contains) !== -1) {
+      return {
+        _binding_group: br.group,
+        _binding_role:  'dependent',
+        _lock_reason:   br.lock_reason,
+      };
+    }
+  }
+
+  for (let i = 0; i < BINDING_RULES.length; i++) {
+    const br = BINDING_RULES[i];
+    if (rule.mf_code === br.primary.mf_code &&
+        label.indexOf(br.primary.display_label_contains) !== -1) {
+      const result = {
+        _binding_group: br.group,
+        _binding_role:  'primary',
+      };
+      // F-GLASS-MULTIPLIER: derive unit_price + multiplier from
+      // rule.matched_subcategory (e.g. '2Dr' → multiplier 2, unit_price = cost/2).
+      // RPC returns the matched subcategory under `matched_subcategory`;
+      // `subcategory` is kept as a fallback for safety.
+      // Only multipliers > 1 get injected — 1Dr just keeps the default
+      // "+$25.00" display via the rule's base cost.
+      if (br.primary.multiplier_by_subcategory) {
+        const sub = (rule.matched_subcategory || rule.subcategory || '').trim();
+        const m = sub ? br.primary.multiplier_by_subcategory[sub] : null;
+        if (typeof m === 'number' && m > 1) {
+          const cost = parseFloat(rule.cost);
+          if (isFinite(cost) && cost > 0) {
+            result._multiplier = m;
+            result._unit_price = cost / m;
+          }
+        }
+      }
+      return result;
+    }
+  }
+
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-6: Modification Bundle — material cost
+// ═══════════════════════════════════════════════════════════════════
+const BUNDLE_RULES = [
+  { mf_code: 'MF01', label_contains: 'Skin' },
+  { mf_code: 'MF03', label_contains: 'Roll Out' },
+];
+
+function isBundleEligible(mfCode, displayLabel) {
+  const label = (displayLabel || '');
+  return BUNDLE_RULES.some(function (r) {
+    return r.mf_code === mfCode && label.indexOf(r.label_contains) !== -1;
+  });
+}
+
+function bundleMappingQty(mfCode, value) {
+  if (mfCode === 'MF01') {
+    if (value === 'both') return 2;
+    if (value === 'left' || value === 'right') return 1;
+    return 0;
+  }
+  if (mfCode === 'MF03') {
+    // F-QTY-SELECTOR: value 可能是 boolean(無 qty_selector)或
+    // { enabled, qty }(有 qty_selector)。物件時 mapping_qty = 選的 qty。
+    if (value && typeof value === 'object') {
+      if (value.enabled !== true) return 0;
+      const q = parseInt(value.qty, 10);
+      return (isFinite(q) && q > 0) ? q : 1;
+    }
+    return value === true ? 1 : 0;
+  }
+  return 0;
+}
+function computeBundleMaterial(item, mfCode, displayLabel, value) {
+  const EMPTY = { material_cost: 0, mapping_sku: null, mapping_qty: 0 };
+  if (!item || !isBundleEligible(mfCode, displayLabel)) return EMPTY;
+
+  const qty = bundleMappingQty(mfCode, value);
+  if (qty <= 0) return EMPTY;
+
+  const styleRow = allDoorStyles.find(function (s) { return s.style_code === item.style_code; });
+  if (!styleRow) return EMPTY;
+
+  const ctype = (styleRow.construction_type || '').toLowerCase();
+  if (ctype !== 'framed' && ctype !== 'frameless') return EMPTY;
+
+  const bundle = modificationBundles.find(function (b) {
+    return b && (b.type || '').toLowerCase() === ctype
+        && b.source_sku === item.sku_code
+        && b.mf_code === mfCode;
+  });
+  if (!bundle) return EMPTY;
+
+  const skuMaster = (ctype === 'frameless') ? allSkusFrameless : allSkusFramed;
+  const mappingRow = skuMaster.find(function (s) { return s.sku_code === bundle.mapping_sku; });
+  if (!mappingRow) {
+    console.error('[CB-6] Mapping SKU "' + bundle.mapping_sku + '" not found in skus_' + ctype +
+                  ' (source=' + item.sku_code + ', ' + mfCode + ')');
+    return { material_cost: 0, mapping_sku: bundle.mapping_sku, mapping_qty: qty };
+  }
+
+  const groupPrice = getMsrpForStyleGroup(mappingRow, styleRow.grp);
+  if (groupPrice === null) {
+    return { material_cost: 0, mapping_sku: bundle.mapping_sku, mapping_qty: qty };
+  }
+
+  const multiplier = getMultiplierForStyle(styleRow);
+  return {
+    material_cost: groupPrice * multiplier * qty,
+    mapping_sku:   bundle.mapping_sku,
+    mapping_qty:   qty,
+  };
+}
+
+function renderBundleMaterialLine(row, mat) {
+  if (!row) return;
+  let line = row.querySelector('.mf-bundle-material');
+  const show = mat && mat.mapping_sku && mat.mapping_qty > 0;
+  if (!show) { if (line) line.remove(); return; }
+  if (!line) {
+    line = document.createElement('div');
+    line.className = 'mf-bundle-material';
+    row.appendChild(line);
+  }
+  line.innerHTML =
+    '<span class="bm-sku">' + esc(mat.mapping_sku) + '</span>' +
+    '<span class="bm-sep">·</span><span class="bm-qty">Qty ' + mat.mapping_qty + '</span>' +
+    '<span class="bm-sep">·</span><span class="bm-mat">Material $' + (mat.material_cost || 0).toFixed(2) + '</span>';
+}
+
+const ZOOM_ICON_SVG = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>';
+const ADMIN_LOCK_SVG = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>';
+const TRASH_SVG = '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+const SWAP_ARROWS_SVG = '<svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/></svg>';
+
+function openLightbox(src) {
+  if (!src) return;
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxOverlay').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightboxOverlay').classList.remove('show');
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  if (isError) t.classList.add('error');
+  else t.classList.remove('error');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+// CB-4: review banner (dealer reviewing a returned PO — read-only)
+function buildReviewBanner() {
+  return `
+    <div class="returned-revising-banner">
+      <div class="rrb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </div>
+      <div class="rrb-body">
+        <div class="rrb-title">Reviewing Revised Purchase Order</div>
+        <div class="rrb-msg">You are reviewing your revised Purchase Order. Modifications are shown for review only and cannot be changed here — click Review to continue and resubmit on the final step.</div>
+      </div>
+    </div>`;
+}
+
+// CB-4: admin-edit banner (admin editing a dealer's PO)
+function buildAdminEditBanner(ownerDealer) {
+  const name = ownerDealer
+    ? (ownerDealer.company_name || ownerDealer.contact_name || '—')
+    : '—';
+  return `
+    <div class="admin-editing-banner">
+      <div class="aeb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </div>
+      <div class="aeb-body">
+        <div class="aeb-title">Editing Dealer's Purchase Order</div>
+        <div class="aeb-msg">You are editing the Purchase Order belonging to <strong>${name}</strong>. Changes are buffered locally and only saved when you click <strong>Request Revision</strong> on the final step.</div>
+      </div>
+    </div>`;
+}
+
+function buildNoAssembledBanner() {
+  return `
+    <div class="no-assembled-banner">
+      <div class="nab-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      </div>
+      <div class="nab-body">
+        <div class="nab-title">No Modifications Needed</div>
+        <div class="nab-msg">This quote has no assembled items. No modifications are needed — click Review to continue.</div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-RTA-SWITCH: Assembly fee lookup + support detection
+// ═══════════════════════════════════════════════════════════════════
+function getAssembleFeeForItem(dealer, item) {
+  if (!dealer || !item) return 0;
+
+  let ctype = (item.construction_type || '').toLowerCase();
+  if (!ctype && item.style_code && Array.isArray(allDoorStyles)) {
+    const styleRow = allDoorStyles.find(function (s) { return s.style_code === item.style_code; });
+    if (styleRow) ctype = (styleRow.construction_type || '').toLowerCase();
+  }
+
+  const skuType = (item.skuType || '').toUpperCase();
+  if (ctype !== 'framed' && ctype !== 'frameless') return 0;
+  const map = {
+    'BASE':          'asm_fee_' + ctype + '_base',
+    'WALL':          'asm_fee_' + ctype + '_wall',
+    'TALL':          'asm_fee_' + ctype + '_tall',
+    'VANITY':        'asm_fee_' + ctype + '_vanity',
+    'ROLL_OUT_TRAY': 'asm_fee_' + ctype + '_roll_out_tray',
+  };
+  const col = map[skuType];
+  if (!col) return 0;
+  const v = parseFloat(dealer[col]);
+  return isNaN(v) ? 0 : v;
+}
+
+function itemSupportsAssembled(dealer, item) {
+  if (!dealer || !item) return false;
+  if (item.is_custom) return true;  // custom items always allow both
+
+  let ctype = (item.construction_type || '').toLowerCase();
+  if (!ctype && item.style_code && Array.isArray(allDoorStyles)) {
+    const styleRow = allDoorStyles.find(function (s) { return s.style_code === item.style_code; });
+    if (styleRow) ctype = (styleRow.construction_type || '').toLowerCase();
+  }
+
+  const skuType = (item.skuType || '').toUpperCase();
+  if (ctype !== 'framed' && ctype !== 'frameless') return false;
+
+  const map = {
+    'BASE':          'asm_fee_' + ctype + '_base',
+    'WALL':          'asm_fee_' + ctype + '_wall',
+    'TALL':          'asm_fee_' + ctype + '_tall',
+    'VANITY':        'asm_fee_' + ctype + '_vanity',
+    'ROLL_OUT_TRAY': 'asm_fee_' + ctype + '_roll_out_tray',
+  };
+  const col = map[skuType];
+  if (!col) return false;
+
+  const raw = dealer[col];
+  return raw !== null && raw !== undefined && raw !== '';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// E5: sub_groups data layer
+// ═══════════════════════════════════════════════════════════════════
+
+function ensureSubGroups(item) {
+  if (Array.isArray(item.sub_groups) && item.sub_groups.length) {
+    item.sub_groups = item.sub_groups.map(function (g, i) {
+      return {
+        sub_index:           (typeof g.sub_index === 'number') ? g.sub_index : (i + 1),
+        qty:                 (typeof g.qty === 'number' && g.qty > 0) ? g.qty : 1,
+        modifications:       Array.isArray(g.modifications) ? g.modifications : [],
+        modification_status:
+                  (!g.modification_status || g.modification_status === 'unprocessed')
+                    ? 'skipped'
+                    : g.modification_status,
+      };
+    });
+    delete item.modifications;
+    delete item.modification_status;
+    return item;
+  }
+
+    const legacyStatus =
+        (!item.modification_status || item.modification_status === 'unprocessed')
+          ? 'skipped'
+          : item.modification_status;
+  const legacyMods = Array.isArray(item.modifications) ? item.modifications : [];
+
+  item.sub_groups = [{
+    sub_index:           1,
+    qty:                 (typeof item.quantity === 'number' && item.quantity > 0) ? item.quantity : 1,
+    modifications:       legacyMods,
+    modification_status: legacyStatus,
+  }];
+  delete item.modifications;
+  delete item.modification_status;
+  return item;
+}
+
+function getItemOverallStatus(item) {
+  if (item.type === 'RTA') return 'skipped';
+  if (!Array.isArray(item.sub_groups) || !item.sub_groups.length) return 'unprocessed';
+
+  const allDone = item.sub_groups.every(function (g) {
+    return g.modification_status === 'configured'
+        || g.modification_status === 'skipped';
+  });
+  if (!allDone) return 'unprocessed';
+
+  const allSkipped = item.sub_groups.every(function (g) {
+    return g.modification_status === 'skipped';
+  });
+  return allSkipped ? 'skipped' : 'configured';
+}
+
+function sumSubQty(item) {
+  if (!Array.isArray(item.sub_groups)) return 0;
+  return item.sub_groups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+}
+
+function normalizeCartItems(items) {
+  return items.map(function (item) {
+    const normalized = Object.assign({}, item);
+    if (typeof normalized.quantity !== 'number' || normalized.quantity < 1) {
+      normalized.quantity = 1;
+    }
+    return ensureSubGroups(normalized);
+  });
+}
+
+async function loadDraftItems(allSkusFramed, allSkusFrameless) {
+  const { data: items, error } = await _supabase
+    .from('quote_items').select('*').eq('quote_id', draftId);
+  if (error || !items || !items.length) return [];
+
+  const skuAll = allSkusFramed.concat(allSkusFrameless);
+  const groupsByKey = new Map();
+
+  const sorted = items.slice().sort(function (a, b) {
+    if (a.style_code !== b.style_code) return a.style_code.localeCompare(b.style_code);
+    if (a.sku_code !== b.sku_code) return a.sku_code.localeCompare(b.sku_code);
+    if (a.assemble_status !== b.assemble_status) {
+      return a.assemble_status.localeCompare(b.assemble_status);
+    }
+    return (a.sub_index || 1) - (b.sub_index || 1);
+  });
+
+  sorted.forEach(function (row) {
+    const key = row.sku_code + '_' + row.assemble_status;
+    const groupKey = row.style_code + '|' + key;
+
+    if (!groupsByKey.has(groupKey)) {
+      const style = allDoorStyles.find(function (s) { return s.style_code === row.style_code; });
+      const sku   = skuAll.find(function (s) { return s.sku_code === row.sku_code; });
+      groupsByKey.set(groupKey, {
+        key:           key,
+        style_code:    row.style_code,
+        style_name:    style ? style.style_name : row.style_code,
+        sku_code:      row.sku_code,
+        sku_desc:      sku ? sku.description : row.sku_code,
+        skuType:       row.sku_type || '',
+        category:      sku ? (sku.category    || '') : '',
+        subcategory:   sku ? (sku.subcategory || '') : '',
+        type:          row.assemble_status,
+        quantity:      0,
+        unit_price:    parseFloat(row.unit_price),
+        msrp:          parseFloat(row.msrp || 0),
+        assemble_fee:  parseFloat(row.assemble_fee || 0),
+        sub_groups:    [],
+      });
+    }
+
+    const cartItem = groupsByKey.get(groupKey);
+    const rowQty = parseInt(row.quantity, 10) || 0;
+    cartItem.quantity += rowQty;
+    cartItem.sub_groups.push({
+      sub_index:           parseInt(row.sub_index, 10) || (cartItem.sub_groups.length + 1),
+      qty:                 rowQty,
+      modifications:       Array.isArray(row.modifications) ? row.modifications : [],
+      modification_status:
+              (!row.modification_status || row.modification_status === 'unprocessed')
+                ? 'skipped'
+                : row.modification_status,
+    });
+  });
+
+  const out = [];
+  groupsByKey.forEach(function (item) {
+    item.sub_groups.forEach(function (g, i) { g.sub_index = i + 1; });
+    out.push(item);
+  });
+  return out;
+}
+// CB-5 需求3: RTA → 顯示 Unassembled(全字);DB value 不動
+function formatAssembleStatus(v) {
+  return v === 'RTA' ? 'Unassembled' : 'Assembled';
+}
+
+// CB-5 需求4: SKU 列排序(卡片內,不改變門花色分組結構)
+const SKU_TYPE_ORDER = ['BASE', 'TALL', 'WALL', 'DRAWER', 'ACCESSORIES', 'OTHER'];
+function skuTypeRank(t) {
+  const i = SKU_TYPE_ORDER.indexOf((t || '').toUpperCase());
+  return i === -1 ? 999 : i;
+}
+function sortSkuItems(items, mode) {
+  const arr = (items || []).slice();
+  switch (mode) {
+    case 'az':
+      arr.sort(function (a, b) { return (a.sku_code || '').localeCompare(b.sku_code || ''); });
+      break;
+    case 'price_asc':
+      arr.sort(function (a, b) { return (a.unit_price || 0) - (b.unit_price || 0); });
+      break;
+    case 'price_desc':
+      arr.sort(function (a, b) { return (b.unit_price || 0) - (a.unit_price || 0); });
+      break;
+    case 'type':
+    default:
+      arr.sort(function (a, b) {
+        const r = skuTypeRank(a.skuType) - skuTypeRank(b.skuType);
+        if (r !== 0) return r;
+        return (a.sku_code || '').localeCompare(b.sku_code || '');
+      });
+      break;
+  }
+  return arr;
+}
+function buildSortControlHtml() {
+  const opts = [
+    ['type', 'Type'],
+    ['az', 'SKU (A–Z)'],
+    ['price_asc', 'Price (Low–High)'],
+    ['price_desc', 'Price (High–Low)'],
+  ];
+  const optionsHtml = opts.map(function (o) {
+    const sel = (o[0] === currentSortMode) ? ' selected' : '';
+    return '<option value="' + o[0] + '"' + sel + '>' + o[1] + '</option>';
+  }).join('');
+  return '<div class="ds-sort-wrap">' +
+           '<span class="ds-sort-label">Sort</span>' +
+           '<select class="ds-sort-select" onchange="onSortChange(this.value)">' + optionsHtml + '</select>' +
+         '</div>';
+}
+function onSortChange(mode) {
+  currentSortMode = mode;
+  renderDoorStyleList();
+}
+
+function buildDoorStyleGroups(items, doorStyles) {
+  const groups = [];
+  const indexByCode = new Map();
+  const customExtras = [];
+
+  items.forEach(function (item) {
+    if (item.is_custom &&
+        (item.skuType === 'ACCESSORIES' || item.skuType === 'OTHER')) {
+      customExtras.push(item);
+      return;
+    }
+
+    const code = item.style_code || ('__CUSTOM_' + (item.style_name || 'NO_STYLE') + '__');
+    let idx = indexByCode.get(code);
+
+    if (idx === undefined) {
+      const styleRow = item.style_code
+        ? doorStyles.find(function (s) { return s.style_code === item.style_code; })
+        : null;
+      const isCustomGroup = !!item.is_custom && !item.style_code;
+      const group = {
+        style_code:        item.style_code || code,
+        style_name:        (styleRow && styleRow.style_name) || item.style_name || code,
+        construction_type: (styleRow && styleRow.construction_type)
+                            || item.construction_type
+                            || 'unknown',
+        is_stock:          styleRow ? (styleRow.is_stock === true) : null,
+        image_url:         (styleRow && styleRow.image_url) || null,
+        color:             (styleRow && styleRow.color) || null,
+        subcategory:       (styleRow && styleRow.subcategory) || null,
+        is_discontinued:   !styleRow && !isCustomGroup,
+        is_custom_style:   isCustomGroup,
+        assembledItems:    [],
+        rtaItems:          [],
+        progress:          { done: 0, total: 0 },
+      };
+      groups.push(group);
+      idx = groups.length - 1;
+      indexByCode.set(code, idx);
+    }
+
+    if (item.type === 'Assembled') {
+      groups[idx].assembledItems.push(item);
+    } else if (item.type === 'RTA') {
+      groups[idx].rtaItems.push(item);
+    }
+  });
+
+  if (customExtras.length) {
+    groups.push({
+      style_code:        '__CUSTOM_EXTRAS__',
+      style_name:        'Custom Items',
+      construction_type: 'custom',
+      image_url:         null,
+      color:             null,
+      subcategory:       null,
+      is_discontinued:   false,
+      is_custom_extras:  true,
+      assembledItems:    [],
+      rtaItems:          [],
+      customExtras:      customExtras,
+      progress:          { done: 0, total: 0 },
+    });
+  }
+
+  return groups;
+}
+
+function logDoorStyleGroups(groups) {
+  console.log('[E1.3] doorStyleGroups built (' + groups.length + ' group' + (groups.length !== 1 ? 's' : '') + '):');
+  groups.forEach(function (g, i) {
+    const tag = g.is_discontinued ? ' ⚠ DISCONTINUED' : '';
+    const ctype = g.construction_type !== 'unknown' ? '[' + g.construction_type + ']' : '[unknown]';
+    console.log(
+      '  #' + (i + 1) + '  ' + g.style_code +
+      ' (' + g.style_name + ') ' + ctype + tag +
+      '\n        Assembled: ' + g.assembledItems.length + ' SKU' + (g.assembledItems.length !== 1 ? 's' : '') +
+      '  ·  RTA: ' + g.rtaItems.length + ' SKU' + (g.rtaItems.length !== 1 ? 's' : '')
+    );
+  });
+}
+
+function calculateProgress(groups) {
+  let pageDone = 0;
+  let pageTotal = 0;
+
+  groups.forEach(function (group) {
+    const total = group.assembledItems.length;
+    const done  = group.assembledItems.filter(function (item) {
+      const s = getItemOverallStatus(item);
+      return s === 'configured' || s === 'skipped';
+    }).length;
+
+    group.progress.total = total;
+    group.progress.done  = done;
+
+    pageTotal += total;
+    pageDone  += done;
+  });
+
+  const percent = pageTotal === 0 ? 100 : Math.round((pageDone / pageTotal) * 100);
+  return { done: pageDone, total: pageTotal, percent: percent };
+}
+
+function renderProgressCard(progress) {
+  const card      = document.getElementById('progressCard');
+  if (!card) return;   // top progress card removed (C1) — no-op
+  const doneEl    = document.getElementById('progressDone');
+  const totalEl   = document.getElementById('progressTotal');
+  const percentEl = document.getElementById('progressPercent');
+  const barFillEl = document.getElementById('progressBarFill');
+
+  doneEl.textContent    = progress.done;
+  totalEl.textContent   = progress.total;
+  percentEl.textContent = progress.percent + '%';
+  barFillEl.style.width = progress.percent + '%';
+
+  if (progress.total > 0 && progress.done === progress.total) {
+    barFillEl.classList.add('complete');
+  } else {
+    barFillEl.classList.remove('complete');
+  }
+
+  if (progress.total === 0) card.classList.add('no-assembled');
+  else card.classList.remove('no-assembled');
+}
+
+function renderDoorStyleList() {
+  const container = document.getElementById('doorStyleList');
+  if (!doorStyleGroups.length) {
+    container.innerHTML = '<div class="empty-state">No items in your quote.</div>';
+    return;
+  }
+  container.innerHTML = doorStyleGroups.map(function (g, gIdx) {
+    return buildDoorStyleCard(g, gIdx);
+  }).join('');
+}
+// CB-5 需求1: 單門 lead time(frameless→5週 / framed+stock→3工作天 / framed+non-stock→2週)
+function leadTimeForDoor(construction_type, is_stock) {
+  const ct = (construction_type || '').toLowerCase();
+  if (ct === 'frameless') return '~5 Weeks';
+  if (ct === 'framed')     return is_stock ? '~3 Business Days' : '~2 Weeks';
+  return null;  // unknown / custom → 不顯示
+}
+
+function buildDoorStyleCard(group, gIdx) {
+  if (group.is_custom_extras) return buildCustomExtrasCard(group);
+
+  const hasImage = !!group.image_url;
+  const thumbInner = hasImage
+    ? `<img src="${esc(group.image_url)}" alt="${esc(group.style_name)}" loading="lazy"/>
+       <div class="ds-thumb-zoom-icon" aria-hidden="true">${ZOOM_ICON_SVG}</div>`
+    : `<div class="ds-thumb-fallback" style="background: ${esc(colorMap[group.color] || '#8A8A8A')};"></div>`;
+  const thumbAttrs = hasImage
+    ? `class="ds-thumb zoomable" onclick="openLightbox('${esc(group.image_url)}')"`
+    : `class="ds-thumb"`;
+
+  const ctypeClass = group.construction_type === 'framed' ? 'framed'
+                  : group.construction_type === 'frameless' ? 'frameless'
+                  : 'unknown';
+  const ctypeLabel = group.construction_type === 'unknown' ? '—' : group.construction_type;
+
+  const leadTime = (!group.is_discontinued && !group.is_custom_style)
+    ? leadTimeForDoor(group.construction_type, group.is_stock)
+    : null;
+  const leadTimeHtml = leadTime
+    ? `<span class="ds-lead-time">Lead time: ${esc(leadTime)}</span>`
+    : '';
+
+  const discTag = group.is_discontinued
+    ? `<span class="ds-discontinued-tag">⚠ Currently Unavailable</span>`
+    : '';
+  const customStyleTag = group.is_custom_style
+    ? `<span class="sku-custom-badge">CUSTOM STYLE</span>`
+    : '';
+
+  const progressHtml = buildGroupProgressDisplay(group);
+
+  const discBanner = group.is_discontinued ? `
+    <div class="ds-discontinued-banner">
+      <div class="ds-discontinued-banner-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l8.5 14.5h-17L12 6zm-1 5v5h2v-5h-2zm0 7v2h2v-2h-2z"/></svg>
+      </div>
+      <div class="ds-discontinued-banner-msg">
+        This door style is currently unavailable. Please remove or replace these items. If you have any questions, please contact us.
+      </div>
+    </div>` : '';
+
+  const nonStockBanner = (group.is_stock === false) ? `
+    <div class="ds-nonstock-banner">
+      <div class="ds-nonstock-banner-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      </div>
+      <div class="ds-nonstock-banner-msg">
+        This is a non-stock product, and the team needs to confirm whether it can be successfully transferred.
+      </div>
+    </div>` : '';
+
+  const assembledGroupHtml = group.assembledItems.length > 0 ? `
+    <div class="ds-group">
+      <div class="ds-group-head">
+        <div class="ds-group-label">Assembled</div>
+        ${buildSortControlHtml()}
+      </div>
+      ${sortSkuItems(group.assembledItems, currentSortMode).map(function (item) { return buildAssembledRow(item, gIdx); }).join('')}
+    </div>` : '';
+
+  const rtaGroupHtml = group.rtaItems.length > 0 ? `
+    <div class="ds-group rta">
+      <div class="ds-group-head">
+        <div class="ds-group-label">${formatAssembleStatus('RTA')}</div>
+        ${buildSortControlHtml()}
+      </div>
+      ${sortSkuItems(group.rtaItems, currentSortMode).map(function (item) { return buildRtaRow(item); }).join('')}
+    </div>` : '';
+
+  const swapBtnHtml = group.is_custom_style ? '' : `
+    <button class="ds-swap-btn" type="button"
+      onclick="openSwapModal('${esc(group.style_code)}')"
+      title="Replace this door style with another (same construction type)">
+      ${SWAP_ARROWS_SVG}
+      Swap Style
+    </button>`;
+
+  return `
+    <div class="ds-card" data-style-code="${esc(group.style_code)}">
+      <div class="ds-card-header">
+        <div ${thumbAttrs}>${thumbInner}</div>
+        <div class="ds-info">
+          <div class="ds-name">${esc(group.style_name)} ${customStyleTag}</div>
+          <div class="ds-meta">
+            <span class="ds-code">${esc(group.style_code)}</span>
+            <span class="ds-construction-tag ${ctypeClass}">${esc(ctypeLabel)}</span>
+            ${leadTimeHtml}
+            ${discTag}
+          </div>
+        </div>
+        ${progressHtml}
+        ${swapBtnHtml}
+      </div>
+      ${discBanner}
+      ${nonStockBanner}
+      ${assembledGroupHtml}
+      ${rtaGroupHtml}
+    </div>`;
+}
+
+function buildCustomExtrasCard(group) {
+  const items = group.customExtras || [];
+  return `
+    <div class="ds-card custom-standalone" data-style-code="__CUSTOM_EXTRAS__">
+      <div class="ds-card-header">
+        <div class="ds-thumb">
+          <div class="ds-thumb-fallback" style="background: var(--gold);"></div>
+        </div>
+        <div class="ds-info">
+          <div class="ds-name">${esc(group.style_name)} <span class="sku-custom-badge">CUSTOM</span></div>
+          <div class="ds-meta">
+            <span class="ds-construction-tag unknown">Accessory / Other</span>
+          </div>
+        </div>
+        <div class="ds-progress">
+          <div class="ds-progress-count no-assembled">—</div>
+          <div class="ds-progress-label">No mods</div>
+        </div>
+      </div>
+      <div class="ds-group">
+        <div class="ds-group-label">Custom items (no modifications)</div>
+        ${items.map(function (item) { return buildCustomExtraRow(item); }).join('')}
+      </div>
+    </div>`;
+}
+
+function buildCustomExtraRow(item) {
+  return `
+    <div class="sku-row custom-no-mod" onclick="onCustomNoModClick(event, '${esc(item.key)}')">
+      <span class="sku-code">${esc(item.sku_code)}</span>
+      <span class="sku-custom-badge">CUSTOM</span>
+      <span class="sku-desc">${esc(item.sku_desc)}</span>
+      <span class="sku-qty">Qty ${item.quantity}</span>
+      <span class="sku-no-mod-label">No modifications available</span>
+      <button class="sku-delete-btn" type="button"
+        onclick="event.stopPropagation(); onDeleteSkuClick('${esc(item.key)}')"
+        aria-label="Remove from quote" title="Remove from quote">${TRASH_SVG}</button>
+    </div>`;
+}
+
+function onCustomNoModClick(evt, key) {
+  if (evt && evt.target && evt.target.closest && evt.target.closest('.sku-delete-btn')) return;
+  showToast('No modifications available for custom Accessory / Other items');
+}
+
+function buildGroupProgressDisplay(group) {
+  return '';   // C1: per-door progress display removed (always 100% now)
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-RTA-SWITCH v3: main-page row builder helpers
+// ═══════════════════════════════════════════════════════════════════
+
+// Decides whether the [⇄ Switch to X] button should render on a row.
+// Hide button for: custom items, or SKUs with no Assembled version in dealer's price sheet.
+function shouldShowAsmSwitchBtn(item) {
+  if (!item) return false;
+  if (item.is_custom) return false;
+  return itemSupportsAssembled(dealer, item);
+}
+
+function buildAsmSwitchBtnHtml(item) {
+  if (!shouldShowAsmSwitchBtn(item)) return '';
+  // Assembled row → switches to RTA; RTA row → switches to Assembled
+  const targetType = (item.type === 'Assembled') ? 'RTA' : 'Assembled';
+  const labelText  = formatAssembleStatus(targetType);
+  const title = targetType === 'RTA'
+    ? 'Switch to Unassembled (knock-down shipment, clears modifications)'
+    : 'Switch to Assembled (adds assembly fee, enables modifications)';
+  return `
+    <button class="sku-asm-switch-btn" type="button"
+      onclick="event.stopPropagation(); onMainPageAssemblyToggle('${esc(item.key)}', '${targetType}')"
+      title="${esc(title)}" aria-label="${esc(title)}">
+      ${SWAP_ARROWS_SVG} ${labelText}
+    </button>`;
+}
+
+function buildAssembledRow(item, gIdx) {
+  const status = getItemOverallStatus(item);
+  let statusClass, statusLabel;
+  if (status === 'configured')      { statusClass = 'configured';  statusLabel = '● Configured'; }
+  else if (status === 'skipped')    { statusClass = 'skipped';     statusLabel = '+ Add Modification'; }
+  else                              { statusClass = 'unprocessed'; statusLabel = '○ Unprocessed'; }
+
+  const subCount = Array.isArray(item.sub_groups) ? item.sub_groups.length : 1;
+  const splitBadge = subCount > 1 ? `<span class="sku-split-badge">Split × ${subCount}</span>` : '';
+  const customBadge = item.is_custom ? `<span class="sku-custom-badge">CUSTOM</span>` : '';
+  const asmSwitchBtn = buildAsmSwitchBtnHtml(item);
+
+  return `
+    <div class="sku-row assembled" onclick="onAssembledRowClick(event, '${esc(item.key)}')">
+      <span class="sku-code">${esc(item.sku_code)}</span>
+      ${customBadge}
+      <span class="sku-desc">${esc(item.sku_desc)}</span>
+      <span class="sku-qty">Qty ${item.quantity}</span>
+      ${splitBadge}
+      <span class="sku-status ${statusClass}">${statusLabel}</span>
+      <span class="sku-arrow">›</span>
+      ${asmSwitchBtn}
+      <button class="sku-delete-btn" type="button"
+        onclick="event.stopPropagation(); onDeleteSkuClick('${esc(item.key)}')"
+        aria-label="Remove from quote" title="Remove from quote">${TRASH_SVG}</button>
+    </div>`;
+}
+
+// F-RTA-SWITCH v3: RTA row is a static info row. No row-click, no hover, no arrow.
+// Switch via the [⇄ Assembled] button; remove via trash icon.
+// CB-35: qty is now inline-editable (except in review mode, which stays read-only text).
+function buildRtaRow(item) {
+  const customBadge = item.is_custom ? `<span class="sku-custom-badge">CUSTOM</span>` : '';
+  const asmSwitchBtn = buildAsmSwitchBtnHtml(item);
+
+  const qtyHtml = isReviewLocked()
+    ? `<span class="sku-qty">Qty ${item.quantity}</span>`
+    : `<span class="sku-qty-edit" onclick="event.stopPropagation()">
+         <span class="sku-qty-edit-label">Qty</span>
+         <input type="number" min="1" step="1" class="sku-qty-input"
+           value="${item.quantity}"
+           onchange="onRtaQtyChange('${esc(item.key)}', this.value)"
+           aria-label="Quantity"/>
+       </span>`;
+
+  return `
+    <div class="sku-row rta">
+      <span class="sku-code">${esc(item.sku_code)}</span>
+      ${customBadge}
+      <span class="sku-desc">${esc(item.sku_desc)}</span>
+      ${qtyHtml}
+      ${asmSwitchBtn}
+      <button class="sku-delete-btn" type="button"
+        onclick="onDeleteSkuClick('${esc(item.key)}')"
+        aria-label="Remove from quote" title="Remove from quote">${TRASH_SVG}</button>
+    </div>`;
+}
+
+function onAssembledRowClick(evt, key) {
+  if (!evt || !evt.target || !evt.target.closest) return openMfModal(key);
+  // Don't open modal if user clicked delete button or the switch button
+  if (evt.target.closest('.sku-delete-btn')) return;
+  if (evt.target.closest('.sku-asm-switch-btn')) return;
+  openMfModal(key);
+}
+
+function onDeleteSkuClick(key) {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) return;
+  const confirmed = confirm('Remove "' + item.sku_code + '" from your quote?');
+  if (!confirmed) return;
+
+  cartItems = cartItems.filter(function (i) { return i.key !== key; });
+  doorStyleGroups = buildDoorStyleGroups(cartItems, allDoorStyles);
+  pageProgress    = calculateProgress(doorStyleGroups);
+  renderProgressCard(pageProgress);
+  renderDoorStyleList();
+  renderBottomBar(pageProgress);
+  renderModsTotalBar();
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  console.log('[E5] Removed SKU', key, 'from cart. Remaining items:', cartItems.length);
+  showToast(item.sku_code + ' removed');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-RTA-SWITCH v3: main-page assembly toggle
+//
+//   Triggered by the per-row [⇄ RTA] / [⇄ Assembled] button.
+//   Both directions show a confirm dialog. Switch happens entirely
+//   on the main page — no modal involved.
+// ═══════════════════════════════════════════════════════════════════
+function onMainPageAssemblyToggle(key, newType) {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  if (newType !== 'RTA' && newType !== 'Assembled') return;
+
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) {
+    console.warn('[F-RTA-SWITCH] onMainPageAssemblyToggle: cartItem not found for key', key);
+    return;
+  }
+  if (item.type === newType) return;  // no-op
+
+  // Guard: custom items shouldn't reach here (button hidden), but double-check.
+  if (item.is_custom) {
+    showToast('Custom items cannot be switched between Unassembled and Assembled', true);
+    return;
+  }
+
+  if (newType === 'Assembled') {
+    // RTA → Assembled
+    if (!itemSupportsAssembled(dealer, item)) {
+      showToast('This SKU is not available in Assembled', true);
+      return;
+    }
+
+    const newFee = getAssembleFeeForItem(dealer, item);
+    const feeNote = newFee > 0
+      ? '\n\nAn assembly fee of $' + newFee.toFixed(2) + ' per unit will apply.'
+      : '\n\nNo assembly fee applies for this SKU type.';
+    const ok = confirm(
+      'Switch "' + item.sku_code + '" to Assembled?' + feeNote +
+      '\n\nYou will be able to configure modifications after switching.'
+    );
+    if (!ok) return;
+
+    // Key collision guard: if there's already an Assembled row for this SKU
+    // in the same style group, refuse the switch (user should merge manually).
+    const newKey = item.sku_code + '_Assembled';
+    const conflict = cartItems.find(function (other) {
+      return other !== item && other.key === newKey && other.style_code === item.style_code;
+    });
+    if (conflict) {
+      showToast('An Assembled row already exists for this SKU. Please remove one first.', true);
+      console.warn('[F-RTA-SWITCH] Key collision aborted switch: ' + newKey);
+      return;
+    }
+
+    const oldKey = item.key;
+    ensureSubGroups(item);
+    item.type         = 'Assembled';
+    item.assemble_fee = newFee;
+    item.key          = newKey;
+    // Assembled items default to 'skipped' (dealer opts in to mods, not forced).
+    item.sub_groups.forEach(function (g) {
+      g.modifications       = [];
+      g.modification_status = 'skipped';
+    });
+
+    console.log('[F-RTA-SWITCH] (main-page) RTA → Assembled · SKU=' + item.sku_code +
+                ' · ' + oldKey + ' → ' + newKey +
+                ' · fee=$' + newFee.toFixed(2));
+
+    refreshAfterCartChange();
+    showToast(item.sku_code + ' → Assembled (modifications optional)');
+    return;
+  }
+
+  // Assembled → RTA
+  // Check whether there are configured mods that will be cleared
+  let hasMods = false;
+  if (Array.isArray(item.sub_groups)) {
+    item.sub_groups.forEach(function (sub) {
+      if (Array.isArray(sub.modifications) && sub.modifications.length > 0) hasMods = true;
+    });
+  }
+
+  const warning = hasMods
+    ? 'Switch "' + item.sku_code + '" to Unassembled?\n\nThis will clear all selected modifications and remove the assembly fee. This cannot be undone unless you switch back.'
+    : 'Switch "' + item.sku_code + '" to Unassembled?\n\nThe assembly fee will be removed and no modifications will be allowed.';
+  const ok = confirm(warning);
+  if (!ok) return;
+
+  // Key collision guard
+  const newKey = item.sku_code + '_RTA';
+  const conflict = cartItems.find(function (other) {
+    return other !== item && other.key === newKey && other.style_code === item.style_code;
+  });
+  if (conflict) {
+    showToast('An Unassembled row already exists for this SKU. Please remove one first.', true);
+    console.warn('[F-RTA-SWITCH] Key collision aborted switch: ' + newKey);
+    return;
+  }
+
+  const oldKey = item.key;
+  ensureSubGroups(item);
+  item.type         = 'RTA';
+  item.assemble_fee = 0;
+  item.key          = newKey;
+
+  // Bug 4+8 fix: When switching to RTA, collapse all sub_groups into a single one.
+  // RTA cannot have mods, so split structure is meaningless and would confuse the
+  // user if they later switch back to Assembled (they'd see an unexpected split).
+  const prevSubCount = item.sub_groups.length;
+  const totalQty = item.sub_groups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+  item.sub_groups = [{
+    sub_index:           1,
+    qty:                 totalQty,
+    modifications:       [],
+    modification_status: 'skipped',
+  }];
+
+  console.log('[F-RTA-SWITCH] (main-page) Assembled → RTA · SKU=' + item.sku_code +
+              ' · ' + oldKey + ' → ' + newKey +
+              ' · mods cleared=' + hasMods +
+              (prevSubCount > 1 ? ' · sub_groups collapsed: ' + prevSubCount + ' → 1' : ''));
+
+  refreshAfterCartChange();
+  showToast(item.sku_code + ' → ' + formatAssembleStatus(item.type) + (hasMods ? ' (modifications cleared)' : ''));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CB-35: Unassembled (RTA) inline qty edit
+//   RTA rows have no modal and no modifications, so qty is edited
+//   directly on the row. Writes item.quantity AND collapses sub_groups
+//   into a single skipped sub-group so Step 3 / Save Draft / PDF / Email
+//   all read the correct quantity.
+// ═══════════════════════════════════════════════════════════════════
+function onRtaQtyChange(key, val) {
+  if (isReviewLocked()) return;  // CB-4: read-only review (input not rendered, defensive)
+
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) {
+    console.warn('[CB-35] onRtaQtyChange: cartItem not found for key', key);
+    return;
+  }
+  if (item.type !== 'RTA') {
+    console.warn('[CB-35] onRtaQtyChange called for non-RTA item; ignoring.', key);
+    return;
+  }
+
+  let q = parseInt(val, 10);
+  if (!isFinite(q) || q < 1) q = 1;  // clamp: qty never below 1 (remove via trash icon)
+
+  const oldQty = item.quantity;
+  item.quantity = q;
+  // RTA has no mods → collapse to a single skipped sub-group.
+  item.sub_groups = [{
+    sub_index:           1,
+    qty:                 q,
+    modifications:       [],
+    modification_status: 'skipped',
+  }];
+
+  console.log('[CB-35] RTA qty change · SKU=' + item.sku_code +
+              ' · ' + oldQty + ' → ' + q);
+
+  refreshAfterCartChange();
+}
+
+function renderBottomBar(progress) {
+  const statusEl     = document.getElementById('bottomStatus');
+  const statusTextEl = document.getElementById('bottomStatusText');
+  const btnNext      = document.getElementById('btnNext');
+  if (!statusEl || !statusTextEl || !btnNext) return;
+
+  const pendingAssembled = progress.total - progress.done;
+  const isReady = (progress.total === 0) || (pendingAssembled === 0);
+
+  if (cartItems.length === 0) {
+    statusTextEl.textContent = 'Cart is empty';
+  } else if (progress.total === 0) {
+    statusTextEl.textContent = 'No assembled items — ready to review';
+  } else if (pendingAssembled === 0) {
+    statusTextEl.textContent = 'All set — ready to review';
+  } else {
+    statusTextEl.textContent = pendingAssembled + ' assembled SKU' +
+      (pendingAssembled !== 1 ? 's' : '') + ' need attention';
+  }
+
+  if (isReady && cartItems.length > 0) statusEl.classList.add('complete');
+  else statusEl.classList.remove('complete');
+
+  btnNext.disabled = cartItems.length === 0;
+}
+
+function goReview() {
+  if (cartItems.length === 0) { showToast('Cart is empty — add items first', true); return; }
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  const nextUrl = draftId
+    ? 'new-quote-step3.html?draft=' + draftId + buildModeParam()
+    : 'new-quote-step3.html';
+  window.location.href = nextUrl;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Modal core: helpers
+// ═══════════════════════════════════════════════════════════════════
+
+function shouldKeepModification(value) {
+  if (value === null || value === undefined) return false;
+  if (value === false) return false;
+  if (typeof value === 'string' && value.trim() === '') return false;
+  if (Array.isArray(value) && value.length === 0) return false;
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    if (Object.keys(value).length === 0) return false;
+    if (value.enabled === false) return false;
+  }
+  return true;
+}
+
+function resolveTaxStatusForEntry(entry) {
+  if (!entry) return false;
+  if (entry.mf_code === 'MF07') return !!(entry.value && entry.value.taxable === true);
+  if (!Array.isArray(activeMfModalRules)) return false;
+  const rule = activeMfModalRules[entry.rule_idx];
+  if (!rule) return false;
+  return rule.tax_status === true;
+}
+
+function updateRunningTotal() {
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  if (!activeSub) { setRunningTotalDOM('Modifications subtotal', 0); return; }
+
+let perUnit = 0;
+  Object.keys(activeSub.liveValues || {}).forEach(function (k) {
+    const entry = activeSub.liveValues[k];
+    if (!entry) return;
+    if (typeof entry.cost === 'number' && isFinite(entry.cost)) perUnit += entry.cost;
+    if (typeof entry.material === 'number' && isFinite(entry.material)) perUnit += entry.material;
+  });
+
+  const subQty = activeSub.qty || 0;
+  const lineTotal = perUnit * subQty;
+  const isSplit = activeSubGroups.length > 1;
+  const label = isSplit
+    ? ('Sub ' + (activeSub.sub_index || (activeSubGroupIdx + 1)) +
+       ' (qty ' + subQty + ') modifications')
+    : 'Modifications subtotal';
+  setRunningTotalDOM(label, lineTotal);
+}
+
+function setRunningTotalDOM(label, total) {
+  const labelEl = document.getElementById('mfRunningTotalLabel');
+  const valueEl = document.getElementById('mfRunningTotalValue');
+  if (labelEl) labelEl.textContent = label;
+  if (!valueEl) return;
+  valueEl.textContent = '$' + total.toFixed(2);
+  if (total > 0) valueEl.classList.remove('zero');
+  else valueEl.classList.add('zero');
+}
+
+function makeVirtualInstance(savedEntry) {
+  const frozenValue = savedEntry.value;
+  const frozenCost  = (typeof savedEntry.cost === 'number') ? savedEntry.cost : 0;
+  return {
+    getValue:       function () { return frozenValue; },
+    validate:       function () { return { valid: true, errors: [] }; },
+    calculateCost:  function () { return frozenCost; },
+    destroy:        function () { /* no-op */ },
+  };
+}
+
+function extractMf07Description(value) {
+  if (!value || typeof value !== 'object') return '';
+  if (typeof value.description === 'string') return value.description;
+  return '';
+}
+
+function renderReadOnlyAdminRow(wrap, rule, idx, savedEntry, subRef) {
+  const mfCode = rule.mf_code;
+  const savedValue = savedEntry.value;
+  const savedCost  = (typeof savedEntry.cost === 'number') ? savedEntry.cost : 0;
+
+  if (mfCode === 'MF07') {
+    const desc = extractMf07Description(savedValue);
+    if (!desc.trim()) {
+      console.log('[E4.7] Skipping read-only ' + mfCode + ' (rule_idx=' + idx + '): empty description');
+      subRef.instances.push({
+        rule_idx: idx, mf_code: mfCode,
+        display_label: rule.display_label || mfCode,
+        container: null,
+        instance: makeVirtualInstance(savedEntry),
+        isReadOnly: true, isVirtual: true, isHidden: true,
+      });
+      subRef.liveValues[idx] = { value: savedValue, cost: savedCost };
+      return false;
+    }
+  }
+
+  const row = document.createElement('div');
+  row.className = 'mf-row readonly';
+  row.setAttribute('data-mf-code', mfCode);
+  row.setAttribute('data-rule-idx', String(idx));
+  row.setAttribute('data-readonly', 'true');
+
+  const labelDiv = document.createElement('div');
+  labelDiv.className = 'mf-row-label';
+  const labelText = document.createElement('span');
+  labelText.className = 'mf-row-label-text';
+  labelText.innerHTML = esc(rule.display_label || mfCode) +
+    '<span class="mf-row-admin-badge" title="Added by admin">' + ADMIN_LOCK_SVG + 'Added by admin</span>';
+  labelDiv.appendChild(labelText);
+  const costSpan = document.createElement('span');
+  costSpan.className = 'mf-row-label-cost';
+  costSpan.textContent = savedCost > 0 ? '+$' + savedCost.toFixed(2) : 'Included';
+  labelDiv.appendChild(costSpan);
+  row.appendChild(labelDiv);
+
+  const bodyDiv = document.createElement('div');
+  bodyDiv.className = 'mf-readonly-body';
+  let descriptionText = '';
+  if (mfCode === 'MF07') descriptionText = extractMf07Description(savedValue);
+  else if (typeof savedValue === 'string') descriptionText = savedValue;
+  else { try { descriptionText = JSON.stringify(savedValue); } catch (_) { descriptionText = String(savedValue); } }
+  const descDiv = document.createElement('div');
+  descDiv.className = 'mf-readonly-desc';
+  descDiv.textContent = descriptionText;
+  bodyDiv.appendChild(descDiv);
+  if (savedCost > 0) {
+    const costPill = document.createElement('div');
+    costPill.className = 'mf-readonly-cost';
+    costPill.textContent = '+$' + savedCost.toFixed(2);
+    bodyDiv.appendChild(costPill);
+  }
+  row.appendChild(bodyDiv);
+  wrap.appendChild(row);
+
+  subRef.instances.push({
+    rule_idx: idx, mf_code: mfCode,
+    display_label: rule.display_label || mfCode,
+    container: row,
+    instance: makeVirtualInstance(savedEntry),
+    isReadOnly: true, isVirtual: true, isHidden: false,
+  });
+  subRef.liveValues[idx] = { value: savedValue, cost: savedCost };
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-BINDING-GROUP + F-GLASS-MULTIPLIER: renderMfElements
+// ═══════════════════════════════════════════════════════════════════
+// CB-5 需求5: MF04 Increase/Reduce 互斥
+// 偵測成對(inc + red)時,render 單一 dropdown + 條件輸入框;
+// 底層仍掛兩個 instance(各自 rule_idx / display_label),同時只有一個 enabled。
+// save 時未選方向回 {enabled:false} → shouldKeepModification 自動丟棄。
+function renderMf04Combined(wrap, rules, savedByIdx, subRef, pairIdx) {
+  function dirOf(rule) {
+    const d = ((rule.mf_params && rule.mf_params.direction) || '').toLowerCase();
+    if (d === 'increase' || d === 'reduce') return d;
+    const lbl = (rule.display_label || '').toLowerCase();
+    if (lbl.indexOf('increase') !== -1) return 'increase';
+    if (lbl.indexOf('reduce')   !== -1) return 'reduce';
+    return null;
+  }
+
+  let incIdx = null, redIdx = null;
+  pairIdx.forEach(function (i) {
+    const d = dirOf(rules[i]);
+    if (d === 'increase') incIdx = i;
+    else if (d === 'reduce') redIdx = i;
+  });
+  if (incIdx === null || redIdx === null) return false;  // 判不出方向 → 退回獨立元件
+
+  const incRule = rules[incIdx];
+  const redRule = rules[redIdx];
+
+  function cfgOf(rule, dir) {
+    const p = rule.mf_params || {};
+    return {
+      min:  (typeof p.min_value === 'number') ? p.min_value : 1,
+      max:  (typeof p.max_value === 'number') ? p.max_value : 99,
+      step: (typeof p.step === 'number') ? p.step : 1,
+      unit: p.unit || 'inches',
+      inputLabel: p.input_label || (dir === 'increase' ? 'Increase to' : 'Reduce to'),
+    };
+  }
+  const incCfg = cfgOf(incRule, 'increase');
+  const redCfg = cfgOf(redRule, 'reduce');
+  const incCost = parseFloat(incRule.cost) || 0;
+  const redCost = parseFloat(redRule.cost) || 0;
+  function cfgFor(dir)  { return dir === 'reduce' ? redCfg : incCfg; }
+  function costFor(dir) { return dir === 'reduce' ? redCost : incCost; }
+
+  // 還原已存值
+  function savedNum(idx) {
+    const s = savedByIdx[idx];
+    if (s && s.value && typeof s.value === 'object' && s.value.enabled === true) {
+      return (typeof s.value.value === 'number') ? s.value.value : null;
+    }
+    return undefined;
+  }
+  let selectedDir = 'none';
+  let currentValue = null;
+  const sInc = savedNum(incIdx);
+  const sRed = savedNum(redIdx);
+  if (sInc !== undefined) { selectedDir = 'increase'; currentValue = sInc; }
+  else if (sRed !== undefined) { selectedDir = 'reduce'; currentValue = sRed; }
+
+  // 建列(單一 .mf-row)
+  const row = document.createElement('div');
+  row.className = 'mf-row';
+  row.setAttribute('data-mf-code', 'MF04');
+
+  const labelDiv = document.createElement('div');
+  labelDiv.className = 'mf-row-label';
+  labelDiv.innerHTML = '<span class="mf-row-label-text">Depth Adjustment</span>';
+  row.appendChild(labelDiv);
+
+  const elementDiv = document.createElement('div');
+  elementDiv.className = 'mf-row-element';
+  elementDiv.innerHTML =
+    '<div class="mf04-combined">' +
+      '<select class="mf04-dir-select">' +
+        '<option value="none">Don\'t adjust</option>' +
+        '<option value="increase">Increase depth</option>' +
+        '<option value="reduce">Reduce depth</option>' +
+      '</select>' +
+      '<div class="mf04-input-area"></div>' +
+    '</div>';
+  row.appendChild(elementDiv);
+  wrap.appendChild(row);
+
+  const selectEl = elementDiv.querySelector('.mf04-dir-select');
+  const areaEl   = elementDiv.querySelector('.mf04-input-area');
+  selectEl.value = selectedDir;
+
+  function syncRowRuleIdx() {
+    const i = (selectedDir === 'reduce') ? redIdx : incIdx;
+    row.setAttribute('data-rule-idx', String(i));
+  }
+  function clearRowInvalid() {
+    row.classList.remove('invalid');
+    const e = row.querySelector('.mf-row-error-msg');
+    if (e) e.remove();
+  }
+  function pushLive() {
+    subRef.liveValues[String(incIdx)] = {
+      value: (selectedDir === 'increase') ? { enabled: true, value: currentValue } : { enabled: false, value: null },
+      cost:  (selectedDir === 'increase') ? incCost : 0,
+    };
+    subRef.liveValues[String(redIdx)] = {
+      value: (selectedDir === 'reduce') ? { enabled: true, value: currentValue } : { enabled: false, value: null },
+      cost:  (selectedDir === 'reduce') ? redCost : 0,
+    };
+    updateRunningTotal();
+  }
+  function drawInputArea() {
+    if (selectedDir === 'none') { areaEl.innerHTML = ''; return; }
+    const cfg = cfgFor(selectedDir);
+    const cost = costFor(selectedDir);
+    const valAttr = (currentValue !== null) ? ('value="' + currentValue + '"') : '';
+    const costHtml = cost > 0 ? '<div class="mf04-cost">+$' + cost.toFixed(2) + '</div>' : '';
+    areaEl.innerHTML =
+      '<label class="mf04-input-label">' + esc(cfg.inputLabel) + ':</label>' +
+      '<div class="mf04-input-row">' +
+        '<input type="number" class="mf04-number" ' + valAttr +
+          ' min="' + cfg.min + '" max="' + cfg.max + '" step="' + cfg.step + '" placeholder="—" />' +
+        '<span class="mf04-unit">' + esc(cfg.unit) + '</span>' +
+      '</div>' +
+      '<div class="mf04-range">Allowed: ' + cfg.min + ' – ' + cfg.max + '</div>' +
+      costHtml;
+    const numEl = areaEl.querySelector('.mf04-number');
+    if (numEl) {
+      numEl.addEventListener('input', function (e) {
+        const raw = e.target.value;
+        currentValue = (raw === '') ? null : (isNaN(parseFloat(raw)) ? null : parseFloat(raw));
+        clearRowInvalid();
+        pushLive();
+      });
+    }
+  }
+
+  selectEl.addEventListener('change', function (e) {
+    selectedDir = e.target.value;
+    currentValue = null;     // 方向不同 range 不同 → 清空
+    clearRowInvalid();
+    syncRowRuleIdx();
+    drawInputArea();
+    pushLive();
+  });
+
+  // 兩個 adapter,共用同一 controller
+  function getValueFor(dir) { return (selectedDir === dir) ? { enabled: true, value: currentValue } : { enabled: false, value: null }; }
+  function validateFor(dir) {
+    if (selectedDir !== dir) return { valid: true, errors: [] };
+    const cfg = cfgFor(dir);
+    if (currentValue === null || isNaN(currentValue)) return { valid: false, errors: ['Please enter a value.'] };
+    if (currentValue < cfg.min) return { valid: false, errors: ['Value must be at least ' + cfg.min + '.'] };
+    if (currentValue > cfg.max) return { valid: false, errors: ['Value must not exceed ' + cfg.max + '.'] };
+    return { valid: true, errors: [] };
+  }
+  function calcCostFor(dir) { return (selectedDir === dir) ? costFor(dir) : 0; }
+
+  let destroyed = false;
+  function destroyController() {
+    if (destroyed) return;
+    destroyed = true;
+    if (elementDiv) elementDiv.innerHTML = '';
+  }
+  function makeAdapter(dir) {
+    return {
+      getValue:      function () { return getValueFor(dir); },
+      validate:      function () { return validateFor(dir); },
+      calculateCost: function () { return calcCostFor(dir); },
+      destroy:       destroyController,
+    };
+  }
+
+  subRef.instances.push({
+    rule_idx: incIdx, mf_code: 'MF04', display_label: incRule.display_label || 'Increase Depth',
+    container: elementDiv, instance: makeAdapter('increase'),
+    isReadOnly: false, isVirtual: false, binding_group: null, binding_role: null, lock_reason: 'Required',
+  });
+  subRef.instances.push({
+    rule_idx: redIdx, mf_code: 'MF04', display_label: redRule.display_label || 'Reduce Depth',
+    container: elementDiv, instance: makeAdapter('reduce'),
+    isReadOnly: false, isVirtual: false, binding_group: null, binding_role: null, lock_reason: 'Required',
+  });
+
+  syncRowRuleIdx();
+  drawInputArea();
+  pushLive();
+  return true;
+}
+
+function renderMfElements(rules, savedByIdx, subRef) {
+  const wrap = document.getElementById('mfElementsContainer');
+  savedByIdx = savedByIdx || {};
+
+  if (!rules || !rules.length) {
+    wrap.innerHTML = `
+      <div class="mf-no-rules">
+        <div class="mf-no-rules-title">No modifications available</div>
+        <div>This SKU has no available modification options. You can Save or Skip to mark this item as reviewed.</div>
+      </div>`;
+    subRef.instances = [];
+    subRef.liveValues = {};
+    updateRunningTotal();
+    return;
+  }
+
+  wrap.innerHTML = '';
+  subRef.instances = [];
+  subRef.liveValues = {};
+
+  let renderedCount = 0;
+  let readOnlyCount = 0;
+  let hiddenCount   = 0;
+  let skippedCount  = 0;
+
+  // CB-5 需求5: 偵測 MF04 Increase/Reduce 成對
+  const mf04Indices = [];
+  rules.forEach(function (r, i) { if (r && r.mf_code === 'MF04') mf04Indices.push(i); });
+  const mf04Pair = (mf04Indices.length === 2) ? mf04Indices : null;
+  let mf04CombinedDone = false;
+
+  rules.forEach(function (rule, idx) {
+    const mfCode = rule.mf_code;
+    const savedEntry = savedByIdx[idx] || null;
+
+    const isAdminOnly = Array.isArray(rule.allowed_roles)
+      && !rule.allowed_roles.some(function (r) { return (r || '').toLowerCase() === 'dealer'; });
+    const isDealerViewingAdminMod = isAdminOnly && effectiveRole === 'dealer' && savedEntry;
+
+  if (isDealerViewingAdminMod) {
+      const wasRendered = renderReadOnlyAdminRow(wrap, rule, idx, savedEntry, subRef);
+      if (wasRendered) readOnlyCount++; else hiddenCount++;
+      return;
+    }
+
+    // CB-5 需求5: MF04 成對 → 合併單一 dropdown(第一條 render,第二條跳過)
+    if (mf04Pair && idx === mf04Pair[1] && mf04CombinedDone) {
+      return;  // 第二條已併入合併 UI
+    }
+    if (mf04Pair && idx === mf04Pair[0]) {
+      const ok = renderMf04Combined(wrap, rules, savedByIdx, subRef, mf04Pair);
+      if (ok) { mf04CombinedDone = true; renderedCount++; return; }
+      // 判方向失敗 → 落到下方原本獨立元件路徑
+    }
+
+    if (!window.MF || !window.MF[mfCode] || typeof window.MF[mfCode].create !== 'function') {
+      console.warn('[E4.4] window.MF.' + mfCode + ' not available; skipping rule', rule);
+      skippedCount++;
+      return;
+    }
+
+    const mfParams = rule.mf_params || {};
+    const bindingGroup = mfParams._binding_group || null;
+    const bindingRole  = mfParams._binding_role  || null;
+
+    const hasUnitMultiplier =
+      typeof mfParams._unit_price !== 'undefined' && mfParams._unit_price !== null &&
+      typeof mfParams._multiplier !== 'undefined' && mfParams._multiplier !== null &&
+      parseFloat(mfParams._multiplier) > 1;
+
+    const row = document.createElement('div');
+    row.className = 'mf-row';
+    row.setAttribute('data-mf-code', mfCode);
+    row.setAttribute('data-rule-idx', String(idx));
+    if (bindingGroup) {
+      row.setAttribute('data-binding-group', bindingGroup);
+      row.setAttribute('data-binding-role', bindingRole || '');
+    }
+
+    const baseCost = parseFloat(rule.cost) || 0;
+
+    let costHtml;
+    if (isAdminOnly) costHtml = '<span class="mf-row-label-cost admin-only">Admin Only</span>';
+    else if (hasUnitMultiplier) costHtml = '';
+    else if (baseCost > 0) costHtml = '<span class="mf-row-label-cost">Base cost: +$' + baseCost.toFixed(2) + '</span>';
+    else costHtml = '<span class="mf-row-label-cost">Included</span>';
+
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'mf-row-label';
+    labelDiv.innerHTML =
+      '<span class="mf-row-label-text">' + esc(rule.display_label || mfCode) + '</span>' + costHtml;
+    row.appendChild(labelDiv);
+
+    const elementDiv = document.createElement('div');
+    elementDiv.className = 'mf-row-element';
+    row.appendChild(elementDiv);
+
+    wrap.appendChild(row);
+
+    const params = Object.assign({}, mfParams, {
+      _base_cost: baseCost,
+      _display_label: rule.display_label || ''
+    });
+    const savedValueForCreate = savedEntry ? savedEntry.value : null;
+
+    let instance;
+    try {
+      instance = window.MF[mfCode].create(elementDiv, params, savedValueForCreate);
+    } catch (err) {
+      console.error('[E4.4] Failed to create instance for', mfCode, err);
+      elementDiv.innerHTML = '<div style="font-size:11px;color:var(--error);padding:8px 0;">Failed to render this modification. Please contact support.</div>';
+      skippedCount++;
+      return;
+    }
+
+    subRef.instances.push({
+      rule_idx: idx, mf_code: mfCode,
+      display_label: rule.display_label || mfCode,
+      container: elementDiv,
+      row: row,                       // F-BINDING-GROUP: 整個 mf-row,供協調者顯示/隱藏 dependent
+      instance: instance,
+      isReadOnly: false, isVirtual: false,
+      binding_hidden: false,          // F-BINDING-GROUP: dependent 因 primary 沒勾被隱藏時 = true
+      binding_group: bindingGroup,
+      binding_role:  bindingRole,
+      lock_reason:   mfParams._lock_reason || 'Required',
+      no_label:      mfParams.no_label || null,   // CB-12
+    });
+
+  try {
+      const initVal  = (typeof instance.getValue === 'function') ? instance.getValue() : null;
+      const initCost = (typeof instance.calculateCost === 'function') ? instance.calculateCost() : 0;
+      const safeCost = (typeof initCost === 'number' && isFinite(initCost)) ? initCost : 0;
+      const _bItem = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+      const _bMat  = computeBundleMaterial(_bItem, mfCode, rule.display_label || mfCode, initVal);
+      subRef.liveValues[idx] = {
+        value: initVal, cost: safeCost,
+        material: _bMat.material_cost, mapping_sku: _bMat.mapping_sku, mapping_qty: _bMat.mapping_qty
+      };
+      renderBundleMaterialLine(row, _bMat);
+    } catch (err) {
+      console.warn('[E4.7] Failed to seed live value for ' + mfCode, err);
+    }
+
+    renderedCount++;
+  });
+
+  console.log('[E4.4]   Rendered ' + renderedCount + ' interactive element(s)' +
+              (readOnlyCount ? ', ' + readOnlyCount + ' read-only (admin-added)' : '') +
+              (hiddenCount ? ', ' + hiddenCount + ' hidden (no-description admin mod)' : '') +
+              (skippedCount ? ' (' + skippedCount + ' skipped due to errors)' : ''));
+
+  wrap.addEventListener('mf-change', onMfChangeDelegated);
+
+  syncBindingGroups(subRef);
+
+  updateRunningTotal();
+}
+
+function findBindingPeers(subRef, group, role) {
+  if (!subRef || !Array.isArray(subRef.instances) || !group) return [];
+  return subRef.instances.filter(function (rec) {
+    return rec.binding_group === group && rec.binding_role === role;
+  });
+}
+
+function isInstanceEnabled(rec) {
+  if (!rec || !rec.instance) return false;
+  let val;
+  try {
+    val = (typeof rec.instance.getValue === 'function') ? rec.instance.getValue() : null;
+  } catch (_) { return false; }
+  if (val === null || val === undefined) return false;
+  if (val === true) return true;
+  if (val === false) return false;
+  if (typeof val === 'object') {
+    if (val.enabled === true) return true;
+    if (val.enabled === false) return false;
+  }
+  return false;
+}
+
+function syncBindingGroups(subRef) {
+  if (!subRef || !Array.isArray(subRef.instances)) return;
+
+  const primaries = subRef.instances.filter(function (rec) {
+    return rec.binding_group && rec.binding_role === 'primary' && !rec.isVirtual;
+  });
+  if (!primaries.length) return;
+
+  primaries.forEach(function (primary) {
+    const isOn = isInstanceEnabled(primary);
+    const dependents = findBindingPeers(subRef, primary.binding_group, 'dependent')
+      .filter(function (rec) { return !rec.isVirtual; });
+    if (!dependents.length) return;
+    dependents.forEach(function (dep) { applyDependentState(subRef, dep, isOn); });
+    console.log('[F-BINDING-GROUP] Initial sync — group "' + primary.binding_group +
+                '" primary ' + primary.mf_code + '=' + (isOn ? 'ON' : 'OFF') +
+                ', synced ' + dependents.length + ' dependent(s)');
+  });
+}
+
+function applyDependentState(subRef, dep, primaryIsOn) {
+  if (!dep || !dep.instance) return;
+
+  if (primaryIsOn) {
+    // primary 勾起 → 顯示 dependent 的 row,不動值
+    //   (初次載入保留存檔值;OFF→ON 因先前已 reset,值本來就空)
+    if (dep.row) dep.row.style.display = '';
+    dep.binding_hidden = false;
+  } else {
+    // primary 沒勾 → 重置 dependent 的值,隱藏整個 row
+    if (typeof dep.instance.reset === 'function') {
+      try { dep.instance.reset(); }
+      catch (e) { console.warn('[F-BINDING-GROUP] reset() threw for', dep.mf_code, e); }
+    }
+    if (dep.row) dep.row.style.display = 'none';
+    dep.binding_hidden = true;
+  }
+
+  // 同步 liveValues —— running total 讀 liveValues(非即時 query instance),
+  // 隱藏/重置後必須更新,否則小計殘留舊值;顯示時也重算確保一致。
+  refreshDependentLiveValue(subRef, dep);
+}
+
+// F-BINDING-GROUP: 依 dependent 目前 instance 值重算其 liveValues + bundle 材料行
+function refreshDependentLiveValue(subRef, dep) {
+  if (!subRef || !dep || !dep.instance) return;
+  try {
+    const v = (typeof dep.instance.getValue === 'function') ? dep.instance.getValue() : null;
+    const c = (typeof dep.instance.calculateCost === 'function') ? dep.instance.calculateCost() : 0;
+    const safeCost = (typeof c === 'number' && isFinite(c)) ? c : 0;
+    const item = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+    const mat = computeBundleMaterial(item, dep.mf_code, dep.display_label, v);
+    subRef.liveValues[dep.rule_idx] = {
+      value: v, cost: safeCost,
+      material: mat.material_cost, mapping_sku: mat.mapping_sku, mapping_qty: mat.mapping_qty
+    };
+    if (dep.row) renderBundleMaterialLine(dep.row, mat);
+  } catch (e) {
+    console.warn('[F-BINDING-GROUP] refreshDependentLiveValue threw for', dep.mf_code, e);
+  }
+}
+function onMfChangeDelegated(e) {
+  if (!e || !e.detail) return;
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  if (!activeSub) return;
+
+  let row = e.target;
+  while (row && row !== document && !row.classList?.contains('mf-row')) {
+    row = row.parentNode;
+  }
+  if (!row || !row.classList?.contains('mf-row')) {
+    console.warn('[E4.5] mf-change fired but no .mf-row ancestor found', e);
+    return;
+  }
+
+  const ruleIdx = row.getAttribute('data-rule-idx');
+  const mfCode  = e.detail.mf_code || row.getAttribute('data-mf-code') || '?';
+  let value = e.detail.value;
+  // F-QTY-SELECTOR: MF03 帶 qty 時,把 value 正規化成 { enabled, qty },
+  // 讓 computeBundleMaterial 吃到 qty、按 +/- 時 running total 材料費即時更新。
+  if (mfCode === 'MF03' && typeof e.detail.qty === 'number') {
+    value = { enabled: e.detail.value === true, qty: e.detail.qty };
+  }
+  const cost    = (typeof e.detail.cost === 'number') ? e.detail.cost : 0;
+
+  const _bItem = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+  const _bRule = (Array.isArray(activeMfModalRules) && ruleIdx != null)
+    ? activeMfModalRules[parseInt(ruleIdx, 10)] : null;
+  const _bLabel = (_bRule && _bRule.display_label) || mfCode;
+  const _bMat = computeBundleMaterial(_bItem, mfCode, _bLabel, value);
+  activeSub.liveValues[ruleIdx] = {
+    value: value, cost: cost,
+    material: _bMat.material_cost, mapping_sku: _bMat.mapping_sku, mapping_qty: _bMat.mapping_qty
+  };
+  renderBundleMaterialLine(row, _bMat);
+
+  console.log('[E4.5] Sub ' + (activeSub.sub_index || (activeSubGroupIdx + 1)) +
+              ' · ' + mfCode + ' (rule_idx=' + ruleIdx + ') → value:',
+              value, ', cost: $' + cost.toFixed(2));
+
+  const detailGroup = e.detail._binding_group || row.getAttribute('data-binding-group') || null;
+  const detailRole  = e.detail._binding_role  || row.getAttribute('data-binding-role')  || null;
+
+  if (detailGroup && detailRole === 'primary') {
+    const primary = (activeSub.instances || []).find(function (rec) {
+      return String(rec.rule_idx) === String(ruleIdx);
+    });
+    const isOn = primary ? isInstanceEnabled(primary) : (
+      value === true || (value && typeof value === 'object' && value.enabled === true)
+    );
+    const dependents = findBindingPeers(activeSub, detailGroup, 'dependent')
+      .filter(function (rec) { return !rec.isVirtual; });
+    dependents.forEach(function (dep) { applyDependentState(activeSub, dep, isOn); });
+    if (dependents.length) {
+      console.log('[F-BINDING-GROUP] Primary ' + mfCode + ' (group "' + detailGroup + '") → ' +
+                  (isOn ? 'ON' : 'OFF') + '; updated ' + dependents.length + ' dependent(s)');
+    }
+  }
+
+  updateRunningTotal();
+}
+
+function destroyActiveSubInstances() {
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  const wrap = document.getElementById('mfElementsContainer');
+  if (wrap) wrap.removeEventListener('mf-change', onMfChangeDelegated);
+
+  if (activeSub && Array.isArray(activeSub.instances)) {
+    activeSub.instances.forEach(function (rec) {
+      try {
+        if (rec.instance && typeof rec.instance.destroy === 'function') rec.instance.destroy();
+      } catch (err) { console.warn('[E4.4] destroy() threw for', rec.mf_code, err); }
+    });
+    activeSub.instances = [];
+  }
+}
+
+function clearMfContainerToLoading() {
+  const wrap = document.getElementById('mfElementsContainer');
+  if (wrap) {
+    wrap.innerHTML = `
+      <div class="mf-loading">
+        <span class="mf-loading-spinner"></span>Loading modifications...
+      </div>`;
+  }
+}
+
+function freezeActiveSub() {
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  if (!activeSub) return;
+
+  const snapshot = [];
+  const _bItemF = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+  (activeSub.instances || []).forEach(function (rec) {
+    let val, cost;
+    try {
+      val  = (typeof rec.instance.getValue === 'function') ? rec.instance.getValue() : undefined;
+      cost = (typeof rec.instance.calculateCost === 'function') ? rec.instance.calculateCost() : 0;
+    } catch (err) {
+      console.warn('[E5.freeze] getValue threw for', rec.mf_code, err);
+      return;
+    }
+    if (typeof cost !== 'number' || !isFinite(cost)) cost = 0;
+    const _bMatF = computeBundleMaterial(_bItemF, rec.mf_code, rec.display_label, val);
+    snapshot.push({
+      rule_idx: rec.rule_idx, mf_code: rec.mf_code,
+      display_label: rec.display_label, value: val, cost: cost,
+      material_cost: _bMatF.material_cost, mapping_sku: _bMatF.mapping_sku, mapping_qty: _bMatF.mapping_qty, no_label: rec.no_label || null,   // CB-12
+      binding_hidden: rec.binding_hidden || false,   // F-BINDING-GROUP: 帶進 frozen,讓非作用中分頁 validate 跳過
+    });
+  });
+  activeSub.frozenValues = snapshot;
+}
+
+function buildSavedByIdxForSub(subRef, rules) {
+  const rawList = (subRef.frozenValues && subRef.frozenValues.length)
+    ? subRef.frozenValues : (subRef.modifications || []);
+  const byMfKey = {};
+  rawList.forEach(function (m) {
+    if (!m || !m.mf_code) return;
+    const k = m.mf_code + '|' + (m.display_label || '');
+    byMfKey[k] = m;
+  });
+  const reKeyed = {};
+  rules.forEach(function (r, newIdx) {
+    const k = r.mf_code + '|' + (r.display_label || '');
+    if (byMfKey[k]) reKeyed[newIdx] = byMfKey[k];
+  });
+  return reKeyed;
+}
+
+// Split panel
+function renderSplitPanel() {
+  const rowsEl = document.getElementById('mfSplitRows');
+  const addBtn = document.getElementById('mfSplitAddBtn');
+  if (!rowsEl) return;
+
+  rowsEl.innerHTML = activeSubGroups.map(function (sub, i) {
+    const statusClass = sub.modification_status || 'unprocessed';
+    const statusLabel = statusClass === 'configured' ? '● Configured'
+                      : statusClass === 'skipped'    ? '⊘ Skipped'
+                      : '○ Unprocessed';
+    const deleteDisabled = activeSubGroups.length <= 1 ? 'disabled' : '';
+    return `
+      <div class="mf-split-row" data-sub-idx="${i}">
+        <span class="mf-split-row-label">Sub ${sub.sub_index || (i + 1)}</span>
+        <span class="mf-split-row-qty-label">Qty:</span>
+        <input type="number" min="1" step="1" class="mf-split-row-qty-input"
+          value="${sub.qty || 0}"
+          onchange="onSubQtyChange(${i}, this.value)"
+          oninput="onSubQtyChange(${i}, this.value)"/>
+        <span class="mf-split-row-status ${statusClass}">${statusLabel}</span>
+        <button class="mf-split-row-delete" type="button" ${deleteDisabled}
+          onclick="onDeleteSubGroup(${i})"
+          aria-label="Delete this sub-group" title="Delete this sub-group">${TRASH_SVG}</button>
+      </div>`;
+  }).join('');
+
+  addBtn.disabled = false;
+  updateSplitSummary();
+}
+
+function updateSplitSummary() {
+  const summaryEl = document.getElementById('mfSplitSummary');
+  const skuQtyEl  = document.getElementById('mfSkuQtyInput');
+  if (!summaryEl) return;
+
+  const skuQty = activeSkuQty;
+  const sum    = activeSubGroups.reduce(function (s, g) { return s + (parseInt(g.qty, 10) || 0); }, 0);
+
+  if (sum === skuQty) {
+    summaryEl.classList.remove('invalid');
+    summaryEl.classList.add('valid');
+    summaryEl.textContent = '✓ Total ' + sum + ' = SKU qty ' + skuQty;
+  } else {
+    summaryEl.classList.remove('valid');
+    summaryEl.classList.add('invalid');
+    const diff = skuQty - sum;
+    if (diff > 0) summaryEl.textContent = 'Need ' + diff + ' more (sum ' + sum + ' / ' + skuQty + ')';
+    else summaryEl.textContent = 'Over by ' + Math.abs(diff) + ' (sum ' + sum + ' / ' + skuQty + ')';
+  }
+
+  if (skuQtyEl) skuQtyEl.classList.toggle('invalid', sum !== skuQty);
+
+  const saveBtn = document.getElementById('mfBtnSave');
+  if (saveBtn) {
+    saveBtn.disabled = (sum !== skuQty) || activeSubGroups.length === 0 || skuQty < 1;
+  }
+}
+
+function onSubQtyChange(subIdx, newVal) {
+  const sub = activeSubGroups[subIdx];
+  if (!sub) return;
+  let q = parseInt(newVal, 10);
+  if (!isFinite(q) || q < 1) q = 1;
+  sub.qty = q;
+  updateSplitSummary();
+  if (subIdx === activeSubGroupIdx) {
+    updateRunningTotal();
+    const groupQtyEl = document.getElementById('mfGroupQty');
+    if (groupQtyEl) groupQtyEl.textContent = 'Qty: ' + q;
+  }
+}
+
+function onDeleteSubGroup(subIdx) {
+  if (activeSubGroups.length <= 1) { showToast('Cannot delete the only sub-group', true); return; }
+  const sub = activeSubGroups[subIdx];
+  if (!sub) return;
+
+  if (subIdx === activeSubGroupIdx) destroyActiveSubInstances();
+
+  activeSubGroups.splice(subIdx, 1);
+  activeSubGroups.forEach(function (g, i) { g.sub_index = i + 1; });
+  if (activeSubGroupIdx >= activeSubGroups.length) activeSubGroupIdx = activeSubGroups.length - 1;
+
+  renderSplitPanel();
+  renderTabs();
+  renderActiveSubTab();
+}
+
+function addSubGroup() {
+  const skuQty = activeSkuQty;
+  const currentSum = activeSubGroups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+  const remaining = skuQty - currentSum;
+  const newQty = remaining > 0 ? remaining : 1;
+
+  activeSubGroups.push({
+    sub_index: activeSubGroups.length + 1,
+    qty: newQty,
+    modifications: [],
+    modification_status: 'unprocessed',
+    instances: [], liveValues: {}, frozenValues: null,
+  });
+  renderSplitPanel();
+  renderTabs();
+}
+
+function renderTabs() {
+  const tabsEl = document.getElementById('mfTabs');
+  if (!tabsEl) return;
+  if (activeSubGroups.length <= 1) {
+    tabsEl.style.display = 'none';
+    tabsEl.innerHTML = '';
+    return;
+  }
+  tabsEl.style.display = 'flex';
+  tabsEl.innerHTML = activeSubGroups.map(function (sub, i) {
+    const activeClass = (i === activeSubGroupIdx) ? ' active' : '';
+    return `
+      <button class="mf-tab${activeClass}" type="button" onclick="onTabClick(${i})">
+        Sub ${sub.sub_index || (i + 1)}
+        <span class="mf-tab-qty">(qty ${sub.qty})</span>
+      </button>`;
+  }).join('');
+}
+
+function onTabClick(newIdx) {
+  if (newIdx === activeSubGroupIdx) return;
+  if (newIdx < 0 || newIdx >= activeSubGroups.length) return;
+  freezeActiveSub();
+  destroyActiveSubInstances();
+  activeSubGroupIdx = newIdx;
+  renderTabs();
+  renderActiveSubTab();
+}
+
+function renderActiveSubTab() {
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  if (!activeSub) { clearMfContainerToLoading(); return; }
+
+  const groupLabel = document.getElementById('mfGroupLabel');
+  const groupQty   = document.getElementById('mfGroupQty');
+  if (groupLabel) {
+    groupLabel.textContent = activeSubGroups.length > 1
+      ? ('Modifications — Sub ' + (activeSub.sub_index || (activeSubGroupIdx + 1)))
+      : 'Modifications';
+  }
+  if (groupQty) groupQty.textContent = 'Qty: ' + (activeSub.qty || 0);
+
+  if (!Array.isArray(activeMfModalRules)) { clearMfContainerToLoading(); return; }
+
+  const reKeyed = buildSavedByIdxForSub(activeSub, activeMfModalRules);
+  renderMfElements(activeMfModalRules, reKeyed, activeSub);
+}
+
+function onSkuQtyChange(newVal) {
+  let q = parseInt(newVal, 10);
+  if (!isFinite(q) || q < 1) q = 1;
+  activeSkuQty = q;
+  updateSplitSummary();
+}
+
+/**
+ * Fetch mod rules for the currently-open SKU modal.
+ * Only called when modal opens for an Assembled item.
+ */
+async function fetchModRulesForActiveItem() {
+  const item = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+  if (!item) return false;
+
+  const styleRow = allDoorStyles.find(function (s) { return s.style_code === item.style_code; });
+  const ctype = (styleRow && styleRow.construction_type) || item.construction_type || 'unknown';
+  const doorParam = (ctype || '').toLowerCase();
+
+  if (doorParam !== 'framed' && doorParam !== 'frameless') {
+    console.warn('[E4.3] Unknown construction type for SKU', item.sku_code, '— ctype was:', ctype);
+    activeMfModalRules = [];
+    return false;
+  }
+
+  const role = effectiveRole;
+  console.log('[E4.3]   door=' + doorParam +
+              ', type=' + (item.skuType || '') +
+              ', sku_code=' + (item.sku_code || '') +
+              ', role=' + role);
+
+  try {
+    const { data: rules, error } = await _supabase.rpc('match_modifications_for_sku', {
+      p_door:        doorParam,
+      p_type:        item.skuType    || '',
+      p_category:    item.category   || '',
+      p_subcategory: item.subcategory || '',
+      p_sku_code:    item.sku_code   || null
+    });
+
+    if (error) {
+      console.error('[E4.3] RPC error:', error);
+      showToast('Failed to load modifications', true);
+      activeMfModalRules = [];
+      return false;
+    }
+
+    if (activeMfModalKey !== item.key) {
+      console.log('[E4.3] RPC response stale (modal switched); ignoring.');
+      return false;
+    }
+
+    const rawRules = rules || [];
+    console.log('[E4.3]   RPC returned ' + rawRules.length + ' rule(s) (before role filter)');
+
+    const allSavedByMfCode = {};
+    activeSubGroups.forEach(function (sub) {
+      (sub.modifications || []).forEach(function (m) {
+        if (m && m.mf_code) allSavedByMfCode[m.mf_code + '|' + (m.display_label || '')] = m;
+      });
+    });
+    const savedCountTotal = Object.keys(allSavedByMfCode).length;
+
+    const filtered = rawRules.filter(function (r) {
+      if (!r.allowed_roles || !Array.isArray(r.allowed_roles)) return false;
+      const allowed = r.allowed_roles.some(function (ar) { return (ar || '').toLowerCase() === role; });
+      if (allowed) return true;
+      if (role === 'dealer') {
+        return Object.values(allSavedByMfCode).some(function (s) {
+          return s.mf_code === r.mf_code && (s.display_label || '') === (r.display_label || '');
+        });
+      }
+      return false;
+    });
+
+    if (role === 'dealer' && savedCountTotal > 0) {
+      const filteredMfCodes = new Set(filtered.map(function (r) { return r.mf_code; }));
+      const missingMfCodes = [];
+      Object.values(allSavedByMfCode).forEach(function (s) {
+        if (s && s.mf_code && !filteredMfCodes.has(s.mf_code) && missingMfCodes.indexOf(s.mf_code) === -1) {
+          missingMfCodes.push(s.mf_code);
+        }
+      });
+
+      if (missingMfCodes.length) {
+        console.log('[F3.1]   Fetching admin-only rules dealer cannot see via RLS:', missingMfCodes);
+        try {
+          const { data: extraRules, error: extraErr } = await _supabase.rpc(
+            'get_modification_rules_by_codes',
+            {
+              p_mf_codes:    missingMfCodes,
+              p_door:        doorParam,
+              p_type:        item.skuType    || '',
+              p_category:    item.category   || '',
+              p_subcategory: item.subcategory || '',
+              p_sku_code:    item.sku_code   || null
+            }
+          );
+          if (activeMfModalKey !== item.key) { console.log('[F3.1]   Stale; ignoring.'); return false; }
+          if (extraErr) console.warn('[F3.1]   Failed to fetch admin-only rules:', extraErr);
+          else if (extraRules && extraRules.length) {
+            console.log('[F3.1]   Got ' + extraRules.length + ' admin-only rule(s)');
+            extraRules.forEach(function (r) { filtered.push(r); });
+          }
+        } catch (e) { console.warn('[F3.1]   Unexpected error:', e); }
+      }
+    }
+
+    let finalRules = filtered;
+
+    if (item.is_custom) {
+      const beforeFilter = finalRules.length;
+      finalRules = finalRules.filter(function (r) { return r.mf_code === 'MF07'; });
+      console.log('[F-CUSTOM] Custom item — filtered to MF07 only: ' +
+                  beforeFilter + ' → ' + finalRules.length + ' rule(s)');
+    }
+
+    // F-BINDING-GROUP: infer binding markers from (mf_code, display_label)
+    // and inject into mf_params in-memory. DB rows are not touched.
+    // If a row already has _binding_group set (manually tagged in CSV),
+    // we respect the manual value and skip inference.
+    finalRules.forEach(function (rule) {
+      const existingParams = rule.mf_params || {};
+      if (existingParams._binding_group) return;  // respect manual tag
+
+      const inferred = inferBindingFromMfCode(rule);
+      if (!inferred) return;
+
+      rule.mf_params = Object.assign({}, existingParams, inferred);
+      const multiplierNote = (typeof inferred._multiplier === 'number')
+        ? ' · multiplier=' + inferred._multiplier +
+          ', unit_price=$' + inferred._unit_price.toFixed(2) +
+          ' (cost $' + rule.cost + ' / ' + (rule.matched_subcategory || rule.subcategory || '?') + ')'
+        : '';
+      console.log('[F-BINDING-GROUP] inferred ' + rule.mf_code +
+                  ' "' + (rule.display_label || '') + '" → ' +
+                  inferred._binding_group + '/' + inferred._binding_role +
+                  multiplierNote);
+    });
+
+    // F-GLASS-MULTIPLIER (2026-06-10 解耦):
+    //   Glass row 帶 DB 的 _binding_group → inferBindingFromMfCode 被
+    //   「respect manual tag」跳過,連帶 _unit_price/_multiplier 也不再注入。
+    //   這裡獨立補上(與 binding 無關):只看 MF02 + subcategory,
+    //   讓「$25 × 2 = $50」拆解顯示維持運作。
+    finalRules.forEach(function (rule) {
+      if (rule.mf_code !== 'MF02') return;
+      const p = rule.mf_params || {};
+      if (typeof p._multiplier !== 'undefined' && p._multiplier !== null) return;  // DB 已寫就尊重
+      const sub = (rule.matched_subcategory || rule.subcategory || '').trim();
+      const m = sub ? GLASS_MULTIPLIER_BY_SUBCATEGORY[sub] : null;
+      if (typeof m === 'number' && m > 1) {
+        const cost = parseFloat(rule.cost);
+        if (isFinite(cost) && cost > 0) {
+          rule.mf_params = Object.assign({}, p, { _multiplier: m, _unit_price: cost / m });
+          console.log('[F-GLASS-MULTIPLIER] injected MF02 "' + (rule.display_label || '') +
+                      '" → ×' + m + ', unit $' + (cost / m).toFixed(2) +
+                      ' (cost $' + rule.cost + ' / ' + sub + ')');
+        }
+      }
+    });
+
+    finalRules = sortRulesByBindingGroup(finalRules);
+
+    activeMfModalRules = finalRules;
+
+    console.log('[E4.3]   After role filter + F3.1 + sort: ' + activeMfModalRules.length + ' rule(s)');
+    console.log('[F-BINDING-GROUP]   Order after sort:',
+      activeMfModalRules.map(function (r) {
+        const p = r.mf_params || {};
+        return r.mf_code + (p._binding_group ? ' [' + p._binding_group + '/' + (p._binding_role || '?') + ']' : '');
+      }).join(' → ')
+    );
+
+    return true;
+  } catch (e) {
+    console.error('[E4.3] Unexpected error calling RPC:', e);
+    showToast('Failed to load modifications', true);
+    activeMfModalRules = [];
+    return false;
+  }
+}
+
+function sortRulesByBindingGroup(rules) {
+  if (!Array.isArray(rules) || rules.length < 2) return rules;
+
+  const result = [];
+  const consumed = new Set();
+
+  rules.forEach(function (rule, idx) {
+    if (consumed.has(idx)) return;
+
+    const params = rule.mf_params || {};
+    const group = params._binding_group;
+    const role  = params._binding_role;
+
+    if (!group) {
+      result.push(rule);
+      consumed.add(idx);
+      return;
+    }
+
+    if (role === 'primary') {
+      result.push(rule);
+      consumed.add(idx);
+      rules.forEach(function (other, j) {
+        if (consumed.has(j)) return;
+        const op = other.mf_params || {};
+        if (op._binding_group === group && op._binding_role === 'dependent') {
+          result.push(other);
+          consumed.add(j);
+        }
+      });
+    } else if (role === 'dependent') {
+      let primaryIdx = -1;
+      for (let j = 0; j < rules.length; j++) {
+        if (consumed.has(j)) continue;
+        const op = rules[j].mf_params || {};
+        if (op._binding_group === group && op._binding_role === 'primary') {
+          primaryIdx = j;
+          break;
+        }
+      }
+      if (primaryIdx >= 0) {
+        result.push(rules[primaryIdx]);
+        consumed.add(primaryIdx);
+        rules.forEach(function (other, j) {
+          if (consumed.has(j)) return;
+          const op = other.mf_params || {};
+          if (op._binding_group === group && op._binding_role === 'dependent') {
+            result.push(other);
+            consumed.add(j);
+          }
+        });
+      } else {
+        result.push(rule);
+        consumed.add(idx);
+      }
+    } else {
+      result.push(rule);
+      consumed.add(idx);
+    }
+  });
+
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// openMfModal — ONLY opens for Assembled items now.
+// RTA items don't open modal (no row-click), so this function
+// assumes activeAssemblyType is always Assembled.
+// ═══════════════════════════════════════════════════════════════════
+
+async function openMfModal(key) {
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) {
+    console.warn('[E3] openMfModal: cartItem not found for key', key);
+    return;
+  }
+
+  // Defensive: should never be called for RTA, but bail just in case
+  if (item.type === 'RTA') {
+    console.warn('[E3] openMfModal called for RTA item — ignoring. Use main-page switch button instead.');
+    return;
+  }
+
+  ensureSubGroups(item);
+
+  activeMfModalKey = key;
+  activeMfModalRules = null;
+
+  activeSubGroups = item.sub_groups.map(function (g, i) {
+    return {
+      sub_index: g.sub_index || (i + 1),
+      qty: g.qty,
+      modifications: Array.isArray(g.modifications) ? g.modifications.slice() : [],
+      modification_status: g.modification_status,
+      instances: [], liveValues: {}, frozenValues: null,
+    };
+  });
+  activeSubGroupIdx = 0;
+  activeSkuQty      = item.quantity;
+
+  const styleRow = allDoorStyles.find(function (s) { return s.style_code === item.style_code; });
+  const ctype    = (styleRow && styleRow.construction_type) || item.construction_type || 'unknown';
+  const ctypeClass = ctype === 'framed' ? 'framed'
+                  : ctype === 'frameless' ? 'frameless' : 'unknown';
+  const ctypeLabel = ctype === 'unknown' ? '—' : ctype;
+
+  document.getElementById('mfHeadCode').textContent = item.sku_code;
+  document.getElementById('mfHeadDescSep').textContent = '  ';
+  document.getElementById('mfHeadDesc').textContent = item.sku_desc || '';
+
+  document.getElementById('mfHeadMeta').innerHTML = `
+    <span>${esc(item.style_name || item.style_code)}</span>
+    <span class="mf-pill ${ctypeClass}">${esc(ctypeLabel)}</span>
+    <span class="mf-pill assembled">Assembled</span>
+    <span class="mf-sku-head-qty">
+      <span class="mf-sku-head-qty-label">SKU Qty:</span>
+      <input type="number" min="1" step="1" class="mf-sku-head-qty-input"
+        id="mfSkuQtyInput" value="${item.quantity}"
+        onchange="onSkuQtyChange(this.value)"
+        oninput="onSkuQtyChange(this.value)"/>
+    </span>
+  `;
+
+  renderSplitPanel();
+  renderTabs();
+
+  clearMfContainerToLoading();
+  setRunningTotalDOM(
+    activeSubGroups.length > 1
+      ? 'Sub 1 (qty ' + (activeSubGroups[0].qty || 0) + ') modifications'
+      : 'Modifications subtotal',
+    0
+  );
+
+  document.getElementById('mfModalOverlay').classList.add('show');
+  document.body.classList.add('mf-modal-open');
+  if (isReviewLocked()) document.body.classList.add('review-lock');  // CB-4: open read-only
+
+  console.log('[E3] openMfModal', key, '→ overall status was:', getItemOverallStatus(item));
+  console.log('[E5] sub_groups loaded:', activeSubGroups.length, 'sub-group(s)');
+
+  await fetchModRulesForActiveItem();
+  if (activeMfModalKey !== key) return;
+  renderActiveSubTab();
+}
+
+function closeMfModal() {
+  destroyActiveSubInstances();
+  document.getElementById('mfModalOverlay').classList.remove('show');
+  document.body.classList.remove('mf-modal-open');
+  document.body.classList.remove('review-lock');  // CB-4
+  activeMfModalKey = null;
+  activeMfModalRules = [];
+  activeSubGroups = [];
+  activeSubGroupIdx = 0;
+  activeSkuQty = 1;
+  console.log('[E3] closeMfModal (Cancel / × — no status change)');
+}
+
+function closeMfModalSilent() {
+  destroyActiveSubInstances();
+  document.getElementById('mfModalOverlay').classList.remove('show');
+  document.body.classList.remove('mf-modal-open');
+  document.body.classList.remove('review-lock');  // CB-4
+  activeMfModalKey = null;
+  activeMfModalRules = [];
+  activeSubGroups = [];
+  activeSubGroupIdx = 0;
+  activeSkuQty = 1;
+}
+  
+function refreshAfterCartChange() {
+  doorStyleGroups = buildDoorStyleGroups(cartItems, allDoorStyles);
+  pageProgress    = calculateProgress(doorStyleGroups);
+  renderProgressCard(pageProgress);
+  renderDoorStyleList();
+  renderBottomBar(pageProgress);
+  renderModsTotalBar();
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+}
+
+function markInvalidRow(ruleIdx, errors) {
+  const row = document.querySelector('#mfElementsContainer .mf-row[data-rule-idx="' + ruleIdx + '"]');
+  if (!row) { console.warn('[D17] markInvalidRow: row not found for rule_idx=', ruleIdx); return; }
+  row.classList.add('invalid');
+  const prior = row.querySelector('.mf-row-error-msg');
+  if (prior) prior.remove();
+  const errDiv = document.createElement('div');
+  errDiv.className = 'mf-row-error-msg';
+  errDiv.textContent = (errors && errors[0]) || 'Invalid value';
+  row.appendChild(errDiv);
+  try { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) {}
+
+  const onceClear = function () {
+    row.classList.remove('invalid');
+    const e = row.querySelector('.mf-row-error-msg');
+    if (e) e.remove();
+    row.removeEventListener('mf-change', onceClear);
+  };
+  row.addEventListener('mf-change', onceClear);
+}
+
+/**
+ * E5 + F-TAX: Save handler.
+ * Modal only opens for Assembled items now, so no RTA branch.
+ */
+function handleMfSave() {
+  if (isReviewLocked()) return;  // CB-4: read-only review (button hidden, defensive)
+  if (!activeMfModalKey) return;
+  const item = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+  if (!item) return;
+
+  document.querySelectorAll('#mfElementsContainer .mf-row.invalid').forEach(function (row) {
+    row.classList.remove('invalid');
+    const errMsg = row.querySelector('.mf-row-error-msg');
+    if (errMsg) errMsg.remove();
+  });
+
+  const activeSub = activeSubGroups[activeSubGroupIdx];
+  let firstFailure = null;
+
+  if (activeSub && Array.isArray(activeSub.instances)) {
+    for (let i = 0; i < activeSub.instances.length; i++) {
+      const rec = activeSub.instances[i];
+      if (rec.isReadOnly || rec.isVirtual) continue;
+      if (rec.binding_hidden) continue;   // F-BINDING-GROUP: 隱藏的 dependent 不驗證(primary 沒勾)
+      if (typeof rec.instance.validate !== 'function') continue;
+      let result;
+      try { result = rec.instance.validate(); }
+      catch (err) { console.warn('[D17] validate() threw for', rec.mf_code, err); continue; }
+      if (result && result.valid === false) {
+        firstFailure = {
+          subIdx: activeSubGroupIdx, ruleIdx: rec.rule_idx,
+          mfCode: rec.mf_code, label: rec.display_label,
+          errors: Array.isArray(result.errors) ? result.errors : ['Invalid value'],
+          isActiveTab: true,
+        };
+        break;
+      }
+    }
+  }
+
+  if (!firstFailure) {
+    for (let s = 0; s < activeSubGroups.length; s++) {
+      if (s === activeSubGroupIdx) continue;
+      const sub = activeSubGroups[s];
+      const snapshot = sub.frozenValues || [];
+      for (let i = 0; i < snapshot.length; i++) {
+        const entry = snapshot[i];
+        if (entry.mf_code === 'MF04' && entry.value && typeof entry.value === 'object'
+            && entry.value.enabled === true
+            && (entry.value.value === null || entry.value.value === undefined || isNaN(entry.value.value))) {
+          firstFailure = {
+            subIdx: s, ruleIdx: entry.rule_idx,
+            mfCode: entry.mf_code, label: entry.display_label,
+            errors: ['Please enter a value.'],
+            isActiveTab: false,
+          };
+          break;
+        }
+                // CB-12: required MF03 未選 → frozen value === null
+        //   (toggle 回 false、qty 回 object,所以 null 唯一代表 required 未選)
+        if (entry.mf_code === 'MF03' && entry.value === null && !entry.binding_hidden) {
+          firstFailure = {
+            subIdx: s, ruleIdx: entry.rule_idx,
+            mfCode: entry.mf_code, label: entry.display_label,
+            errors: ['Please select Yes or No for ' + (entry.display_label || 'this option')],
+            isActiveTab: false,
+          };
+          break;
+        }
+      }
+      if (firstFailure) break;
+    }
+  }
+
+  if (firstFailure) {
+    console.log('[D17] Save blocked — validation failed:', firstFailure);
+    const subLabel = activeSubGroups.length > 1 ? ('Sub ' + (firstFailure.subIdx + 1) + ' — ') : '';
+    const errText = firstFailure.errors[0] || 'Invalid value';
+    showToast(subLabel + (firstFailure.label || firstFailure.mfCode) + ': ' + errText, true);
+    if (!firstFailure.isActiveTab) {
+      freezeActiveSub();
+      destroyActiveSubInstances();
+      activeSubGroupIdx = firstFailure.subIdx;
+      renderTabs();
+      renderActiveSubTab();
+      setTimeout(function () { markInvalidRow(firstFailure.ruleIdx, firstFailure.errors); }, 0);
+    } else {
+      markInvalidRow(firstFailure.ruleIdx, firstFailure.errors);
+    }
+    return;
+  }
+
+  const sum = activeSubGroups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+  if (sum !== activeSkuQty) {
+    showToast('Sub-group quantities (' + sum + ') must equal SKU qty (' + activeSkuQty + ')', true);
+    return;
+  }
+  if (activeSkuQty < 1) { showToast('SKU qty must be at least 1', true); return; }
+  if (activeSubGroups.length === 0) { showToast('At least one sub-group required', true); return; }
+
+  freezeActiveSub();
+
+  const newSubGroups = [];
+  let totalLineCost = 0;
+  let taxableLineCost = 0;
+
+  activeSubGroups.forEach(function (sub, i) {
+    const snapshot = sub.frozenValues || [];
+    const kept = snapshot.filter(function (entry) {
+      return shouldKeepModification(entry.value);
+    }).map(function (entry) {
+      const taxStatus = resolveTaxStatusForEntry(entry);
+      const laborCost    = (typeof entry.cost === 'number' && isFinite(entry.cost)) ? entry.cost : 0;
+      const materialCost = (typeof entry.material_cost === 'number' && isFinite(entry.material_cost)) ? entry.material_cost : 0;
+      return {
+        rule_idx:      entry.rule_idx,
+        mf_code:       entry.mf_code,
+        display_label: entry.display_label,
+        value:         entry.value,
+        cost:          laborCost,
+        material_cost: materialCost,
+        mapping_sku:   entry.mapping_sku || null,
+        mapping_qty:   entry.mapping_qty || 0,
+        total_cost:    laborCost + materialCost,
+        tax_status:    taxStatus,
+        no_label:      entry.no_label || null,   // CB-12
+    };
+    });
+    const status = kept.length > 0 ? 'configured' : 'skipped';
+    const perUnit        = kept.reduce(function (s, m) { return s + (m.cost || 0) + (m.material_cost || 0); }, 0);
+    const perUnitTaxable = kept.reduce(function (s, m) {
+      return s + (m.tax_status === true ? ((m.cost || 0) + (m.material_cost || 0)) : 0);
+    }, 0);
+    totalLineCost   += perUnit        * (sub.qty || 0);
+    taxableLineCost += perUnitTaxable * (sub.qty || 0);
+
+    newSubGroups.push({
+      sub_index: i + 1, qty: sub.qty,
+      modifications: kept, modification_status: status,
+    });
+  });
+
+  const oldQty = item.quantity;
+  item.quantity   = activeSkuQty;
+  item.sub_groups = newSubGroups;
+  // type and assemble_fee stay as Assembled (no change in modal-only flow)
+
+  console.log('[E4.6] handleMfSave', activeMfModalKey,
+              '→', newSubGroups.length, 'sub-group(s),',
+              'total line cost $' + totalLineCost.toFixed(2),
+              (oldQty !== activeSkuQty ? '(SKU qty: ' + oldQty + ' → ' + activeSkuQty + ')' : ''));
+  console.log('[F-TAX]   Taxable mods line cost: $' + taxableLineCost.toFixed(2) +
+              ' (of $' + totalLineCost.toFixed(2) + ' total)');
+
+  refreshAfterCartChange();
+  const skuCode = item.sku_code;
+  closeMfModalSilent();
+  showToast(skuCode + ' configured — $' + totalLineCost.toFixed(2));
+}
+
+function handleMfSkip() {
+  if (isReviewLocked()) return;  // CB-4: read-only review (button hidden, defensive)
+  if (!activeMfModalKey) return;
+  const item = cartItems.find(function (i) { return i.key === activeMfModalKey; });
+  if (!item) return;
+
+  const sum = activeSubGroups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+  if (sum !== activeSkuQty) {
+    showToast('Sub-group quantities (' + sum + ') must equal SKU qty (' + activeSkuQty + ') before skipping', true);
+    return;
+  }
+
+  const newSubGroups = activeSubGroups.map(function (sub, i) {
+    return { sub_index: i + 1, qty: sub.qty, modifications: [], modification_status: 'skipped' };
+  });
+
+  item.quantity   = activeSkuQty;
+  item.sub_groups = newSubGroups;
+
+  console.log('[E4.6] handleMfSkip', activeMfModalKey,
+              '→ all', newSubGroups.length, 'sub-group(s) cleared & skipped');
+
+  refreshAfterCartChange();
+  const skuCode = item.sku_code;
+  closeMfModalSilent();
+  showToast(skuCode + ' skipped');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-MODS-TOTAL
+// ═══════════════════════════════════════════════════════════════════
+function calculateAllModificationsTotal() {
+  let total = 0;
+  cartItems.forEach(function (item) {
+    if (!Array.isArray(item.sub_groups)) return;
+    item.sub_groups.forEach(function (sub) {
+      const subQty = (typeof sub.qty === 'number') ? sub.qty : 0;
+      if (!Array.isArray(sub.modifications)) return;
+      sub.modifications.forEach(function (m) {
+              const cost = (typeof m.cost === 'number' && isFinite(m.cost)) ? m.cost : 0;
+              const material = (typeof m.material_cost === 'number' && isFinite(m.material_cost)) ? m.material_cost : 0;
+              total += (cost + material) * subQty;
+       });
+    });
+  });
+  return total;
+}
+function renderModsTotalBar() {
+  const valueEl = document.getElementById('modsTotalBarValue');
+  if (!valueEl) return;
+  const total = calculateAllModificationsTotal();
+  valueEl.textContent = '$' + total.toFixed(2);
+  if (total > 0) valueEl.classList.remove('zero');
+  else valueEl.classList.add('zero');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-SWAP: Swap Door Style
+// ═══════════════════════════════════════════════════════════════════
+
+let swapState = { currentStyleCode: null, selectedNewStyleCode: null };
+
+function getMultiplierForStyle(style) {
+  if (!dealer || !style) return 1;
+  const isFrameless = (style.construction_type || '').toLowerCase() === 'frameless';
+  const isStock = !!style.is_stock;
+  if (isFrameless) return parseFloat(dealer.frameless_multiplier || 1) || 1;
+  return isStock
+    ? (parseFloat(dealer.stock_multiplier     || 1) || 1)
+    : (parseFloat(dealer.non_stock_multiplier || 1) || 1);
+}
+
+function getMsrpForStyleGroup(sku, grp) {
+  const g = (grp || 'GROUP A').toUpperCase();
+  const v = g === 'GROUP D' ? sku.msrp_group_d
+          : g === 'GROUP C' ? sku.msrp_group_c
+          : g === 'GROUP B' ? sku.msrp_group_b
+          : sku.msrp_group_a;
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+let _swapSkuCache = { framed: null, frameless: null };
+async function ensureSwapSkuCache() {
+  if (_swapSkuCache.framed && _swapSkuCache.frameless) return;
+  const [framedRes, framelessRes] = await Promise.all([
+    _supabase.from('skus_framed').select('*').eq('active', true),
+    _supabase.from('skus_frameless').select('*').eq('active', true),
+  ]);
+  _swapSkuCache.framed    = framedRes.data    || [];
+  _swapSkuCache.frameless = framelessRes.data || [];
+  console.log('[F-SWAP] SKU master cached:',
+              _swapSkuCache.framed.length, 'framed,',
+              _swapSkuCache.frameless.length, 'frameless');
+}
+
+async function openSwapModal(currentStyleCode) {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  const currentStyle = allDoorStyles.find(function (s) { return s.style_code === currentStyleCode; });
+  if (!currentStyle) { showToast('Current style not found', true); return; }
+
+  try { await ensureSwapSkuCache(); }
+  catch (e) { console.warn('[F-SWAP] Failed to load SKU cache:', e); showToast('Failed to load product data', true); return; }
+
+  swapState.currentStyleCode = currentStyleCode;
+  swapState.selectedNewStyleCode = null;
+
+  const thumbEl = document.getElementById('swapCurrentThumb');
+  if (currentStyle.image_url) {
+    thumbEl.innerHTML = '<img src="' + esc(currentStyle.image_url) + '" alt=""/>';
+  } else {
+    thumbEl.innerHTML = '<div style="width:100%;height:100%;background:' +
+      esc(colorMap[currentStyle.color] || '#8A8A8A') + ';"></div>';
+  }
+  document.getElementById('swapCurrentName').textContent = currentStyle.style_name;
+  document.getElementById('swapCurrentMeta').textContent =
+    currentStyle.style_code + ' · ' +
+    (currentStyle.construction_type || '—') +
+    (currentStyle.grp ? ' · ' + currentStyle.grp : '');
+
+  const ctype = (currentStyle.construction_type || '').toLowerCase();
+  const ctypeLabel = ctype === 'framed' ? 'Framed' : ctype === 'frameless' ? 'Frameless' : 'same construction type';
+  document.getElementById('swapPickLabel').textContent = 'Pick a replacement style (' + ctypeLabel + ' only)';
+
+  renderSwapStyleGrid(currentStyle);
+
+  document.getElementById('swapConfirmBtn').disabled = true;
+
+  document.getElementById('swapModalOverlay').classList.add('show');
+  document.body.classList.add('mf-modal-open');
+
+  console.log('[F-SWAP] openSwapModal — current:', currentStyleCode,
+              '(' + currentStyle.style_name + '), construction:', ctype);
+}
+
+function renderSwapStyleGrid(currentStyle) {
+  const ctype = (currentStyle.construction_type || '').toLowerCase();
+  const candidates = allDoorStyles.filter(function (s) {
+    if (!s) return false;
+    const sCtype = (s.construction_type || '').toLowerCase();
+    if (sCtype !== ctype) return false;
+    if (s.is_coming_soon) return false;
+    return true;
+  });
+  candidates.sort(function (a, b) {
+    const aBrand = a.brand === currentStyle.brand ? 0 : 1;
+    const bBrand = b.brand === currentStyle.brand ? 0 : 1;
+    if (aBrand !== bBrand) return aBrand - bBrand;
+    const aSub = (a.subcategory || '');
+    const bSub = (b.subcategory || '');
+    if (aSub !== bSub) return aSub.localeCompare(bSub);
+    return (a.style_name || '').localeCompare(b.style_name || '');
+  });
+
+  const gridEl = document.getElementById('swapStyleGrid');
+  if (!candidates.length) {
+    gridEl.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;font-size:12px;color:var(--muted);">' +
+      'No other styles available for ' + esc(ctype) + ' construction.</div>';
+    return;
+  }
+
+  gridEl.innerHTML = candidates.map(function (s) {
+    const isCurrent = s.style_code === currentStyle.style_code;
+    const cardClass = 'swap-style-card' + (isCurrent ? ' current' : '');
+    const onClick = isCurrent ? '' : ' onclick="onSwapStyleSelect(\'' + esc(s.style_code) + '\')"';
+    const img = s.image_url
+      ? '<img src="' + esc(s.image_url) + '" alt="" loading="lazy"/>'
+      : '<div style="width:100%;height:100%;background:' + esc(colorMap[s.color] || '#8A8A8A') + ';"></div>';
+    return '<div class="' + cardClass + '" data-style-code="' + esc(s.style_code) + '"' + onClick + '>' +
+        '<div class="swap-style-img-wrap">' + img + '</div>' +
+        '<div class="swap-style-info">' +
+          '<div class="swap-style-name">' + esc(s.style_name) +
+            (isCurrent ? ' <span style="color:var(--muted);font-weight:400;font-size:9px;">(current)</span>' : '') + '</div>' +
+          '<div class="swap-style-code">' + esc(s.style_code) + (s.grp ? ' · ' + esc(s.grp) : '') + '</div>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function onSwapStyleSelect(newStyleCode) {
+  if (newStyleCode === swapState.currentStyleCode) return;
+  swapState.selectedNewStyleCode = newStyleCode;
+  document.querySelectorAll('#swapStyleGrid .swap-style-card').forEach(function (card) {
+    const code = card.getAttribute('data-style-code');
+    card.classList.toggle('selected', code === newStyleCode);
+  });
+document.getElementById('swapConfirmBtn').disabled = false;
+}
+
+// F-SWAP: 計算換門型影響 — 被換 group 的成分明細 + 總計(CB-15 修訂)
+//   Unit Price:SKU 單價 × 數量(舊→新)
+//   Modifications:labor + bundle 材料費 × 數量(labor 不變,材料費對新門型重算)
+//   Assembly Fee:assemble_fee × 數量(同類型互換不變,舊=新)
+//   Group Total = Unit + Mod + Assembly Fee(= step3 subtotal 層級;不含 discount/tax)
+function computeSwapImpact(newStyleCode) {
+  const currentStyle = allDoorStyles.find(function (s) { return s.style_code === swapState.currentStyleCode; });
+  const newStyle     = allDoorStyles.find(function (s) { return s.style_code === newStyleCode; });
+  if (!currentStyle || !newStyle) return null;
+
+  const groupItems = cartItems.filter(function (item) { return item.style_code === swapState.currentStyleCode; });
+
+  const ctype = (newStyle.construction_type || '').toLowerCase();
+  const skuMaster = ctype === 'frameless' ? _swapSkuCache.frameless : _swapSkuCache.framed;
+  const newMultiplier = getMultiplierForStyle(newStyle);
+  const newGrp = newStyle.grp || 'GROUP A';
+
+  let oldUnit = 0, newUnit = 0, oldMod = 0, newMod = 0, asmFee = 0, unpriced = 0;
+
+  groupItems.forEach(function (item) {
+    const qty = item.quantity || 0;
+
+    // ── Unit Price ──
+    const oldUnitPrice = item.unit_price || 0;
+    const skuRow = skuMaster.find(function (s) { return s.sku_code === item.sku_code; });
+    let newUnitPrice = null;
+    if (skuRow) {
+      const msrp = getMsrpForStyleGroup(skuRow, newGrp);
+      if (msrp !== null) newUnitPrice = msrp * newMultiplier;
+    }
+    if (newUnitPrice === null) unpriced++;
+    const newUnitEff = (newUnitPrice === null) ? 0 : newUnitPrice;
+    oldUnit += oldUnitPrice * qty;
+    newUnit += newUnitEff   * qty;
+
+    // ── Assembly Fee(舊=新)──
+    asmFee += (item.assemble_fee || 0) * qty;
+
+    // ── Modifications ──
+    const savedStyleCode = item.style_code;
+    item.style_code = newStyleCode;            // 暫時切換,讓 computeBundleMaterial 用新門型
+    if (Array.isArray(item.sub_groups)) {
+      item.sub_groups.forEach(function (sub) {
+        const subQty = (typeof sub.qty === 'number') ? sub.qty : 0;
+        if (!Array.isArray(sub.modifications)) return;
+        sub.modifications.forEach(function (m) {
+          const labor = (typeof m.cost === 'number' && isFinite(m.cost)) ? m.cost : 0;
+          const oMat  = (typeof m.material_cost === 'number' && isFinite(m.material_cost)) ? m.material_cost : 0;
+          let nMat = oMat;
+          if (isBundleEligible(m.mf_code, m.display_label)) {
+            nMat = computeBundleMaterial(item, m.mf_code, m.display_label, m.value).material_cost || 0;
+          }
+          oldMod += (labor + oMat) * subQty;
+          newMod += (labor + nMat) * subQty;
+        });
+      });
+    }
+    item.style_code = savedStyleCode;          // 還原
+  });
+
+  const oldGroup = oldUnit + oldMod + asmFee;
+  const newGroup = newUnit + newMod + asmFee;
+
+  return {
+    currentStyle: currentStyle, newStyle: newStyle,
+    oldUnit: oldUnit, newUnit: newUnit,
+    oldMod: oldMod, newMod: newMod,
+    asmFee: asmFee,
+    oldGroup: oldGroup, newGroup: newGroup,
+    delta: newGroup - oldGroup,
+    unpriced: unpriced,
+  };
+}
+
+// (CB-15) renderSwapPreview / inline 預覽表已移除 — 預覽改由 Confirm 後的 popup 呈現
+
+function closeSwapModal() {
+  closeSwapConfirmPopup();   // 保險:一併關掉最終確認 popup
+  document.getElementById('swapModalOverlay').classList.remove('show');
+  document.body.classList.remove('mf-modal-open');
+  swapState.currentStyleCode = null;
+  swapState.selectedNewStyleCode = null;
+}
+
+// 第一段:Confirm Swap → 算 impact → 跳最終確認 popup(不寫入)
+function confirmSwap() {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  if (!swapState.currentStyleCode || !swapState.selectedNewStyleCode) {
+    showToast('Please select a replacement style', true);
+    return;
+  }
+  const impact = computeSwapImpact(swapState.selectedNewStyleCode);
+  if (!impact) { showToast('Unable to compute price change', true); return; }
+  openSwapConfirmPopup(impact);
+}
+
+function openSwapConfirmPopup(impact) {
+  const f = function (n) { return '$' + n.toFixed(2); };
+  document.getElementById('swapConfirmFromTo').textContent =
+    impact.currentStyle.style_code + ' → ' + impact.newStyle.style_code;
+  document.getElementById('swapConfirmOldUnit').textContent  = f(impact.oldUnit);
+  document.getElementById('swapConfirmNewUnit').textContent  = f(impact.newUnit);
+  document.getElementById('swapConfirmOldMod').textContent   = f(impact.oldMod);
+  document.getElementById('swapConfirmNewMod').textContent   = f(impact.newMod);
+  document.getElementById('swapConfirmOldFee').textContent   = f(impact.asmFee);
+  document.getElementById('swapConfirmNewFee').textContent   = f(impact.asmFee);
+  document.getElementById('swapConfirmOldTotal').textContent = f(impact.oldGroup);
+  document.getElementById('swapConfirmNewTotal').textContent = f(impact.newGroup);
+
+  const d = impact.delta;
+  const diffEl = document.getElementById('swapConfirmDiff');
+  const noteEl = document.getElementById('swapConfirmNote');
+  // CB-15: 保留金額,中性色,不標 expensive/cheaper
+  let diffText;
+  if (Math.abs(d) < 0.005)  diffText = '$0.00';
+  else if (d > 0)           diffText = '+$' + d.toFixed(2);
+  else                      diffText = '-$' + Math.abs(d).toFixed(2);
+  diffEl.textContent = diffText;
+  diffEl.className   = 'swap-confirm-diff';
+  noteEl.textContent = '';
+  noteEl.className   = 'swap-confirm-note';
+  document.getElementById('swapConfirmOverlay').classList.add('show');
+}
+
+function closeSwapConfirmPopup() {
+  document.getElementById('swapConfirmOverlay').classList.remove('show');
+}
+
+// 第二段:Confirm Change → 正式寫入(SKU 單價 + 逐 mod 材料費全重算)+ 存 sessionStorage
+function commitSwap() {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  if (!swapState.currentStyleCode || !swapState.selectedNewStyleCode) {
+    showToast('Please select a replacement style', true);
+    return;
+  }
+  const newStyle = allDoorStyles.find(function (s) { return s.style_code === swapState.selectedNewStyleCode; });
+  const oldStyle = allDoorStyles.find(function (s) { return s.style_code === swapState.currentStyleCode; });
+  if (!newStyle || !oldStyle) { showToast('Style not found', true); return; }
+
+  const oldCtype = (oldStyle.construction_type || '').toLowerCase();
+  const newCtype = (newStyle.construction_type || '').toLowerCase();
+  if (oldCtype !== newCtype) {
+    showToast('Cannot swap across construction types (Framed ↔ Frameless not supported)', true);
+    return;
+  }
+
+  const skuMaster = newCtype === 'frameless' ? _swapSkuCache.frameless : _swapSkuCache.framed;
+  const newMultiplier = getMultiplierForStyle(newStyle);
+  const newGrp = newStyle.grp || 'GROUP A';
+
+  let swappedCount = 0;
+  let unpriced = 0;
+  cartItems.forEach(function (item) {
+    if (item.style_code !== swapState.currentStyleCode) return;
+
+    // ── SKU 單價 ──
+    const sku = skuMaster.find(function (s) { return s.sku_code === item.sku_code; });
+    let newUnitPrice = 0;
+    let newMsrp = 0;
+    if (sku) {
+      const msrp = getMsrpForStyleGroup(sku, newGrp);
+      if (msrp !== null) { newMsrp = msrp; newUnitPrice = msrp * newMultiplier; }
+      else { unpriced++; }
+    } else { unpriced++; }
+
+    item.style_code = newStyle.style_code;
+    item.style_name = newStyle.style_name;
+    item.unit_price = newUnitPrice;
+    item.msrp       = newMsrp;
+
+    // ── 逐 mod 重算 bundle 材料費(此時 item.style_code 已是新門型)──
+    if (Array.isArray(item.sub_groups)) {
+      item.sub_groups.forEach(function (sub) {
+        if (!Array.isArray(sub.modifications)) return;
+        sub.modifications.forEach(function (m) {
+          const labor = (typeof m.cost === 'number' && isFinite(m.cost)) ? m.cost : 0;
+          if (isBundleEligible(m.mf_code, m.display_label)) {
+            const mat = computeBundleMaterial(item, m.mf_code, m.display_label, m.value);
+            m.material_cost = mat.material_cost || 0;
+            m.mapping_sku   = mat.mapping_sku || null;
+            m.mapping_qty   = mat.mapping_qty || 0;
+          }
+          const matCost = (typeof m.material_cost === 'number' && isFinite(m.material_cost)) ? m.material_cost : 0;
+          m.total_cost = labor + matCost;
+        });
+      });
+    }
+
+    swappedCount++;
+  });
+
+  console.log('[F-SWAP] COMMIT:', oldStyle.style_code, '→', newStyle.style_code,
+              '·', swappedCount, 'item(s) re-priced (SKU + modifications)');
+
+  doorStyleGroups = buildDoorStyleGroups(cartItems, allDoorStyles);
+  pageProgress    = calculateProgress(doorStyleGroups);
+  renderProgressCard(pageProgress);
+  renderDoorStyleList();
+  renderBottomBar(pageProgress);
+  renderModsTotalBar();
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+
+  closeSwapConfirmPopup();
+  closeSwapModal();
+  showToast('Swapped to ' + newStyle.style_name + (unpriced > 0 ? ' (' + unpriced + ' unpriced — please review)' : ''));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// init()
+// ═══════════════════════════════════════════════════════════════════
+
+async function init() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  const { data: meRow } = await _supabase
+    .from('dealers').select('is_active, role').eq('id', session.user.id).single();
+  if (!meRow?.is_active) {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  draftId = params.get('draft') || null;
+
+  const dbRoleEarly = (meRow.role || '').toLowerCase();
+  isAdminViewer = dbRoleEarly === 'admin' || dbRoleEarly === 'super_admin';
+
+  let quoteStatus  = null;
+  let quoteOwnerId = null;
+  if (draftId) {
+    const { data: q } = await _supabase.from('quotes').select('dealer_id, status').eq('id', draftId).single();
+    if (q) { quoteStatus = q.status || null; quoteOwnerId = q.dealer_id || null; }
+  }
+
+  // CB-4: resolve view mode from server data (status + owner + role)
+  const isOwner = quoteOwnerId && quoteOwnerId === session.user.id;
+  viewMode = resolveViewMode(quoteStatus, isOwner, isAdminViewer);
+  console.log('[CB-4] modifications viewMode:', { viewMode, quoteStatus, isAdminViewer, isOwner });
+
+  let dealerIdToLoad = session.user.id;
+  if (draftId) {
+    const { data: q } = await _supabase.from('quotes').select('dealer_id').eq('id', draftId).single();
+    if (q?.dealer_id) dealerIdToLoad = q.dealer_id;
+  } else {
+    try {
+      const s1 = sessionStorage.getItem('quoteStep1');
+      if (s1) {
+        const parsed = JSON.parse(s1);
+        if (parsed?.dealerIdForQuote) dealerIdToLoad = parsed.dealerIdForQuote;
+      }
+    } catch (_) {}
+  }
+
+  if (draftId) {
+    const backBtn = document.getElementById('btnBack');
+    if (backBtn) backBtn.href = 'new-quote-step2.html?draft=' + draftId + buildModeParam();
+  }
+
+  const { data: d } = await _supabase.from('dealers').select('*').eq('id', dealerIdToLoad).single();
+  if (!d) { alert('Could not load dealer data. Please go back and try again.'); return; }
+  dealer = d;
+
+const [styleRes, framedRes, framelessRes, bundleRes] = await Promise.all([
+    _supabase.from('door_styles').select('*').eq('is_active', true),
+    _supabase.from('skus_framed').select('*').eq('active', true),
+    _supabase.from('skus_frameless').select('*').eq('active', true),
+    _supabase.from('modification_bundles').select('type, source_sku, mf_code, mapping_sku').eq('is_active', true),
+  ]);
+  allDoorStyles = styleRes.data || [];
+  allSkusFramed    = framedRes.data || [];
+  allSkusFrameless = framelessRes.data || [];
+  if (bundleRes && bundleRes.error) {
+    console.error('[CB-6] modification_bundles load failed:', bundleRes.error);
+    modificationBundles = [];
+  } else {
+    modificationBundles = (bundleRes && bundleRes.data) || [];
+  }
+  console.log('[CB-6] modification_bundles loaded:', modificationBundles.length, 'active row(s)');
+
+  if (draftId) {
+    const savedCart = sessionStorage.getItem('quoteStep2');
+    if (savedCart !== null) {
+      try { cartItems = JSON.parse(savedCart) || []; }
+      catch (e) {
+        cartItems = [];
+        cartItems = await loadDraftItems(allSkusFramed, allSkusFrameless);
+      }
+    } else {
+      cartItems = await loadDraftItems(allSkusFramed, allSkusFrameless);
+    }
+  } else {
+    const savedCart = sessionStorage.getItem('quoteStep2');
+    if (savedCart !== null) {
+      try { cartItems = JSON.parse(savedCart) || []; }
+      catch (e) { cartItems = []; }
+    }
+  }
+
+  cartItems = normalizeCartItems(cartItems);
+  cartItems.forEach(function (item) { if (!item.key) item.key = item.sku_code + '_' + item.type; });
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+
+  if (!cartItems.length) {
+    alert('No items in your quote. Returning to product selection.');
+    window.location.href = draftId ? 'new-quote-step2.html?draft=' + draftId : 'new-quote-step2.html';
+    return;
+  }
+
+  doorStyleGroups = buildDoorStyleGroups(cartItems, allDoorStyles);
+  pageProgress    = calculateProgress(doorStyleGroups);
+
+  renderProgressCard(pageProgress);
+  renderDoorStyleList();
+  renderBottomBar(pageProgress);
+  renderModsTotalBar();
+
+  if (viewMode === 'review') {
+    document.getElementById('returnedBannerMount').innerHTML = buildReviewBanner();
+  } else if (viewMode === 'admin-edit') {
+    document.getElementById('returnedBannerMount').innerHTML = buildAdminEditBanner(dealer);
+  }
+  if (pageProgress.total === 0) {
+    document.getElementById('noAssembledBannerMount').innerHTML = buildNoAssembledBanner();
+  }
+  
+  // D09: role-aware effectiveRole resolution
+  const dbRole = (meRow.role || '').toLowerCase();
+  const isAdminRole = dbRole === 'admin' || dbRole === 'super_admin';
+
+  let isAdminContext = false;
+  let adminContextReason = '';
+
+  try {
+    const s1 = sessionStorage.getItem('quoteStep1');
+    if (s1) {
+      const parsed = JSON.parse(s1);
+      if (parsed?.adminDraft === true) {
+        isAdminContext = true;
+        adminContextReason = 'sessionStorage.adminDraft=true';
+      }
+    }
+  } catch (_) {}
+
+  if (!isAdminContext && isAdminRole) {
+    if (draftId && (quoteStatus === 'Draft' || quoteStatus === 'Returned' || quoteStatus === 'Pending')) {
+      isAdminContext = true;
+      adminContextReason = 'admin editing ' + quoteStatus + ' quote';
+    } else if (!draftId) {
+      isAdminContext = true;
+      adminContextReason = 'admin role, no draftId';
+    }
+  }
+
+  effectiveRole = isAdminContext ? 'admin' : 'dealer';
+
+  console.log('[D09] effectiveRole =', effectiveRole,
+              '(dbRole=' + dbRole + ', reason: ' + (adminContextReason || 'no admin trigger') + ')');
+
+  const mfCodes = ['MF01','MF02','MF03','MF04','MF05','MF06','MF07'];
+  const missing = mfCodes.filter(function (c) {
+    return !window.MF || !window.MF[c] || typeof window.MF[c].create !== 'function';
+  });
+  if (missing.length) {
+    console.error('[E4.4] Missing MF factories:', missing);
+  } else {
+    console.log('[E4.4] All 7 MF factories loaded (MF01-MF07)');
+  }
+
+  console.log('[E1.2] init() complete');
+  logDoorStyleGroups(doorStyleGroups);
+  console.log('[F-RTA-SWITCH] Ready · v3 (main-page row buttons, modal segmented control removed)');
+
+  setInterval(async function () {
+    const { data: check } = await _supabase
+      .from('dealers').select('is_active').eq('id', session.user.id).single();
+    if (!check?.is_active) {
+      await _supabase.auth.signOut();
+      window.location.href = 'login.html';
+    }
+  }, 60000);
+}
+
+init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft — My Quotes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:#C9A84C; --gold-light:#E2C97E; --green-dark:#3e5a42; --green-mid:#4a6b4f;
+      --cream:#F5F2EC; --text:#2C3A32; --muted:#7A8C82; --border:#DDD8CC; --bg:#F5F2EC; --white:#FFFFFF;
+      --error:#C0392B;
+      --status-draft:#9B59B6;
+      --status-pending:#C9A84C; --status-processing:#3B82F6; --status-complete:#16A34A; --status-closed:#6B7280;
+      --status-returned:#E07B39;
+    }
+    html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+    .page { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+    .page-header { margin-bottom: 24px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--green-dark); }
+    .page-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .btn-new-quote { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: #fff; border: none; border-radius: 3px; padding: 11px 18px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+    .btn-new-quote:hover { background: var(--green-mid); }
+    .btn-new-quote svg { width: 13px; height: 13px; fill: currentColor; }
+
+    /* Stats bar — 6 cards now (Total / Draft / Returned / Pending / Processing / Complete) */
+    .stats-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .stats-bar { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 480px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 500; color: var(--green-dark); line-height: 1; }
+    .stat-num.draft-num    { color: var(--status-draft); }
+    .stat-num.returned-num { color: var(--status-returned); }
+    .stat-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+    /* Returned alert banner — only shows when there are returned quotes */
+    .returned-alert {
+      background: rgba(224,123,57,0.08);
+      border: 1px solid rgba(224,123,57,0.3);
+      border-left: 3px solid var(--status-returned);
+      border-radius: 3px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .returned-alert.show { display: flex; }
+    .returned-alert svg { width: 18px; height: 18px; fill: var(--status-returned); flex-shrink: 0; }
+    .returned-alert strong { color: var(--status-returned); }
+
+    .filters { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 16px 20px; margin-bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; }
+    .filter-label { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    .filter-select, .filter-input { height: 36px; border: 1px solid var(--border); border-radius: 3px; padding: 0 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text); background: var(--white); outline: none; }
+    .filter-input { width: 160px; }
+    .filter-actions { display: flex; gap: 8px; margin-left: auto; align-self: flex-end; }
+    .btn-filter { height: 36px; padding: 0 16px; background: var(--green-dark); color: #fff; border: none; border-radius: 3px; font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+    .btn-filter:hover { background: var(--green-mid); }
+    .btn-reset { height: 36px; padding: 0 14px; background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 3px; font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+    .btn-reset:hover { border-color: var(--text); color: var(--text); }
+
+    .table-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .table-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .table-title { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green-dark); }
+    .table-count { font-size: 11px; color: var(--muted); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 10px 16px; background: #F5F3EF; border-bottom: 1px solid var(--border); font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-align: left; white-space: nowrap; }
+    thead th.r { text-align: right; }
+
+    /* Regular rows — clickable */
+    tbody tr.row-clickable { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+    tbody tr.row-clickable:hover { background: #FAFAF8; }
+
+    /* Draft rows — not clickable on whole row */
+    tbody tr.row-draft { border-bottom: 1px solid var(--border); background: rgba(155,89,182,0.03); transition: background 0.15s; }
+    tbody tr.row-draft:hover { background: rgba(155,89,182,0.06); }
+
+    /* Returned rows — clickable, light orange background to draw attention */
+    tbody tr.row-returned { border-bottom: 1px solid var(--border); background: rgba(224,123,57,0.05); cursor: pointer; transition: background 0.15s; }
+    tbody tr.row-returned:hover { background: rgba(224,123,57,0.10); }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 14px 16px; font-size: 13px; vertical-align: middle; }
+    tbody td.r { text-align: right; }
+    .td-po { font-weight: 500; color: var(--green-dark); white-space: nowrap; }
+    .td-job { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .td-date { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .td-amount { font-weight: 500; white-space: nowrap; }
+    .td-amount.draft-dash { color: var(--muted); font-style: italic; font-weight: 400; }
+
+    /* Action required tag for Returned rows */
+    .action-required-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--status-returned);
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 2px; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+    .status-badge.draft      { background: rgba(155,89,182,0.10); color: var(--status-draft); }
+    .status-badge.pending    { background: rgba(201,168,76,0.12);  color: var(--status-pending); }
+    .status-badge.processing { background: rgba(59,130,246,0.1);   color: var(--status-processing); }
+    .status-badge.complete   { background: rgba(22,163,74,0.1);    color: var(--status-complete); }
+    .status-badge.closed     { background: rgba(107,114,128,0.1);  color: var(--status-closed); }
+    .status-badge.returned   { background: rgba(224,123,57,0.14);  color: var(--status-returned); }
+
+    .arrow-cell { color: var(--border); font-size: 14px; text-align: right; }
+    tbody tr.row-clickable:hover .arrow-cell { color: var(--gold); }
+    tbody tr.row-returned .arrow-cell { color: var(--status-returned); }
+    tbody tr.row-returned:hover .arrow-cell { color: #c66a30; }
+
+    /* Edit draft + Delete buttons cell */
+    .draft-actions-cell { text-align: right; white-space: nowrap; }
+    .draft-actions-wrap { display: inline-flex; align-items: center; gap: 6px; }
+    .btn-edit-draft {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--status-draft);
+      background: rgba(155,89,182,0.08);
+      border: 1px solid rgba(155,89,182,0.25);
+      border-radius: 3px; padding: 5px 10px;
+      cursor: pointer; transition: all 0.15s;
+      text-decoration: none; white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .btn-edit-draft:hover { background: rgba(155,89,182,0.15); border-color: rgba(155,89,182,0.5); }
+
+    /* Delete draft icon button — trash icon only */
+    .btn-delete-draft {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .btn-delete-draft svg { width: 14px; height: 14px; fill: currentColor; }
+    .btn-delete-draft:hover {
+      background: rgba(192,57,43,0.08);
+      border-color: var(--error);
+      color: var(--error);
+    }
+    .btn-delete-draft:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .empty-state { padding: 60px 20px; text-align: center; color: var(--muted); }
+    .empty-state svg { width: 36px; height: 36px; fill: var(--border); margin: 0 auto 12px; display: block; }
+    .empty-state p { font-size: 13px; margin-bottom: 16px; }
+    .loading-row { height: 52px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── Delete Confirm Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44,58,50,0.5);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--white);
+      border-radius: 4px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-icon-wrap {
+      width: 48px; height: 48px;
+      background: rgba(192,57,43,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .modal-icon-wrap svg { width: 22px; height: 22px; fill: var(--error); }
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+    .modal-msg {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+    .modal-job {
+      font-size: 13px;
+      color: var(--green-dark);
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+    .modal-warning {
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-error {
+      background: rgba(192,57,43,0.07);
+      border: 1px solid rgba(192,57,43,0.25);
+      border-radius: 3px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--error);
+      margin-bottom: 16px;
+      display: none;
+    }
+    .modal-error.show { display: block; }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .btn-modal-cancel {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .btn-modal-cancel:hover { color: var(--text); border-color: var(--text); }
+    .btn-modal-delete {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px;
+      background: var(--error);
+      border: none;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .btn-modal-delete:hover { background: #A33324; }
+    .btn-modal-delete:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-modal-delete .modal-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-modal-delete.loading .modal-spinner { display: block; }
+    .btn-modal-delete.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-dark); color: #fff;
+      padding: 12px 22px; border-radius: 4px; font-size: 13px;
+      opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 600;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- Unified Navigator (replaces old <nav> and mobile menu) -->
+<div id="pcd-nav" data-page="quotes"></div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">My Quotes</div>
+      <div class="page-sub" id="pageSub">Loading...</div>
+    </div>
+    <a href="new-quote.html" class="btn-new-quote">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      New Quote
+    </a>
+  </div>
+
+  <!-- Stats — 6 cards -->
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-num" id="statTotal">—</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-num draft-num" id="statDraft">—</div><div class="stat-label">Draft</div></div>
+    <div class="stat-card"><div class="stat-num returned-num" id="statReturned">—</div><div class="stat-label">Revising</div></div>
+    <div class="stat-card"><div class="stat-num" id="statPending">—</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num" id="statProcessing">—</div><div class="stat-label">Processing</div></div>
+    <div class="stat-card"><div class="stat-num" id="statComplete">—</div><div class="stat-label">Complete</div></div>
+  </div>
+
+  <!-- Returned alert banner -->
+  <div class="returned-alert" id="returnedAlert">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    <div>
+      <strong id="returnedAlertCount">— quote needs revision.</strong>
+      Please review the revision note and resubmit.
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <span class="filter-label">Status</span>
+      <select class="filter-select" id="filterStatus">
+        <option value="">All Statuses</option>
+        <option value="Draft">Draft</option>
+        <option value="Returned">Revising</option>
+        <option value="Pending">Pending</option>
+        <option value="Processing">Processing</option>
+        <option value="Complete">Complete</option>
+        <option value="Closed">Closed</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">From</span>
+      <input type="date" class="filter-input" id="filterFrom" style="width:130px;"/>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">To</span>
+      <input type="date" class="filter-input" id="filterTo" style="width:130px;"/>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Search</span>
+      <input type="text" class="filter-input" id="filterSearch" placeholder="PO# or Job Name"/>
+    </div>
+    <div class="filter-actions">
+      <button class="btn-filter" onclick="applyFilters()">Filter</button>
+      <button class="btn-reset" onclick="resetFilters()">Reset</button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <span class="table-title">Quotes</span>
+      <span class="table-count" id="tableCount">—</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>PO # / Job Name</th>
+            <th>Date</th>
+            <th class="r">Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="quotesBody">
+          <tr class="loading-row"><td colspan="5"></td></tr>
+          <tr class="loading-row"><td colspan="5"></td></tr>
+          <tr class="loading-row"><td colspan="5"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete Draft Confirm Modal ── -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-icon-wrap">
+      <svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+    </div>
+    <div class="modal-title">Delete Draft?</div>
+    <div class="modal-msg">Are you sure you want to delete this draft?</div>
+    <div class="modal-job" id="deleteJobName">—</div>
+    <div class="modal-warning">This action cannot be undone.</div>
+    <div class="modal-error" id="deleteError"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" id="btnDeleteCancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-modal-delete" id="btnDeleteConfirm" onclick="confirmDelete()">
+        <span class="btn-text">Delete Draft</span>
+        <div class="modal-spinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Unified Footer -->
+<div id="pcd-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="components/navigator.js"></script>
+<script src="components/footer.js"></script>
+<script>
+const { createClient } = window.supabase;
+const _supabase = createClient(
+  window.SB_URL,
+  window.SB_KEY
+);
+
+let allQuotes = [];
+let userId    = null;
+let pendingDeleteId   = null;   // quote id queued for deletion
+let pendingDeleteName = null;   // job_name shown in modal
+
+const statusClass = {
+  Draft: 'draft', Pending: 'pending', Processing: 'processing',
+  Complete: 'complete', Closed: 'closed', Returned: 'returned'
+};
+
+// CB-2: Display-only status label map. DB status values are unchanged —
+// this only affects what the badge text shows. 'Returned' (DB) → 'Revising' (UI).
+const statusLabel = {
+  Returned: 'Revising',
+};
+
+function fmt(n) { return '$' + parseFloat(n || 0).toFixed(2); }
+function formatDate(str) {
+  return new Date(str).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// HTML-escape helper for any user-provided text we inject into the DOM
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Event delegation for dynamically-rendered delete buttons.
+// Inline onclick is fragile because job_name may contain quotes/HTML —
+// data attributes + delegated listener avoids all escaping issues.
+document.addEventListener('DOMContentLoaded', function() {
+  const tbody = document.getElementById('quotesBody');
+  if (!tbody) return;
+  tbody.addEventListener('click', function(e) {
+    const btn = e.target.closest('.js-delete-draft');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const quoteId = btn.dataset.quoteId;
+    const jobName = btn.dataset.jobName;
+    if (quoteId) openDeleteModal(quoteId, jobName);
+  });
+});
+
+async function init() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  userId = session.user.id;
+
+  const { data: me } = await _supabase.from('dealers').select('role, is_active, company_name').eq('id', userId).single();
+  if (!me?.is_active) { await _supabase.auth.signOut(); window.location.href = 'login.html'; return; }
+  if (['admin','super_admin'].includes(me?.role)) { window.location.href = 'admin.html'; return; }
+
+  document.getElementById('pageSub').textContent = me?.company_name || '';
+  await loadQuotes();
+
+  setInterval(async () => {
+    const { data: check } = await _supabase.from('dealers').select('is_active').eq('id', userId).single();
+    if (!check?.is_active) { await _supabase.auth.signOut(); window.location.href = 'login.html'; }
+  }, 60000);
+}
+
+async function loadQuotes() {
+    const { data: quotes, error } = await _supabase
+    .from('quotes')
+    .select('*')
+    .eq('dealer_id', userId)
+    // CB-36: 擋掉 admin 建但未通知的 Internal Draft(admin_notified_at IS NULL 且 status=Draft)。
+    // 顯示條件:已通知(admin_notified_at 有值)OR 非 Draft。
+    // dealer 自建 Draft(Option A 寫 NOW())+ 既有單(migration 補 created_at)都看得到。
+    .or('admin_notified_at.not.is.null,status.neq.Draft')
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('loadQuotes error:', error); return; }
+  allQuotes = quotes || [];
+  updateStats();
+  updateReturnedAlert();
+  renderTable(sortQuotes(allQuotes));
+}
+
+// Sort: Returned 永遠排到最上面（dealer 看到最重要要處理的），其他依 created_at desc
+function sortQuotes(quotes) {
+  return quotes.slice().sort(function(a, b) {
+    const aReturned = a.status === 'Returned' ? 0 : 1;
+    const bReturned = b.status === 'Returned' ? 0 : 1;
+    if (aReturned !== bReturned) return aReturned - bReturned;
+    // 同樣 returned 狀態時用 created_at desc
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent      = allQuotes.length;
+  document.getElementById('statDraft').textContent      = allQuotes.filter(q => q.status === 'Draft').length;
+  document.getElementById('statReturned').textContent   = allQuotes.filter(q => q.status === 'Returned').length;
+  document.getElementById('statPending').textContent    = allQuotes.filter(q => q.status === 'Pending').length;
+  document.getElementById('statProcessing').textContent = allQuotes.filter(q => q.status === 'Processing').length;
+  document.getElementById('statComplete').textContent   = allQuotes.filter(q => q.status === 'Complete').length;
+}
+
+function updateReturnedAlert() {
+  const returnedCount = allQuotes.filter(q => q.status === 'Returned').length;
+  const alert = document.getElementById('returnedAlert');
+  const text  = document.getElementById('returnedAlertCount');
+
+  if (returnedCount > 0) {
+    text.textContent = returnedCount + ' quote' + (returnedCount !== 1 ? 's' : '') + ' need' + (returnedCount === 1 ? 's' : '') + ' revision.';
+    alert.classList.add('show');
+  } else {
+    alert.classList.remove('show');
+  }
+}
+
+function renderTable(quotes) {
+  const tbody = document.getElementById('quotesBody');
+  document.getElementById('tableCount').textContent = `${quotes.length} quote${quotes.length !== 1 ? 's' : ''}`;
+
+  if (!quotes.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="5">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>
+          <p>No quotes found.</p>
+          <a href="new-quote.html" class="btn-new-quote" style="display:inline-flex;">+ New Quote</a>
+        </div>
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = quotes.map(q => {
+    const sc         = statusClass[q.status] || 'pending';
+    // CB-2: display-only label; falls back to raw DB status for all other values.
+    const statusText = statusLabel[q.status] || q.status;
+    const isDraft    = q.status === 'Draft';
+    const isReturned = q.status === 'Returned';
+    const safePo     = escapeHtml(q.po_number || q.draft_number || '—');  // 雙編號制: 有 P 顯 P,否則顯 Draft ID
+    const safeJob    = escapeHtml(q.job_name || '—');
+
+    if (isDraft) {
+      // Draft row — whole row NOT clickable, only the action buttons
+      return `
+        <tr class="row-draft">
+          <td>
+            <div class="td-po">${safePo}</div>
+            <div class="td-job">${safeJob}</div>
+          </td>
+          <td class="td-date">${formatDate(q.created_at)}</td>
+          <td class="td-amount draft-dash r">—</td>
+          <td><span class="status-badge ${sc}">${statusText}</span></td>
+          <td class="draft-actions-cell">
+            <div class="draft-actions-wrap">
+              <a class="btn-edit-draft" href="new-quote.html?draft=${q.id}">✎ Continue</a>
+              <button class="btn-delete-draft js-delete-draft"
+                      data-quote-id="${q.id}"
+                      data-job-name="${escapeHtml(q.job_name || '—')}"
+                      title="Delete draft"
+                      aria-label="Delete draft">
+                <svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+    }
+
+    // Returned row — clickable，加 "Action Required" 標籤、淡橘色背景
+    if (isReturned) {
+      return `
+        <tr class="row-returned" onclick="window.location.href='quote-detail.html?id=${q.id}'">
+          <td>
+            <div class="td-po">${safePo}</div>
+            <div class="td-job">${safeJob}</div>
+            <div class="action-required-tag">⚠ Action Required</div>
+          </td>
+          <td class="td-date">${formatDate(q.created_at)}</td>
+          <td class="td-amount r">${fmt(q.grand_total)}</td>
+          <td><span class="status-badge ${sc}">${statusText}</span></td>
+          <td class="arrow-cell">→</td>
+        </tr>`;
+    }
+
+    // Regular row — whole row clickable
+    return `
+      <tr class="row-clickable" onclick="window.location.href='quote-detail.html?id=${q.id}'">
+        <td>
+          <div class="td-po">${safePo}</div>
+          <div class="td-job">${safeJob}</div>
+        </td>
+        <td class="td-date">${formatDate(q.created_at)}</td>
+        <td class="td-amount r">${fmt(q.grand_total)}</td>
+        <td><span class="status-badge ${sc}">${statusText}</span></td>
+        <td class="arrow-cell">→</td>
+      </tr>`;
+  }).join('');
+}
+
+function applyFilters() {
+  const status = document.getElementById('filterStatus').value;
+  const from   = document.getElementById('filterFrom').value;
+  const to     = document.getElementById('filterTo').value;
+  const search = document.getElementById('filterSearch').value.trim();  // 雙編號制: 保留原樣,D/P 判斷需要
+
+  let filtered = allQuotes;
+  if (status) filtered = filtered.filter(q => q.status === status);
+  if (from)   filtered = filtered.filter(q => q.created_at >= from);
+  if (to)     filtered = filtered.filter(q => q.created_at <= to + 'T23:59:59');
+  if (search) {
+    // 選項 C 混合搜尋: 完整編號(D/P + 5碼)精確比對;否則模糊比對兩個編號 + Job Name
+    if (/^D\d{5}$/i.test(search)) {
+      filtered = filtered.filter(q => (q.draft_number || '').toUpperCase() === search.toUpperCase());
+    } else if (/^PDC\d{5}$/i.test(search)) {
+      filtered = filtered.filter(q => (q.po_number || '').toUpperCase() === search.toUpperCase());
+    } else {
+      const s = search.toLowerCase();
+      filtered = filtered.filter(q =>
+        (q.draft_number || '').toLowerCase().includes(s) ||
+        (q.po_number    || '').toLowerCase().includes(s) ||
+        (q.job_name     || '').toLowerCase().includes(s)
+      );
+    }
+  }
+
+  renderTable(sortQuotes(filtered));
+}
+
+function resetFilters() {
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterFrom').value   = '';
+  document.getElementById('filterTo').value     = '';
+  document.getElementById('filterSearch').value = '';
+  renderTable(sortQuotes(allQuotes));
+}
+
+// ── Delete Draft ───────────────────────────────────────────────────
+function openDeleteModal(quoteId, jobName) {
+  pendingDeleteId   = quoteId;
+  pendingDeleteName = jobName || '—';
+  document.getElementById('deleteJobName').textContent = pendingDeleteName;
+  document.getElementById('deleteError').classList.remove('show');
+  document.getElementById('btnDeleteConfirm').classList.remove('loading');
+  document.getElementById('btnDeleteConfirm').disabled = false;
+  document.getElementById('btnDeleteCancel').disabled  = false;
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+  // Don't close if a delete is currently in flight
+  if (document.getElementById('btnDeleteConfirm').classList.contains('loading')) return;
+  document.getElementById('deleteModal').classList.remove('show');
+  pendingDeleteId   = null;
+  pendingDeleteName = null;
+}
+
+// Close modal when clicking outside the box (but not while loading)
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+
+  const btn      = document.getElementById('btnDeleteConfirm');
+  const cancel   = document.getElementById('btnDeleteCancel');
+  const errEl    = document.getElementById('deleteError');
+  const quoteId  = pendingDeleteId;
+
+  btn.classList.add('loading');
+  btn.disabled    = true;
+  cancel.disabled = true;
+  errEl.classList.remove('show');
+
+  try {
+    // ── Step 1: delete child rows first to satisfy FK constraint ──
+    const { error: itemsErr } = await _supabase
+      .from('quote_items').delete().eq('quote_id', quoteId);
+    if (itemsErr) throw itemsErr;
+
+    // ── Step 2: delete the quote itself ──
+    // RLS only allows status='Draft' AND dealer_id=auth.uid(), so this
+    // implicitly guards against deleting non-Draft quotes even if the UI
+    // bypasses the check.
+    const { error: quoteErr, count } = await _supabase
+      .from('quotes')
+      .delete({ count: 'exact' })
+      .eq('id', quoteId);
+    if (quoteErr) throw quoteErr;
+    if (count === 0) {
+      // Nothing was deleted — most likely RLS blocked it (e.g. status changed)
+      throw new Error('Could not delete this draft. It may no longer be a draft, or the page is out of date.');
+    }
+
+    // ── Success ──
+    document.getElementById('deleteModal').classList.remove('show');
+    showToast(`Draft "${pendingDeleteName}" deleted.`);
+
+    // Reset state and reload list
+    pendingDeleteId   = null;
+    pendingDeleteName = null;
+    await loadQuotes();
+
+  } catch (err) {
+    console.error('[deleteDraft]', err);
+    btn.classList.remove('loading');
+    btn.disabled    = false;
+    cancel.disabled = false;
+    errEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errEl.classList.add('show');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>

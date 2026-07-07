@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft — My Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7PvXRsQ5r5KAIyLYQ1uZvgdaqGQ_pkA0&libraries=places&callback=initMaps" async defer></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #C9A84C; --green-dark: #3e5a42; --green-mid: #4a6b4f;
+      --cream: #F5F2EC; --text: #2C3A32; --muted: #7A8C82;
+      --border: #DDD8CC; --white: #FFFFFF; --error: #C0392B; --success: #16A34A;
+    }
+    html, body { min-height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+    .first-time-banner { background: var(--green-mid); color: #fff; padding: 14px 24px; text-align: center; font-size: 13px; line-height: 1.6; display: none; }
+    .first-time-banner.show { display: block; }
+    .first-time-banner strong { color: var(--gold); }
+    .page { max-width: 760px; margin: 0 auto; padding: 32px 20px 80px; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--green-dark); margin-bottom: 6px; }
+    .page-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); background: #FAFAF8; }
+    .card-title { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green-dark); }
+    .card-body { padding: 20px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+    .required { color: var(--error); margin-left: 2px; }
+    .form-input { width: 100%; height: 42px; border: 1px solid var(--border); border-radius: 3px; padding: 0 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); background: var(--white); transition: border-color 0.2s; }
+    .form-input:focus { outline: none; border-color: var(--gold); }
+    .form-textarea { width: 100%; border: 1px solid var(--border); border-radius: 3px; padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); background: var(--white); resize: vertical; min-height: 100px; transition: border-color 0.2s; }
+    .form-textarea:focus { outline: none; border-color: var(--gold); }
+    .hint-row { display: flex; justify-content: space-between; margin-top: 4px; }
+    .form-hint { font-size: 10px; color: var(--muted); }
+    .char-count { font-size: 10px; color: var(--muted); }
+    .char-count.over { color: var(--error); }
+    /* Hours */
+    .hours-list { display: flex; flex-direction: column; gap: 10px; }
+    .hours-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: center; }
+    .hours-day { font-size: 12px; font-weight: 500; }
+    .hours-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .hours-select { height: 36px; border: 1px solid var(--border); border-radius: 3px; padding: 0 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--white); }
+    .hours-time { height: 36px; border: 1px solid var(--border); border-radius: 3px; padding: 0 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; width: 100px; }
+    .hours-time:disabled { background: var(--cream); color: var(--muted); }
+    .hours-sep { font-size: 12px; color: var(--muted); }
+    /* Images */
+    .upload-area { border: 2px dashed var(--border); border-radius: 4px; padding: 32px 20px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .upload-area:hover, .upload-area.dragover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+    .upload-icon { width: 36px; height: 36px; fill: var(--border); margin: 0 auto 10px; display: block; }
+    .upload-text { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .upload-sub { font-size: 11px; color: var(--muted); }
+    .upload-input { display: none; }
+    .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 16px; }
+    .image-item { position: relative; aspect-ratio: 1; border-radius: 3px; overflow: hidden; border: 2px solid transparent; }
+    .image-item.featured { border-color: var(--gold); }
+    .image-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: background 0.2s; }
+    .image-item:hover .image-overlay { background: rgba(0,0,0,0.55); }
+    .overlay-btn { display: none; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; border: none; border-radius: 2px; padding: 4px 8px; cursor: pointer; }
+    .image-item:hover .overlay-btn { display: block; }
+    .btn-set-featured { background: var(--gold); color: #fff; }
+    .btn-remove-img { background: var(--error); color: #fff; }
+    .featured-badge { position: absolute; top: 5px; left: 5px; background: var(--gold); color: #fff; font-size: 9px; font-weight: 500; padding: 2px 6px; border-radius: 2px; pointer-events: none; }
+    .image-count-label { font-size: 11px; color: var(--muted); margin-top: 8px; }
+    .upload-progress { font-size: 11px; color: var(--muted); margin-top: 8px; display: none; }
+    .upload-progress.show { display: block; }
+    /* Messages */
+    .error-msg { background: rgba(192,57,43,0.07); border: 1px solid rgba(192,57,43,0.25); border-radius: 3px; padding: 12px 16px; font-size: 12px; color: var(--error); margin-bottom: 16px; display: none; }
+    .error-msg.show { display: block; }
+    .success-msg { background: rgba(22,163,74,0.07); border: 1px solid rgba(22,163,74,0.25); border-radius: 3px; padding: 12px 16px; font-size: 13px; color: var(--success); margin-bottom: 16px; display: none; text-align: center; }
+    .success-msg.show { display: block; }
+    .btn-submit { width: 100%; height: 52px; background: var(--green-dark); color: #fff; border: none; border-radius: 3px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .btn-submit:hover { background: var(--green-mid); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .btn-submit.loading .btn-text { display: none; }
+    .btn-submit.loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .badge-optional { font-size: 9px; font-weight: 400; letter-spacing: 0.05em; text-transform: none; color: var(--muted); background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 1px 7px; margin-left: 8px; vertical-align: middle; }
+    .section-desc { font-size: 12px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; padding: 10px 14px; background: rgba(201,168,76,0.06); border-left: 3px solid var(--gold); border-radius: 0 3px 3px 0; }
+    .preview-box { margin-top: 12px; padding: 14px 16px; background: var(--cream); border: 1px solid var(--border); border-radius: 3px; display: none; }
+    .preview-box.show { display: block; }
+    .preview-label { font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .preview-heading { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--green-dark); margin-bottom: 4px; }
+    .preview-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .form-input:disabled { background: var(--cream); color: var(--muted); cursor: not-allowed; }
+    .confirmed-row { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--cream); border: 1px solid var(--border); border-radius: 3px; margin-bottom: 12px; }
+    .confirmed-icon { width: 16px; height: 16px; fill: var(--success); flex-shrink: 0; }
+    .confirmed-text { font-size: 12px; color: var(--muted); }
+    .confirmed-value { font-size: 13px; color: var(--text); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<div id="pcd-nav" data-page="dealer-profile"></div>
+
+<div class="first-time-banner" id="firstTimeBanner">
+  👋 Welcome to ProCraft Dealer Portal! Please take a few minutes to <strong>set up your store profile</strong> — this helps customers find and connect with your showroom.
+</div>
+
+<div class="page">
+  <div class="page-title">Store Profile</div>
+  <div class="page-sub">Complete your profile so customers can find your showroom on the ProCraft Dealer Locator.</div>
+
+  <div class="error-msg" id="errorMsg"></div>
+  <div class="success-msg" id="successMsg">✓ Profile saved successfully!</div>
+
+  <!-- Contact Info -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Contact Information</span></div>
+    <div class="card-body">
+      <p class="section-desc">The following information was set up by ProCraft. Contact us if any details need to be corrected.</p>
+      <div class="confirmed-row">
+        <svg class="confirmed-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <div>
+          <div class="confirmed-text">Company Name</div>
+          <div class="confirmed-value" id="display_company_name">—</div>
+        </div>
+      </div>
+      <div class="confirmed-row">
+        <svg class="confirmed-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <div>
+          <div class="confirmed-text">Email Address</div>
+          <div class="confirmed-value" id="display_email">—</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contact Name <span class="required">*</span></label>
+        <input class="form-input" id="f_contact_name" type="text" placeholder="John Smith"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contact Phone <span class="required">*</span></label>
+        <input class="form-input" id="f_phone" type="tel" placeholder="2025550100" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Phone <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_business_phone" type="tel" placeholder="2025550100" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"/>
+        <span class="form-hint" style="margin-top:4px;display:block;">This will be displayed on the dealer locator page (public website).</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Google My Business <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_gmb_url" type="url" placeholder="https://g.page/your-business"/>
+        <span class="form-hint" style="margin-top:4px;display:block;">Link to your Google Business profile so customers can find reviews and directions.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Optional Email 1 <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_secondary_email" type="email" placeholder="backup@yourcompany.com"/>
+        <span class="form-hint" style="margin-top:4px;display:block;">Additional email address for receiving notifications.</span>
+      </div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="f_secondary_email_notify" style="width:16px;height:16px;accent-color:var(--green-dark);cursor:pointer;"/>
+          <label for="f_secondary_email_notify" style="font-size:13px;color:var(--text);cursor:pointer;">Send notifications to Optional Email 1</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Optional Email 2 <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_optional_email_2" type="email" placeholder="contact2@yourcompany.com"/>
+        <span class="form-hint" style="margin-top:4px;display:block;">Second additional email address for receiving notifications.</span>
+      </div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="f_optional_email_2_notify" style="width:16px;height:16px;accent-color:var(--green-dark);cursor:pointer;"/>
+          <label for="f_optional_email_2_notify" style="font-size:13px;color:var(--text);cursor:pointer;">Send notifications to Optional Email 2</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Store Address <span class="required">*</span></span></div>
+    <div class="card-body">
+      <p class="section-desc">Your address is used to show your location on the ProCraft Dealer Locator map. Start typing to use Google address search for accurate results.</p>
+      <div class="form-group">
+        <label class="form-label">Address Line 1 <span class="required">*</span></label>
+        <input class="form-input" id="f_address_line1" type="text" placeholder="Start typing address..." autocomplete="off"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address Line 2</label>
+        <input class="form-input" id="f_address_line2" type="text" placeholder="Suite 100"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label class="form-label">City <span class="required">*</span></label>
+          <input class="form-input" id="f_city" type="text" placeholder="Washington"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">State <span class="required">*</span></label>
+          <input class="form-input" id="f_state" type="text" placeholder="DC"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zip Code <span class="required">*</span></label>
+          <input class="form-input" id="f_zip_code" type="text" placeholder="20001"/>
+        </div>
+      </div>
+      <input type="hidden" id="f_lat"/>
+      <input type="hidden" id="f_lng"/>
+      <input type="hidden" id="f_address_formatted"/>
+    </div>
+  </div>
+
+  <!-- Business Hours -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Business Hours <span class="required">*</span></span></div>
+    <div class="card-body">
+      <p class="section-desc">Let customers know when your showroom is open. Set each day to Open, By Appointment, or Closed.</p>
+      <div class="hours-list" id="hoursList"></div>
+    </div>
+  </div>
+
+  <!-- Store Presentation -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Store Presentation <span class="badge-optional">Recommended</span></span></div>
+    <div class="card-body">
+      <p class="section-desc">This text appears on your public dealer page. If left blank, those sections will not be shown. We recommend filling these in to attract more customers.</p>
+      <div class="form-group">
+        <label class="form-label">Store Heading <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_heading" type="text" maxlength="30" placeholder="e.g. Maryland's Premier Cabinet Showroom" oninput="updateCount('f_heading','count_heading',30); updatePreview();"/>
+        <div class="hint-row">
+          <span class="form-hint">A short tagline that appears at the top of your dealer page</span>
+          <span class="char-count" id="count_heading">0/30</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description <span class="badge-optional">Optional</span></label>
+        <textarea class="form-textarea" id="f_description" maxlength="200" placeholder="e.g. Family-owned showroom serving the DC metro area since 2005. We carry ProCraft's full cabinet line with over 50 door styles on display." oninput="updateCount('f_description','count_description',200); updatePreview();"></textarea>
+        <div class="hint-row">
+          <span class="form-hint">Tell customers about your showroom, specialties, and what makes you unique</span>
+          <span class="char-count" id="count_description">0/200</span>
+        </div>
+      </div>
+      <div class="preview-box" id="previewBox">
+        <div class="preview-label">Preview — how it looks on your dealer page</div>
+        <div class="preview-heading" id="previewHeading"></div>
+        <div class="preview-desc" id="previewDesc"></div>
+      </div>
+      <div class="form-group" style="margin-top:18px;">
+        <label class="form-label">Website <span class="badge-optional">Optional</span></label>
+        <input class="form-input" id="f_website" type="url" placeholder="https://www.yourshowroom.com"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photos -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Store Photos <span class="required">*</span></span></div>
+    <div class="card-body">
+      <p class="section-desc">Upload at least one photo of your showroom. The first photo will be used as your featured image on the dealer locator.</p>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('uploadInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <svg class="upload-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <div class="upload-text">Click to upload or drag & drop photos</div>
+        <div class="upload-sub">JPG, PNG — Max 5MB per photo — Up to 5 photos</div>
+      </div>
+      <input class="upload-input" type="file" id="uploadInput" accept="image/jpeg,image/png" multiple onchange="handleFileSelect(event)"/>
+      <div class="upload-error" id="uploadError" style="display:none;margin-top:10px;background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.25);border-radius:3px;padding:10px 14px;font-size:12px;color:var(--error);"></div>
+      <div class="upload-progress" id="uploadProgress"></div>
+      <div class="image-grid" id="imageGrid"></div>
+      <div class="image-count-label" id="imageCountLabel"></div>
+    </div>
+  </div>
+
+  <!-- Pricing Info (read-only) -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Pricing Information</span></div>
+    <div class="card-body">
+      <p class="section-desc">Your pricing is set by ProCraft Cabinetry DC. Contact us if you have any questions.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div>
+          <div class="form-label">Stock Multiplier</div>
+          <div class="confirmed-row"><div><div class="confirmed-value" id="display_stock_multiplier">—</div></div></div>
+        </div>
+        <div>
+          <div class="form-label">Non-Stock Multiplier</div>
+          <div class="confirmed-row"><div><div class="confirmed-value" id="display_non_stock_multiplier">—</div></div></div>
+        </div>
+        <div>
+          <div class="form-label">Frameless Multiplier</div>
+          <div class="confirmed-row"><div><div class="confirmed-value" id="display_frameless_multiplier">—</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="btnSubmit" onclick="saveProfile()">
+    <span class="btn-text">Save Profile</span>
+    <div class="spinner"></div>
+  </button>
+</div>
+
+<div id="pcd-footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="components/navigator.js"></script>
+<script src="components/footer.js"></script>
+<script>
+const { createClient } = window.supabase;
+const _supabase = createClient(
+  window.SB_URL,
+  window.SB_KEY
+);
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let currentUser = null;
+let images = []; // { url, path, featured }
+let isFirstTime = false;
+
+function updateCount(inputId, countId, max) {
+  const val = document.getElementById(inputId).value.length;
+  const el  = document.getElementById(countId);
+  el.textContent = `${val}/${max}`;
+  el.classList.toggle('over', val > max);
+}
+
+// ── Hours ──────────────────────────────────────────
+function buildHoursUI(saved) {
+  const list = document.getElementById('hoursList');
+  list.innerHTML = DAYS.map(day => {
+    const key  = day.toLowerCase();
+    const data = saved?.[key] || { type: 'open', open: '09:00', close: '18:00' };
+    return `
+      <div class="hours-row">
+        <span class="hours-day">${day}</span>
+        <div class="hours-controls">
+          <select class="hours-select" id="h_${key}_type" onchange="toggleHours('${key}')">
+            <option value="open"        ${data.type==='open'?'selected':''}>Open</option>
+            <option value="appointment" ${data.type==='appointment'?'selected':''}>By Appointment</option>
+            <option value="closed"      ${data.type==='closed'?'selected':''}>Closed</option>
+          </select>
+          <input class="hours-time" type="time" id="h_${key}_open"  value="${data.open||'09:00'}"  ${data.type!=='open'?'disabled':''}/>
+          <span class="hours-sep">–</span>
+          <input class="hours-time" type="time" id="h_${key}_close" value="${data.close||'18:00'}" ${data.type!=='open'?'disabled':''}/>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleHours(key) {
+  const type = document.getElementById(`h_${key}_type`).value;
+  document.getElementById(`h_${key}_open`).disabled  = type !== 'open';
+  document.getElementById(`h_${key}_close`).disabled = type !== 'open';
+}
+
+function getHours() {
+  const h = {};
+  DAYS.forEach(day => {
+    const key   = day.toLowerCase();
+    const type  = document.getElementById(`h_${key}_type`).value;
+    const open  = document.getElementById(`h_${key}_open`).value;
+    const close = document.getElementById(`h_${key}_close`).value;
+    h[key] = type === 'open' ? { type, open, close } : { type };
+  });
+  return h;
+}
+
+// ── Images ─────────────────────────────────────────
+function renderImages() {
+  const grid  = document.getElementById('imageGrid');
+  const label = document.getElementById('imageCountLabel');
+  label.textContent = images.length ? `${images.length}/5 photos${images[0] ? ' — First photo is the featured image' : ''}` : '';
+
+  if (!images.length) { grid.innerHTML = ''; return; }
+
+  grid.innerHTML = images.map((img, i) => `
+    <div class="image-item ${i === 0 ? 'featured' : ''}" id="imgItem-${i}">
+      <img src="${img.url}" alt="Photo ${i+1}"/>
+      <div class="image-overlay">
+        ${i !== 0 ? `<button class="overlay-btn btn-set-featured" onclick="setFeatured(${i})">Set Featured</button>` : ''}
+        <button class="overlay-btn btn-remove-img" onclick="removeImage(${i})">Remove</button>
+      </div>
+      ${i === 0 ? '<span class="featured-badge">Featured</span>' : ''}
+    </div>`).join('');
+}
+
+function setFeatured(idx) {
+  const item = images.splice(idx, 1)[0];
+  images.unshift(item);
+  renderImages();
+}
+
+async function removeImage(idx) {
+  const img = images[idx];
+  if (img.path) {
+    await _supabase.storage.from('dealer-image').remove([img.path]);
+  }
+  images.splice(idx, 1);
+  renderImages();
+}
+
+function handleDragOver(e) { e.preventDefault(); document.getElementById('uploadArea').classList.add('dragover'); }
+function handleDragLeave()  { document.getElementById('uploadArea').classList.remove('dragover'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('dragover');
+  handleFiles([...e.dataTransfer.files]);
+}
+function handleFileSelect(e) { handleFiles([...e.target.files]); e.target.value = ''; }
+
+async function compressImage(file, maxDim = 1200, quality = 0.82) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+        else       { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(
+        blob => resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })),
+        'image/jpeg', quality
+      );
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function handleFiles(files) {
+  const remaining = 5 - images.length;
+  if (remaining <= 0) { showUploadError('Maximum 5 photos allowed.'); return; }
+
+  const toAdd = files.slice(0, remaining).filter(f => {
+    if (!['image/jpeg','image/png'].includes(f.type)) { showUploadError(`${f.name} is not a JPG or PNG.`); return false; }
+    if (f.size > 5 * 1024 * 1024) { showUploadError(`${f.name} exceeds 5MB limit.`); return false; }
+    return true;
+  });
+
+  if (!toAdd.length) return;
+
+  clearUploadError();
+  const progress = document.getElementById('uploadProgress');
+  progress.textContent = 'Optimizing photos...';
+  progress.classList.add('show');
+
+  for (const file of toAdd) {
+    const compressed = await compressImage(file);
+    const localUrl = URL.createObjectURL(compressed);
+    images.push({ url: localUrl, path: null, file: compressed });
+  }
+
+  progress.classList.remove('show');
+  renderImages();
+}
+
+function showUploadError(msg) {
+  const el = document.getElementById('uploadError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function clearUploadError() {
+  const el = document.getElementById('uploadError');
+  el.style.display = 'none';
+  el.textContent = '';
+}
+
+// ── Init ───────────────────────────────────────────
+async function init() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  const { data: dealer } = await _supabase.from('dealers').select('*').eq('id', session.user.id).single();
+  if (!dealer) { window.location.href = 'login.html'; return; }
+  currentUser = dealer;
+
+  isFirstTime = !dealer.profile_completed;
+  if (isFirstTime) {
+    document.getElementById('firstTimeBanner').classList.add('show');
+  }
+
+  // Populate contact info
+  document.getElementById('display_company_name').textContent = dealer.company_name || '—';
+  document.getElementById('display_email').textContent        = dealer.email || '—';
+  document.getElementById('f_contact_name').value = dealer.contact_name || '';
+  document.getElementById('f_phone').value         = dealer.phone || '';
+  document.getElementById('f_business_phone').value = dealer.business_phone || '';
+  document.getElementById('f_gmb_url').value       = dealer.google_my_business_url || '';
+  document.getElementById('f_secondary_email').value          = dealer.secondary_email || '';
+  document.getElementById('f_secondary_email_notify').checked = dealer.secondary_email_notify || false;
+  document.getElementById('f_optional_email_2').value          = dealer.optional_email_2 || '';
+  document.getElementById('f_optional_email_2_notify').checked = dealer.optional_email_2_notify || false;
+
+  // Pricing info (read-only)
+  document.getElementById('display_stock_multiplier').textContent     = dealer.stock_multiplier ? `${dealer.stock_multiplier}x` : '—';
+  document.getElementById('display_non_stock_multiplier').textContent = dealer.non_stock_multiplier ? `${dealer.non_stock_multiplier}x` : '—';
+  document.getElementById('display_frameless_multiplier').textContent = dealer.frameless_multiplier ? `${dealer.frameless_multiplier}x` : '—';
+  document.getElementById('f_address_line1').value = dealer.address_line1 || '';
+  document.getElementById('f_address_line2').value = dealer.address_line2 || '';
+  document.getElementById('f_city').value          = dealer.city || '';
+  document.getElementById('f_state').value         = dealer.state || '';
+  document.getElementById('f_zip_code').value      = dealer.zip_code || '';
+  document.getElementById('f_lat').value           = dealer.lat || '';
+  document.getElementById('f_lng').value           = dealer.lng || '';
+  document.getElementById('f_address_formatted').value = dealer.address_formatted || '';
+
+  // Populate store info
+  if (dealer.heading)     { document.getElementById('f_heading').value     = dealer.heading;     updateCount('f_heading','count_heading',30); }
+  if (dealer.description) { document.getElementById('f_description').value = dealer.description; updateCount('f_description','count_description',200); }
+  if (dealer.website)     { document.getElementById('f_website').value     = dealer.website; }
+  updatePreview();
+
+  buildHoursUI(dealer.business_hours);
+
+  if (dealer.images?.length) {
+    images = dealer.images;
+    renderImages();
+  }
+}
+
+// ── Save ───────────────────────────────────────────
+async function saveProfile() {
+  const btn   = document.getElementById('btnSubmit');
+  const errEl = document.getElementById('errorMsg');
+  const sucEl = document.getElementById('successMsg');
+  errEl.classList.remove('show');
+  sucEl.classList.remove('show');
+
+  const heading     = document.getElementById('f_heading').value.trim();
+  const description = document.getElementById('f_description').value.trim();
+  const website     = document.getElementById('f_website').value.trim();
+  const secondary_email        = document.getElementById('f_secondary_email').value.trim();
+  const secondary_email_notify = document.getElementById('f_secondary_email_notify').checked;
+  const optional_email_2       = document.getElementById('f_optional_email_2').value.trim();
+  const optional_email_2_notify = document.getElementById('f_optional_email_2_notify').checked;
+  const contact_name    = document.getElementById('f_contact_name').value.trim();
+  const phone           = document.getElementById('f_phone').value.trim();
+  const business_phone  = document.getElementById('f_business_phone').value.trim();
+  const gmb_url         = document.getElementById('f_gmb_url').value.trim();
+  const address_line1   = document.getElementById('f_address_line1').value.trim();
+  const address_line2   = document.getElementById('f_address_line2').value.trim();
+  const city            = document.getElementById('f_city').value.trim();
+  const state           = document.getElementById('f_state').value.trim();
+  const zip_code        = document.getElementById('f_zip_code').value.trim();
+  const lat             = document.getElementById('f_lat').value;
+  const lng             = document.getElementById('f_lng').value;
+  const address_formatted = document.getElementById('f_address_formatted').value;
+
+  if (!contact_name) { showError('Please enter a contact name.'); return; }
+  if (!phone)        { showError('Please enter a phone number.'); return; }
+  if (!address_line1 || !city || !state || !zip_code) { showError('Please fill in your store address.'); return; }
+  if (heading.length > 30) { showError('Heading must be 30 characters or less.'); return; }
+  if (description.length > 200) { showError('Description must be 200 characters or less.'); return; }
+  if (!images.length) { showError('Please upload at least one store photo.'); return; }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+      // 上傳新圖片（path 為 null 的是新的）
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].path === null && images[i].file) {
+          const file = images[i].file;
+          const ext  = file.name.split('.').pop();
+          const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const { error: uploadErr } = await _supabase.storage.from('dealer-image').upload(path, file);
+          if (uploadErr) { showError(`Failed to upload photo.`); return; }
+          const { data } = _supabase.storage.from('dealer-image').getPublicUrl(path);
+          images[i] = { url: data.publicUrl, path };
+        }
+      }
+      // 取得舊的圖片列表
+      const { data: oldDealer } = await _supabase
+        .from('dealers')
+        .select('images')
+        .eq('id', currentUser.id)
+        .single();
+      
+      const oldImages = oldDealer?.images || [];
+      const newPaths  = images.map(i => i.path).filter(Boolean);
+      const oldPaths  = oldImages.map(i => i.path).filter(Boolean);
+      const toDelete  = oldPaths.filter(p => !newPaths.includes(p));
+
+      console.log('oldPaths:', oldPaths);
+      console.log('newPaths:', newPaths);
+      console.log('toDelete:', toDelete);
+
+      console.log('toDelete length:', toDelete.length);
+      console.log('about to delete:', toDelete);
+      let delData = null, delErr = null;
+      if (toDelete.length > 0) {
+        ({ data: delData, error: delErr } = await _supabase.storage.from('dealer-image').remove(toDelete));
+      }
+      console.log('delete data:', delData);
+      console.log('delete error:', delErr);
+
+    const { error } = await _supabase.from('dealers').update({
+      contact_name,
+      phone,
+      business_phone:           business_phone || null,
+      secondary_email:          secondary_email || null,
+      secondary_email_notify:   secondary_email_notify,
+      optional_email_2:         optional_email_2 || null,
+      optional_email_2_notify:  optional_email_2_notify,
+      google_my_business_url: gmb_url || null,
+      address_line1,
+      address_line2:     address_line2 || null,
+      city,
+      state,
+      zip_code,
+      lat:               lat ? parseFloat(lat) : null,
+      lng:               lng ? parseFloat(lng) : null,
+      address_formatted: address_formatted || null,
+      heading,
+      description,
+      website:           website || null,
+      business_hours:    getHours(),
+      images:            images.map(img => ({ url: img.url, path: img.path })),
+      profile_completed: true,
+    }).eq('id', currentUser.id);
+
+    if (error) throw error;
+
+    sucEl.classList.add('show');
+    window.scrollTo(0, 0);
+
+    if (isFirstTime) {
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+    }
+
+  } catch (err) {
+    showError(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  window.scrollTo(0, 0);
+}
+
+function updatePreview() {
+  const heading = document.getElementById('f_heading').value.trim();
+  const desc    = document.getElementById('f_description').value.trim();
+  const box     = document.getElementById('previewBox');
+  if (!heading && !desc) { box.classList.remove('show'); return; }
+  box.classList.add('show');
+  document.getElementById('previewHeading').textContent = heading || '';
+  document.getElementById('previewDesc').textContent    = desc || '';
+}
+
+function initMaps() {
+  const input = document.getElementById('f_address_line1');
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ['address'],
+    componentRestrictions: { country: 'us' },
+  });
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+    let streetNumber = '', route = '', city = '', state = '', zip = '';
+    for (const component of place.address_components) {
+      const type = component.types[0];
+      if (type === 'street_number') streetNumber = component.long_name;
+      if (type === 'route')         route        = component.long_name;
+      if (type === 'locality')      city         = component.long_name;
+      if (type === 'administrative_area_level_1') state = component.short_name;
+      if (type === 'postal_code')   zip          = component.long_name;
+    }
+    document.getElementById('f_address_line1').value    = `${streetNumber} ${route}`.trim();
+    document.getElementById('f_city').value              = city;
+    document.getElementById('f_state').value             = state;
+    document.getElementById('f_zip_code').value          = zip;
+    document.getElementById('f_lat').value               = place.geometry.location.lat();
+    document.getElementById('f_lng').value               = place.geometry.location.lng();
+    document.getElementById('f_address_formatted').value = place.formatted_address;
+  });
+}
+
+init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>

@@ -1,0 +1,2936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ProCraft Dealer Portal — Select Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:       #C9A84C;
+      --green-dark: #3e5a42;
+      --green-mid:  #4a6b4f;
+      --cream:      #F5F2EC;
+      --text:       #2C3A32;
+      --muted:      #7A8C82;
+      --border:     #DDD8CC;
+      --white:      #FFFFFF;
+      --error:      #C0392B;
+    }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+    /* ── Page ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 20px 20px 80px; }
+
+    /* ── Returned Revising Banner ── */
+    .returned-revising-banner {
+      background: rgba(224,123,57,0.07);
+      border: 1px solid rgba(224,123,57,0.3);
+      border-left: 4px solid #E07B39;
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .returned-revising-banner .rrb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(224,123,57,0.14);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .returned-revising-banner .rrb-icon-wrap svg {
+      width: 16px; height: 16px; fill: #E07B39;
+    }
+    .returned-revising-banner .rrb-body { flex: 1; min-width: 0; }
+    .returned-revising-banner .rrb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #E07B39;
+      margin-bottom: 4px;
+    }
+    .returned-revising-banner .rrb-msg {
+      font-size: 13px;
+      color: #2C3A32;
+      line-height: 1.55;
+    }
+
+    /* ── Brand Tabs ── */
+    .brand-tabs-bar {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-tab {
+      padding: 10px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .brand-tab:hover { color: var(--green-dark); }
+    .brand-tab.active { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+
+    /* ── Top Section: Grid Panel + Preview ── */
+    .top-section {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 900px) { .top-section { grid-template-columns: 1fr; } }
+
+    /* ── LEFT: Style Grid Panel ── */
+    .style-grid-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: #FAFAF8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .panel-label { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .search-box { position: relative; flex: 1; }
+    .search-box input { width: 100%; background: var(--cream); border: 1px solid var(--border); border-radius: 3px; padding: 7px 10px 7px 28px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s; }
+    .search-box input:focus { border-color: var(--green-mid); background: #fff; }
+    .search-box input::placeholder { color: #C4C0B8; }
+    .search-box .ico { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+
+    /* Subcategory tabs inside grid panel */
+    .subcat-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAF8;
+      overflow-x: auto;
+    }
+    .subcat-tab {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .subcat-tab:hover { color: var(--green-dark); }
+    .subcat-tab.active { color: var(--green-dark); border-bottom-color: var(--gold); }
+
+    /* Style image grid */
+    .style-grid-panel {
+      display: flex;
+      flex-direction: column;
+    }
+    .style-grid-body {
+      padding: 12px;
+      overflow-y: auto;
+      height: 400px;
+    }
+    .style-grid-body::-webkit-scrollbar { width: 4px; }
+    .style-grid-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .style-img-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 900px) {
+      .style-img-grid { grid-template-columns: repeat(3, 1fr); }
+      .style-grid-body { height: auto; max-height: 500px; }
+    }
+    @media (max-width: 500px) {
+      .style-img-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .style-img-card {
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--white);
+    }
+    .style-img-card:hover { border-color: var(--gold); transform: translateY(-1px); }
+    .style-img-card.selected { border-color: var(--green-dark); border-width: 2px; }
+    .style-img-card-img-wrap {
+      width: 100%;
+      aspect-ratio: 355 / 601;
+      overflow: hidden;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .style-img-card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .style-img-card-info {
+      padding: 6px 8px;
+      border-top: 1px solid var(--border);
+    }
+    .style-img-card-name { font-size: 11px; font-weight: 500; color: var(--green-dark); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .style-img-card-code { font-size: 9px; color: var(--muted); margin-top: 1px; }
+
+    /* Coming soon state */
+    .coming-soon-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .coming-soon-icon {
+      width: 48px; height: 48px;
+      border: 2px dashed var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .coming-soon-icon svg { width: 20px; height: 20px; fill: none; stroke: var(--border); stroke-width: 1.5; }
+    .coming-soon-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--green-dark); margin-bottom: 8px; }
+    .coming-soon-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── RIGHT: Preview Panel ── */
+    .preview-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .preview-panel-header { padding: 12px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: #FAFAF8; }
+    .preview-panel-title { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .preview-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    .preview-empty { text-align: center; color: var(--muted); }
+    .preview-empty svg { width: 36px; height: 36px; margin-bottom: 10px; opacity: 0.3; }
+    .preview-empty p { font-size: 13px; line-height: 1.6; }
+    .preview-content { text-align: center; width: 100%; display: none; }
+    .preview-img-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .preview-swatch { width: 118px; height: 200px; border-radius: 4px; box-shadow: 0 6px 24px rgba(0,0,0,0.14); transition: background 0.3s; }
+    .preview-img { max-height: 200px; max-width: 100%; object-fit: contain; border-radius: 3px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); display: none; }
+    .preview-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--green-dark); margin-bottom: 4px; }
+    .preview-meta { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+    .btn-select-style { background: var(--green-dark); color: #fff; border: none; border-radius: 3px; padding: 10px 22px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; min-height: 40px; }
+    .btn-select-style:hover { background: var(--green-mid); }
+    .btn-select-style.confirmed { background: var(--gold); color: var(--green-dark); }
+
+    /* ── SKU Panel ── */
+    .sku-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .sku-panel-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; background: #FAFAF8;
+    }
+    .sku-panel-title { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green-dark); }
+    .sku-style-tag { background: rgba(62,90,66,0.07); color: var(--green-dark); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 2px; }
+    .type-toggle { display: flex; gap: 5px; }
+    .type-btn { padding: 4px 12px; border: 1.5px solid var(--border); border-radius: 3px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .type-btn.active { border-color: var(--green-dark); background: rgba(62,90,66,0.06); color: var(--green-dark); font-weight: 500; }
+    .cat-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .cat-tab { padding: 3px 9px; border: 1px solid var(--border); border-radius: 20px; font-size: 10px; color: var(--muted); background: transparent; cursor: pointer; transition: all 0.15s; }
+    .cat-tab.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+    .sku-search-wrap { margin-left: auto; position: relative; }
+    .sku-search-wrap input { background: var(--cream); border: 1px solid var(--border); border-radius: 3px; padding: 5px 10px 5px 26px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 160px; transition: border-color 0.2s, width 0.2s; }
+    .sku-search-wrap input:focus { border-color: var(--green-mid); background: #fff; width: 210px; }
+    .sku-search-wrap input::placeholder { color: #C4C0B8; }
+    .sku-search-wrap .ico { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+
+    /* SKU Table */
+    .sku-table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+    .sku-table-wrap::-webkit-scrollbar { width: 4px; height: 4px; }
+    .sku-table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .sku-table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    .sku-table thead th { padding: 8px 14px; background: #F5F3EF; border-bottom: 1px solid var(--border); font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-align: left; position: sticky; top: 0; z-index: 1; }
+    .sku-table thead th.th-right { text-align: right; }
+    .sku-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .sku-table tbody tr:hover { background: #FAFAF8; }
+    .sku-table tbody tr:last-child { border-bottom: none; }
+    .sku-table td { padding: 8px 14px; font-size: 12px; vertical-align: middle; }
+    .td-code { font-weight: 500; color: var(--green-dark); white-space: nowrap; }
+    .td-desc { color: var(--text); }
+    .td-price { font-weight: 500; white-space: nowrap; }
+    .td-actions { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+    .qty-btn { width: 26px; height: 26px; border-radius: 3px; border: 1px solid var(--border); background: var(--white); color: var(--text); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+    .qty-btn:hover { border-color: var(--green-dark); color: var(--green-dark); }
+    .qty-input { width: 40px; text-align: center; border: 1px solid var(--border); border-radius: 3px; padding: 4px; font-size: 13px; color: var(--text); font-family: 'DM Sans', sans-serif; }
+    .qty-input:focus { outline: none; border-color: var(--green-mid); }
+    .btn-add { padding: 5px 10px; background: var(--green-dark); color: #fff; border: none; border-radius: 3px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+    .btn-add:hover { background: var(--green-mid); }
+
+    /* ── CB-5: Sort by dropdown (SKU panel) ── */
+    .sku-sort-wrap { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .sku-sort-wrap label { font-size: 9px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .sku-sort-select {
+      font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--text);
+      background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+      padding: 4px 8px; cursor: pointer; outline: none; transition: border-color 0.15s;
+    }
+    .sku-sort-select:focus { border-color: var(--green-mid); }
+
+    /* ── CB-11 任務A: Lead time bar ABOVE preview image ── */
+    .preview-lead-time {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--green-dark);
+      padding: 8px 12px; line-height: 1.3;
+      margin-bottom: 14px;
+      border: 1px solid var(--border); border-radius: 3px;
+      background: rgba(62,90,66,0.06);
+      text-align: center;
+    }
+    .preview-lead-time .lt-label { color: var(--muted); font-weight: 500; }
+
+    /* ── CB-11 任務A: Non-stock note below preview meta ── */
+    .preview-nonstock-note {
+      margin-top: 12px; padding: 8px 10px;
+      border: 1px dashed #D9B673; border-radius: 3px;
+      background: rgba(185,137,47,0.06);
+      font-size: 11px; line-height: 1.5; color: #B9892F;
+      text-align: left;
+    }
+    .sku-placeholder { padding: 28px; text-align: center; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Floating Cart Button ── */
+    .cart-fab {
+      position: fixed;
+      right: 24px; bottom: 72px;
+      width: 56px; height: 56px;
+      background: var(--green-dark);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 300;
+      box-shadow: 0 4px 16px rgba(14,31,22,0.3);
+      transition: background 0.2s, transform 0.15s;
+      border: none;
+    }
+    .cart-fab:hover { background: var(--green-mid); transform: scale(1.05); }
+    .cart-fab svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+    .cart-fab-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--gold); color: var(--green-dark);
+      border-radius: 20px; min-width: 20px; height: 20px;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 5px;
+    }
+
+    /* ── Cart Drawer ── */
+    .cart-overlay {
+      position: fixed; inset: 0;
+      background: rgba(62,90,66,0.3);
+      z-index: 400; opacity: 0;
+      pointer-events: none; transition: opacity 0.25s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 340px; max-width: 90vw;
+      background: var(--white);
+      z-index: 500;
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-drawer-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .cart-drawer-title { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green-dark); }
+    .cart-close { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; line-height: 1; padding: 0; transition: color 0.15s; }
+    .cart-close:hover { color: var(--text); }
+    .cart-body { flex: 1; overflow-y: auto; }
+    .cart-body::-webkit-scrollbar { width: 4px; }
+    .cart-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .cart-empty { padding: 32px 18px; text-align: center; font-size: 12px; color: var(--muted); line-height: 1.7; }
+    .cart-item { padding: 12px 18px; border-bottom: 1px solid var(--border); }
+    .cart-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .cart-item-name { font-size: 12px; font-weight: 500; color: var(--green-dark); line-height: 1.4; }
+    .cart-item-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .cart-item-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .cart-item-price { font-size: 12px; font-weight: 500; }
+    .btn-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 16px; padding: 0 2px; line-height: 1; transition: color 0.15s; }
+    .btn-remove:hover { color: var(--error); }
+    .cart-footer { padding: 16px 18px; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .cart-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--green-dark); margin-bottom: 6px; }
+    .cart-note { font-size: 10px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+    .btn-checkout {
+      width: 100%; background: var(--green-dark); color: #fff; border: none; border-radius: 3px;
+      padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; min-height: 44px;
+    }
+    .btn-checkout:hover { background: var(--green-mid); }
+    .btn-checkout:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Bottom Bar ── */
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 150; height: 56px; gap: 12px; }
+    .bottom-left { font-size: 12px; color: var(--muted); }
+    .bottom-left strong { color: var(--green-dark); }
+    .btn-back { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 3px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; min-height: 40px; text-decoration: none; display: inline-flex; align-items: center; }
+    .btn-back:hover { color: var(--text); border-color: var(--text); }
+
+    .btn-next { background: var(--green-dark); color: #fff; border: none; border-radius: 3px; padding: 10px 24px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; min-height: 40px; }
+    .btn-next:hover { background: var(--green-mid); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+    .toast {
+      position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--green-dark); color: #fff;
+      padding: 10px 20px; border-radius: 4px; font-size: 12px;
+      opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 600;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Lightbox ── */
+    .lightbox-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.show { display: flex; }
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 20px; right: 24px;
+      background: none; border: none;
+      color: #fff; font-size: 28px;
+      cursor: pointer; line-height: 1;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .preview-img-wrap { cursor: zoom-in; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       F-CUSTOM v1.0 (2026-05-14): Admin "+ Add Custom Item" feature
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* "+ Add Custom Item" button (admin only) in sku-panel-header */
+    .btn-add-custom {
+      background: var(--gold);
+      color: var(--green-dark);
+      border: none;
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .btn-add-custom:hover {
+      background: #B8932A;
+    }
+    .btn-add-custom svg {
+      width: 11px; height: 11px;
+      fill: currentColor;
+    }
+
+    /* [CUSTOM] gold badge — used in cart & throughout */
+    .custom-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-weight: 700;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    /* Custom Item Modal */
+    .custom-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44, 58, 50, 0.55);
+      z-index: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .custom-modal-overlay.show { display: flex; }
+    .custom-modal-container {
+      width: 92vw;
+      max-width: 560px;
+      max-height: 90vh;
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .custom-modal-header {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .custom-modal-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green-dark);
+    }
+    .custom-modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1;
+      padding: 0 4px;
+      transition: color 0.15s;
+    }
+    .custom-modal-close:hover { color: var(--text); }
+    .custom-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px;
+    }
+    .custom-modal-body::-webkit-scrollbar { width: 6px; }
+    .custom-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Type selector — radio cards */
+    .custom-type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .custom-type-card {
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--white);
+    }
+    .custom-type-card:hover {
+      border-color: var(--gold);
+    }
+    .custom-type-card.selected {
+      border-color: var(--green-dark);
+      background: rgba(62,90,66,0.04);
+      border-width: 2px;
+      padding: 11.5px 7.5px;
+    }
+    .custom-type-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green-dark);
+      margin-bottom: 2px;
+    }
+    .custom-type-card-hint {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Form fields */
+    .custom-form-row {
+      margin-bottom: 12px;
+    }
+    .custom-form-row.row-flex {
+      display: flex;
+      gap: 10px;
+    }
+    .custom-form-row.row-flex > * { flex: 1; }
+    .custom-form-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .custom-form-label.required::after {
+      content: ' *';
+      color: var(--error);
+    }
+    .custom-form-input,
+    .custom-form-select {
+      width: 100%;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 8px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .custom-form-input:focus,
+    .custom-form-select:focus {
+      border-color: var(--green-dark);
+    }
+    .custom-form-input.invalid,
+    .custom-form-select.invalid {
+      border-color: var(--error);
+      background: rgba(192,57,43,0.04);
+    }
+    .custom-form-input:disabled {
+      background: #F0EDE6;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    .custom-form-input-prefix {
+      position: relative;
+    }
+    .custom-form-input-prefix .prefix {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .custom-form-input-prefix input {
+      padding-left: 22px;
+    }
+
+    /* Radio groups (Assemble Status, Cabinet Type) */
+    .custom-radio-group {
+      display: flex;
+      gap: 8px;
+    }
+    .custom-radio-btn {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      padding: 7px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .custom-radio-btn:hover { color: var(--green-dark); }
+    .custom-radio-btn.active {
+      border-color: var(--green-dark);
+      background: rgba(62,90,66,0.06);
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+
+    .custom-cabinet-section {
+      background: #FAFAF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px;
+      margin-top: 8px;
+    }
+    .custom-cabinet-section-title {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .custom-modal-footer {
+      flex-shrink: 0;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      background: #FAFAF8;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .custom-btn {
+      padding: 9px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s;
+      min-height: 38px;
+      border: 1px solid transparent;
+    }
+    .custom-btn-cancel {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    .custom-btn-cancel:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+    .custom-btn-save {
+      background: var(--green-dark);
+      color: #fff;
+    }
+    .custom-btn-save:hover { background: var(--green-mid); }
+    .custom-btn-save:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    @media (max-width: 700px) {
+      .custom-modal-overlay { padding: 10px; }
+      .custom-modal-container { max-height: 95vh; }
+      .custom-modal-header { padding: 12px 16px; }
+      .custom-modal-body { padding: 14px 16px; }
+      .custom-modal-footer { padding: 12px 16px; flex-direction: column; }
+      .custom-btn { width: 100%; }
+      .custom-form-row.row-flex { flex-direction: column; gap: 12px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Cart qty inline editor (2026-05-14)
+       ═══════════════════════════════════════════════════════════════ */
+    .cart-item-qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .cart-qty-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all 0.15s;
+    }
+    .cart-qty-btn:hover {
+      border-color: var(--green-dark);
+      color: var(--green-dark);
+    }
+    .cart-qty-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .cart-qty-input {
+      width: 40px;
+      height: 22px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 4px;
+      font-size: 12px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .cart-qty-input:focus {
+      outline: none;
+      border-color: var(--green-mid);
+    }
+    .cart-item-edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 2px 4px;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .cart-item-edit-btn:hover { color: var(--green-dark); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       F-CUSTOM v1.1 (2026-05-14): Custom Items section at SKU panel bottom
+       ═══════════════════════════════════════════════════════════════ */
+    .custom-items-section {
+      border-top: 2px solid var(--gold);
+      background: rgba(201,168,76,0.04);
+    }
+    .custom-items-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(201,168,76,0.08);
+    }
+    .custom-items-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .custom-items-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8B6914;
+    }
+    .custom-items-hint {
+      font-size: 10px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .custom-items-list {
+      padding: 0;
+    }
+    .custom-items-empty {
+      padding: 18px 16px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .custom-item-row {
+      display: grid;
+      grid-template-columns: 1.5fr 2fr auto auto auto auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      background: var(--white);
+    }
+    .custom-item-row:last-child { border-bottom: none; }
+    @media (max-width: 700px) {
+      .custom-item-row {
+        grid-template-columns: 1fr auto auto;
+        grid-template-areas:
+          "code   line  actions"
+          "desc   desc  desc"
+          "meta   meta  meta";
+        gap: 4px 10px;
+      }
+      .custom-item-row .ci-code    { grid-area: code; }
+      .custom-item-row .ci-desc    { grid-area: desc; }
+      .custom-item-row .ci-meta    { grid-area: meta; display: flex; gap: 10px; flex-wrap: wrap; }
+      .custom-item-row .ci-line    { grid-area: line; }
+      .custom-item-row .ci-actions { grid-area: actions; }
+    }
+    .ci-code {
+      font-weight: 600;
+      color: var(--green-dark);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ci-desc {
+      color: var(--text);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ci-meta {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    .ci-qty {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .ci-price {
+      color: var(--text);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .ci-line {
+      font-weight: 600;
+      color: var(--green-dark);
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: right;
+    }
+    .ci-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .ci-action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--muted);
+      width: 26px;
+      height: 26px;
+      font-size: 12px;
+      padding: 0;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ci-action-btn:hover { color: var(--green-dark); border-color: var(--green-dark); }
+    .ci-action-btn.del:hover { color: var(--error); border-color: var(--error); }
+
+    /* Type label badges shown next to SKU code */
+    .ci-type-badge {
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+    .ci-type-badge.cabinet   { background: rgba(62,90,66,0.1);    color: var(--green-dark); }
+    .ci-type-badge.accessory { background: rgba(90,122,149,0.12); color: var(--info-blue, #5A7A95); }
+    .ci-type-badge.other     { background: rgba(122,140,130,0.15); color: var(--muted); }
+
+    /* Construction toggle in modal (Framed/Frameless) */
+    .custom-construction-group {
+      display: flex;
+      gap: 8px;
+    }
+    .custom-construction-btn {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      padding: 9px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .custom-construction-btn:hover { color: var(--green-dark); }
+    .custom-construction-btn.active {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      color: #8B6914;
+      font-weight: 600;
+      border-width: 2px;
+      padding: 8px 9px;
+    }
+
+    /* Small help note shown beneath Unit Price + Asm Fee */
+    .custom-form-help {
+      font-size: 10px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 4px;
+      line-height: 1.4;
+      display: flex;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    .custom-form-help::before {
+      content: 'ⓘ';
+      font-style: normal;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CB-4: Revision flow — admin-edit banner + review-mode locked visuals
+       (review = dealer reviewing a returned PO; everything is read-only,
+        dealer can only proceed to the modifications step)
+       ═══════════════════════════════════════════════════════════════ */
+    .admin-editing-banner {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .admin-editing-banner .aeb-icon-wrap {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(201,168,76,0.18);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .admin-editing-banner .aeb-icon-wrap svg { width: 16px; height: 16px; fill: var(--gold); }
+    .admin-editing-banner .aeb-body { flex: 1; min-width: 0; }
+    .admin-editing-banner .aeb-title {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #8B6914;
+      margin-bottom: 4px;
+    }
+    .admin-editing-banner .aeb-msg { font-size: 13px; color: #2C3A32; line-height: 1.55; }
+    .admin-editing-banner .aeb-msg strong { font-weight: 600; }
+
+    /* Review-mode locked visuals (override inline button styles where needed) */
+    .style-img-card.locked { cursor: default; }
+    .style-img-card.locked:hover { border-color: var(--border); transform: none; }
+    .btn-add:disabled {
+      background: #E5E5E5 !important;
+      color: #9CA3AF !important;
+      border: 1px solid #D4D4D4 !important;
+      cursor: not-allowed !important;
+    }
+    .qty-input:disabled {
+      background: var(--cream);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    .qty-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .qty-btn:disabled:hover { border-color: var(--border); color: var(--text); }
+    .cart-item-edit-btn:disabled,
+    .btn-remove:disabled,
+    .ci-action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .btn-add-custom:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<!-- Quote Flow Header -->
+<div id="pcd-quote-flow-header" data-step="2"></div>
+
+<div class="page">
+
+  <!-- Returned / mode banner mount point (populated by JS if applicable) -->
+  <div id="returnedBannerMount"></div>
+  
+  <!-- Brand Tabs: dynamic -->
+  <div class="brand-tabs-bar" id="brandTabsBar">
+  </div>
+
+  <!-- Top: Style Grid + Preview -->
+  <div class="top-section">
+
+    <!-- LEFT: Style Image Grid -->
+    <div class="style-grid-panel">
+      <div class="panel-header">
+        <div class="panel-label">Door Styles</div>
+        <div class="search-box">
+          <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+          <input type="text" id="styleSearch" placeholder="Search styles..." oninput="filterStyles()"/>
+        </div>
+      </div>
+      <div class="subcat-tabs" id="subcatTabs"></div>
+      <div class="style-grid-body">
+        <div class="style-img-grid" id="styleListBody">
+          <div style="padding:16px;font-size:12px;color:var(--muted);">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Preview -->
+    <div class="preview-panel">
+      <div class="preview-panel-header">
+        <div class="preview-panel-title">Door Style Preview</div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-empty" id="previewEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+          <p>Click a door style<br>from the grid to preview</p>
+        </div>
+        <div class="preview-content" id="previewContent">
+          <div class="preview-lead-time" id="previewLeadTime" style="display:none;"></div>
+          <div class="preview-img-wrap" onclick="if(document.getElementById('previewImg').style.display!=='none'){openLightbox(document.getElementById('previewImg').src)}" style="cursor:zoom-in;">
+            <img class="preview-img" id="previewImg" src="" alt=""/>
+            <div class="preview-swatch" id="previewSwatch"></div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;margin-top:6px;margin-bottom:2px;">Click image to enlarge</div>
+          <div class="preview-name" id="previewName"></div>
+          <div class="preview-meta" id="previewMeta"></div>
+          <div class="preview-nonstock-note" id="previewNonStockNote" style="display:none;"></div>
+          <div id="selectedBadge" style="display:none;margin-top:8px;background:rgba(62,90,66,0.08);border:1px solid var(--green-dark);border-radius:3px;padding:6px 14px;font-size:11px;font-weight:500;color:var(--green-dark);letter-spacing:0.1em;">✓ SELECTED</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SKU Panel -->
+  <div class="sku-panel">
+    <div class="sku-panel-header">
+      <span class="sku-panel-title">Items</span>
+      <span class="sku-style-tag" id="skuStyleTag">— select a style above —</span>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div class="sku-search-wrap" id="skuSearchWrap" style="display:none;">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+        <input type="text" id="skuSearch" placeholder="Search SKU / description..." oninput="renderSkuTable()"/>
+      </div>
+      <div class="sku-sort-wrap">
+        <label for="skuSort">Sort</label>
+        <select class="sku-sort-select" id="skuSort" onchange="setSort(this.value)">
+          <option value="type">SKU Type group</option>
+          <option value="sku">SKU (A–Z)</option>
+          <option value="price_asc">Price (Low to High)</option>
+          <option value="price_desc">Price (High to Low)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- CB-29 A1: 靜態提醒 banner(always 顯示;篩選列下方、表格上方) -->
+    <div style="margin:8px 0;padding:10px 14px;background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.45);border-radius:4px;font-size:12px;color:#8B6914;letter-spacing:0.02em;">
+      ⚠️ Items marked need sales check availability
+    </div>
+
+    <div class="sku-table-wrap" id="skuTableWrap">
+          <div class="sku-placeholder">Select a door style and click "Select This Style" to view available items.</div>
+          </div>
+    
+        <!-- F-CUSTOM v1.1: Custom Items section at the bottom of SKU panel.
+         Always visible to admin (regardless of selected style).
+         Contains a button to add new custom items + a list of all
+         custom items already in cart. -->
+    <div class="custom-items-section" id="customItemsSection" style="display:none;">
+      <div class="custom-items-header">
+        <div class="custom-items-title-wrap">
+          <span class="custom-items-title">Custom Items</span>
+          <span class="custom-items-hint">Hand-entered items not in catalog (admin only)</span>
+        </div>
+        <button id="btnAddCustomItem" class="btn-add-custom" type="button"
+          onclick="openCustomModal()" title="Add a custom item not in catalog">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+          Add Custom Item
+        </button>
+      </div>
+      <div class="custom-items-list" id="customItemsList">
+        <!-- populated by renderCustomItemsList() -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt=""/>
+</div>
+
+<!-- F-CUSTOM v1.1: Add Custom Item modal -->
+<div class="custom-modal-overlay" id="customModalOverlay">
+  <div class="custom-modal-container" role="dialog" aria-modal="true" aria-labelledby="customModalTitle">
+    <div class="custom-modal-header">
+      <span class="custom-modal-title" id="customModalTitle">Add Custom Item</span>
+      <button class="custom-modal-close" type="button" onclick="closeCustomModal()" aria-label="Close">×</button>
+    </div>
+    <div class="custom-modal-body">
+
+      <!-- Type selector -->
+      <div class="custom-form-label required">Item Type</div>
+      <div class="custom-type-grid" id="customTypeGrid">
+        <div class="custom-type-card" data-type="Cabinet" onclick="onCustomTypeSelect('Cabinet')">
+          <div class="custom-type-card-label">Cabinet</div>
+          <div class="custom-type-card-hint">New door style or custom size</div>
+        </div>
+        <div class="custom-type-card" data-type="Accessory" onclick="onCustomTypeSelect('Accessory')">
+          <div class="custom-type-card-label">Accessory</div>
+          <div class="custom-type-card-hint">Toe Kick, Filler, Molding...</div>
+        </div>
+        <div class="custom-type-card" data-type="Other" onclick="onCustomTypeSelect('Other')">
+          <div class="custom-type-card-label">Other</div>
+          <div class="custom-type-card-hint">Anything else</div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════
+           CABINET section (shown only when type === 'Cabinet')
+           ════════════════════════════════════════════════ -->
+      <div class="custom-cabinet-section" id="customCabinetSection" style="display:none;">
+        <div class="custom-cabinet-section-title">Cabinet Details</div>
+
+        <div class="custom-form-row">
+          <label class="custom-form-label required">Construction Type</label>
+          <div class="custom-construction-group" id="customConstructionGroup">
+            <button type="button" class="custom-construction-btn" data-value="framed"
+              onclick="setCustomConstruction('framed')">Framed</button>
+            <button type="button" class="custom-construction-btn" data-value="frameless"
+              onclick="setCustomConstruction('frameless')">Frameless</button>
+          </div>
+        </div>
+
+        <div class="custom-form-row">
+          <label class="custom-form-label required">Door Style</label>
+          <input type="text" id="customDoorStyleCabinet" class="custom-form-input"
+            placeholder="Type door style name (e.g. Custom Walnut)"
+            maxlength="80"/>
+        </div>
+
+        <div class="custom-form-row">
+          <label class="custom-form-label required">Cabinet Type</label>
+          <select id="customCabinetTypeSelect" class="custom-form-select"
+            onchange="onCustomCabinetTypeChange()">
+            <option value="">— Select cabinet type —</option>
+          </select>
+        </div>
+
+        <div class="custom-form-row">
+          <label class="custom-form-label required">Assemble Status</label>
+          <div class="custom-radio-group" id="customAsmStatusGroup">
+            <button type="button" class="custom-radio-btn active" data-value="RTA" onclick="setCustomAsmStatus('RTA')">Unassembled</button>
+            <button type="button" class="custom-radio-btn" data-value="Assembled" onclick="setCustomAsmStatus('Assembled')">Assembled</button>
+          </div>
+        </div>
+
+        <div class="custom-form-row">
+          <label class="custom-form-label">Assemble Fee (per unit)</label>
+          <div class="custom-form-input-prefix">
+            <span class="prefix">$</span>
+            <input type="number" id="customAsmFee" class="custom-form-input"
+              min="0" step="0.01" placeholder="0.00" disabled/>
+          </div>
+          <div class="custom-form-help">Auto-calculated from dealer settings (read-only).</div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════
+           ACCESSORY section (shown only when type === 'Accessory')
+           ════════════════════════════════════════════════ -->
+      <div class="custom-cabinet-section" id="customAccessorySection" style="display:none;">
+        <div class="custom-cabinet-section-title">Accessory Details</div>
+        <div class="custom-form-row">
+          <label class="custom-form-label">Door Style</label>
+          <input type="text" class="custom-form-input" value="Accessories" disabled
+            id="customAccessoryDoorStyle"/>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════
+           OTHER section (shown only when type === 'Other')
+           ════════════════════════════════════════════════ -->
+      <div class="custom-cabinet-section" id="customOtherSection" style="display:none;">
+        <div class="custom-cabinet-section-title">Other Details</div>
+        <div class="custom-form-row">
+          <label class="custom-form-label">Door Style (optional)</label>
+          <input type="text" id="customDoorStyleOther" class="custom-form-input"
+            placeholder="Leave blank or type any reference"
+            maxlength="80"/>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════
+           Common fields — always shown after type is selected
+           ════════════════════════════════════════════════ -->
+      <div class="custom-form-row" id="customCommonFieldsRow1" style="display:none;">
+        <label class="custom-form-label required">SKU Code</label>
+        <input type="text" id="customSkuCode" class="custom-form-input"
+          placeholder="e.g. CUST-001, PROMO-DENT-12"
+          maxlength="60"/>
+      </div>
+
+      <div class="custom-form-row" id="customCommonFieldsRow2" style="display:none;">
+        <label class="custom-form-label required">Description</label>
+        <input type="text" id="customSkuDesc" class="custom-form-input"
+          placeholder="e.g. Custom Birch Cabinet 9in W x 30in H"
+          maxlength="200"/>
+      </div>
+
+      <div class="custom-form-row row-flex" id="customCommonFieldsRow3" style="display:none;">
+        <div>
+          <label class="custom-form-label required">Quantity</label>
+          <input type="number" id="customQty" class="custom-form-input"
+            min="1" step="1" value="1"/>
+        </div>
+        <div>
+          <label class="custom-form-label required">Unit Price</label>
+          <div class="custom-form-input-prefix">
+            <span class="prefix">$</span>
+            <input type="number" id="customUnitPrice" class="custom-form-input"
+              min="0" step="0.01" placeholder="0.00"/>
+          </div>
+          <div class="custom-form-help">This price does not participate in MSRP calculation. Enter the final amount you want to charge.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="custom-modal-footer">
+      <button class="custom-btn custom-btn-cancel" type="button" onclick="closeCustomModal()">Cancel</button>
+      <button class="custom-btn custom-btn-save" type="button" id="customSaveBtn" onclick="saveCustomItem()">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Cart Button -->
+<button class="cart-fab" onclick="toggleCart()" aria-label="View cart">
+  <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+  <div class="cart-fab-badge" id="cartFabBadge">0</div>
+</button>
+
+<!-- Cart Overlay -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+<!-- Cart Drawer -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <span class="cart-drawer-title">Quote Items</span>
+    <button class="cart-close" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty">No items yet.<br>Select a style and add items.</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total"><span>Subtotal</span><span id="cartTotal">$0.00</span></div>
+    <div class="cart-note">* Dealer pricing applied. Final pricing confirmed upon order processing.</div>
+    <button class="btn-checkout" id="btnCheckout" onclick="goNext()">Continue →</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar">
+  <div class="bottom-left"><strong id="bottomCount">0 items</strong> in quote</div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a href="new-quote.html" class="btn-back" id="btnBack">← Back</a>
+    <button class="btn-next" id="btnNext" onclick="goNext()" disabled>Continue →</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="components/quote-flow-header.js"></script>
+<script>
+const { createClient } = supabase;
+const _supabase = createClient(
+  window.SB_URL,
+  window.SB_KEY
+);
+
+let dealer = null;
+let allStyles = [], allSkusFramed = [], allSkusFrameless = [];
+let activeBrand = 'Procraft';
+let activeSubcat = 'All';
+let hoveredStyle = null;
+let activeStyle  = null;
+let currentType  = 'RTA';
+let currentCat   = 'All';
+let currentSort  = 'type';   // CB-5: 'type' | 'sku' | 'price_asc' | 'price_desc'
+let cartItems    = [];
+let draftId      = null; // set if resuming a draft
+
+// F-CUSTOM: role of the LOGGED-IN user (not the target dealer).
+// In admin "create as dealer" flow, `dealer` is the TARGET dealer
+// (for pricing), but `currentUserRole` stays as the admin's role.
+let currentUserRole = 'dealer';
+
+// ─────────────────────────────────────────────────────────────────────────
+// CB-4: revision-flow view mode (server-resolved, never trusts URL/sessionStorage).
+//   'normal'      — dealer building / editing own Draft
+//   'admin-draft' — admin creating a quote on behalf of a dealer
+//   'admin-edit'  — admin editing a dealer's Pending/Returned PO (revision flow)
+//   'review'      — dealer reviewing a returned PO (read-only; can only proceed)
+// resolveViewMode() runs in init() AFTER the quote status + owner are known.
+// ─────────────────────────────────────────────────────────────────────────
+let viewMode      = 'normal';
+let isAdminViewer = false;
+
+const colorMap = {
+  black:'#2C2C2C', blue:'#3B5A8A', brown:'#7B5C3E',
+  grey:'#8A8A8A', white:'#F0EDE8', green:'#2D4A3A', beige:'#C8B89A',
+};
+
+// open subcats by default
+const openSubcats = new Set();
+
+// ── CB-4: convenience guard ──
+function isReviewLocked() { return viewMode === 'review'; }
+
+// ─────────────────────────────────────────────────────────────────
+// CB-4: Resolve effective viewMode from quote status + viewer role.
+// Server data wins; URL ?mode= is only a hint (used for logging).
+// ─────────────────────────────────────────────────────────────────
+function resolveViewMode(status, isOwner, isAdmin, adminDraftFlag) {
+  if (!status) return adminDraftFlag ? 'admin-draft' : 'normal';
+
+  if (status === 'Returned') {
+    if (isAdmin && !isOwner) return 'admin-edit';
+    if (isOwner) return 'review';
+    if (isAdmin) return 'admin-edit';
+    return 'review';
+  }
+  if (status === 'Pending') {
+    if (isAdmin) return 'admin-edit';
+    return 'normal';  // dealer shouldn't reach Pending in Step 2; safety net
+  }
+  if (status === 'Draft') {
+    return adminDraftFlag ? 'admin-draft' : 'normal';
+  }
+  return 'normal';
+}
+
+// ── CB-4: mode banners ──
+function buildReviewBanner() {
+  return `
+    <div class="returned-revising-banner">
+      <div class="rrb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </div>
+      <div class="rrb-body">
+        <div class="rrb-title">Reviewing Revised Purchase Order</div>
+        <div class="rrb-msg">You are reviewing your revised Purchase Order. Products are locked for review — click Continue to review the modifications, then resubmit on the final step.</div>
+      </div>
+    </div>`;
+}
+
+function buildAdminEditBanner(ownerDealer) {
+  const name = ownerDealer
+    ? (ownerDealer.company_name || ownerDealer.contact_name || '—')
+    : '—';
+  return `
+    <div class="admin-editing-banner">
+      <div class="aeb-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </div>
+      <div class="aeb-body">
+        <div class="aeb-title">Editing Dealer's Purchase Order</div>
+        <div class="aeb-msg">You are editing the Purchase Order belonging to <strong>${name}</strong>. Changes are buffered locally and only saved when you click <strong>Request Revision</strong> on the final step.</div>
+      </div>
+    </div>`;
+}
+
+async function init() {
+  const { data:{ session } } = await _supabase.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  // Check for draft resume mode + admin draft mode
+  const params = new URLSearchParams(window.location.search);
+  draftId = params.get('draft') || null;
+  const urlModeHint = params.get('mode') || null;  // CB-4: hint only
+  let adminDraftFlag = params.get('adminDraft') === '1';
+
+  // ── Step 1: Verify the logged-in user is active + capture role ──
+  // F-CUSTOM: also pull `role` so we can show admin-only UI even when
+  // the loaded `dealer` object is a DIFFERENT user (admin creating
+  // a draft for a dealer).
+  const { data: meRow } = await _supabase
+    .from('dealers').select('is_active, role').eq('id', session.user.id).single();
+  if (!meRow?.is_active) {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+    return;
+  }
+  currentUserRole = (meRow.role || 'dealer').toLowerCase();
+  isAdminViewer   = currentUserRole === 'admin' || currentUserRole === 'super_admin';
+  console.log('[F-CUSTOM] currentUserRole =', currentUserRole);
+
+  // adminDraft can also come from Step 1 sessionStorage
+  try {
+    const s1 = sessionStorage.getItem('quoteStep1');
+    if (s1) {
+      const parsed = JSON.parse(s1);
+      if (parsed?.adminDraft === true) adminDraftFlag = true;
+    }
+  } catch (_) {}
+
+  // ── Step 2: Resolve which dealer's data to load + the quote status/owner ──
+  // Priority: Resume Draft (DB) > Admin Draft (sessionStorage hint) > current session
+  let dealerIdToLoad = session.user.id;
+  let quoteStatus    = null;
+  let isOwner        = false;
+  if (draftId) {
+    const { data: q } = await _supabase
+      .from('quotes').select('dealer_id, status').eq('id', draftId).single();
+    if (q?.dealer_id) dealerIdToLoad = q.dealer_id;
+    quoteStatus = q?.status || null;
+    isOwner     = !!q && q.dealer_id === session.user.id;
+  } else {
+    // Look for admin-draft hint in sessionStorage (set by step1)
+    try {
+      const s1 = sessionStorage.getItem('quoteStep1');
+      if (s1) {
+        const parsed = JSON.parse(s1);
+        if (parsed?.dealerIdForQuote) dealerIdToLoad = parsed.dealerIdForQuote;
+      }
+    } catch (_) { /* ignore parse errors */ }
+  }
+
+  // ── CB-4: resolve effective view mode (server data wins) ──
+  viewMode = resolveViewMode(quoteStatus, isOwner, isAdminViewer, adminDraftFlag);
+  console.log('[CB-4] Step 2 viewMode resolved:', {
+    viewMode, urlModeHint, quoteStatus, isAdminViewer, isOwner, adminDraftFlag,
+  });
+
+  // Update Back link to preserve draft id + mode
+  if (draftId) {
+    const backBtn = document.getElementById('btnBack');
+    if (backBtn) backBtn.href = 'new-quote.html?draft=' + draftId + buildModeParam();
+  }
+
+  const { data:d } = await _supabase
+    .from('dealers').select('*').eq('id', dealerIdToLoad).single();
+  if (!d) {
+    alert('Could not load dealer data. Please go back and try again.');
+    return;
+  }
+  dealer = d;
+
+  // ── CB-4: render the appropriate mode banner ──
+  const bannerMount = document.getElementById('returnedBannerMount');
+  if (bannerMount) {
+    if (viewMode === 'review') bannerMount.innerHTML = buildReviewBanner();
+    else if (viewMode === 'admin-edit') bannerMount.innerHTML = buildAdminEditBanner(dealer);
+    else bannerMount.innerHTML = '';
+  }
+
+  const [s, framedRes, framelessRes] = await Promise.all([
+    _supabase.from('door_styles').select('*')
+      .eq('is_active', true)
+      .order('is_coming_soon', { ascending: true })
+      .order('subcategory'),
+    _supabase.from('skus_framed').select('*').eq('active', true),
+    _supabase.from('skus_frameless').select('*').eq('active', true),
+  ]);
+  allStyles        = s.data            || [];
+  allSkusFramed    = framedRes.data    || [];
+  allSkusFrameless = framelessRes.data || [];
+
+  // Render brand tabs dynamically
+  const brands = [...new Set(allStyles.map(s => s.brand).filter(Boolean))];
+  const BRAND_ORDER = ['Procraft', 'Milania'];  // ← 想排第一的放第一,新品牌加在後面
+  brands.sort((a, b) => {
+    const ai = BRAND_ORDER.indexOf(a);
+    const bi = BRAND_ORDER.indexOf(b);
+    // 沒在 BRAND_ORDER 裡的品牌排到最後,且其內部用字母順序
+    if (ai === -1 && bi === -1) return a.localeCompare(b);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+  activeBrand = brands[0] || 'Procraft';
+  document.getElementById('brandTabsBar').innerHTML = brands.map((b, i) =>
+    `<button class="brand-tab ${i === 0 ? 'active' : ''}" onclick="switchBrand('${b}')">${b}</button>`
+  ).join('');
+  // open all subcats by default
+  allStyles.forEach(s => {
+    const key = `${s.brand}__${s.subcategory||'Other'}`;
+    openSubcats.add(key);
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  // D14b fix: Restore cart from sessionStorage, distinguishing
+  // "key never written" (null) from "key written as empty []".
+  //
+  // Before:
+  //   if (parsed && parsed.length) cartItems = parsed;
+  //   if (!cartItems.length) await loadDraftItems();
+  //
+  // Bug: when Step 2.5 deleted the last SKU and wrote "[]" back,
+  // returning to Step 2 saw parsed.length === 0, skipped the assign,
+  // then fell through to loadDraftItems() which re-fetched the
+  // already-deleted SKU from DB. The deleted SKU reappeared.
+  //
+  // After:
+  //   - savedCart === null → key was never written → fallback to DB
+  //   - savedCart !== null → respect it even if it's "[]"
+  //     (user intentionally cleared)
+  // ════════════════════════════════════════════════════════════════
+  if (draftId) {
+    const savedCart = sessionStorage.getItem('quoteStep2');
+    if (savedCart !== null) {
+      // sessionStorage has a value (even if empty array) → respect it
+      try {
+        cartItems = JSON.parse(savedCart) || [];
+      } catch (e) {
+        console.warn('[D14b] Failed to parse quoteStep2, falling back to DB', e);
+        cartItems = [];
+        await loadDraftItems();
+      }
+      console.log('[D14b] Step 2 restored cart from sessionStorage:',
+                  cartItems.length, 'item(s) (key existed)');
+    } else {
+      // First entry to Step 2 in this session → load from DB
+      await loadDraftItems();
+      console.log('[D14b] Step 2 first load — fetched from DB:',
+                  cartItems.length, 'item(s)');
+    }
+  } else {
+    const savedCart = sessionStorage.getItem('quoteStep2');
+    if (savedCart !== null) {
+      try { cartItems = JSON.parse(savedCart) || []; }
+      catch(e) { cartItems = []; }
+    }
+  }
+
+  renderStyleList();
+  renderCart(); // renders badge + cart drawer correctly
+
+  // F-CUSTOM v1.1: show entire Custom Items section for admin / super_admin
+  // (review mode is always a dealer, so this never shows there)
+  if (isAdminRole() && !isReviewLocked()) {
+    const section = document.getElementById('customItemsSection');
+    if (section) section.style.display = 'block';
+    renderCustomItemsList();
+    console.log('[F-CUSTOM] Admin role detected (' + currentUserRole + ') — Custom Items section enabled');
+  }
+
+  // Poll is_active every 60s
+  setInterval(async () => {
+    const { data: check } = await _supabase
+      .from('dealers').select('is_active').eq('id', session.user.id).single();
+    if (!check?.is_active) {
+      await _supabase.auth.signOut();
+      window.location.href = 'login.html';
+    }
+  }, 60000);
+}
+
+// ── CB-4: map viewMode → URL ?mode= fragment for forwarding ──
+function buildModeParam() {
+  if (viewMode === 'admin-edit') return '&mode=admin-edit';
+  if (viewMode === 'review')     return '&mode=review';
+  return '';
+}
+
+// ─────────────────────────────────────────────────────────────────
+// E5: Load draft items from DB, GROUP BY (style_code, sku_code,
+// assemble_status) to merge multi-row sub_index records back into a
+// single cart entry with sub_groups[].
+//
+// A single SKU split into N sub-groups in Step 2.5 is stored as N
+// rows in quote_items (sub_index 1..N). The cart should still show
+// 1 line per (SKU, type), so we sum quantities and stash each row
+// as a sub_group on the cart item.
+// ─────────────────────────────────────────────────────────────────
+async function loadDraftItems() {
+  const { data: items, error } = await _supabase
+    .from('quote_items').select('*').eq('quote_id', draftId);
+  if (error || !items || !items.length) return;
+
+  const skuAll = allSkusFramed.concat(allSkusFrameless);
+  const groupsByKey = new Map();
+
+  // Sort by sub_index ASC so sub_groups end up in correct order
+  const sorted = items.slice().sort(function (a, b) {
+    if (a.style_code !== b.style_code) return a.style_code.localeCompare(b.style_code);
+    if (a.sku_code !== b.sku_code) return a.sku_code.localeCompare(b.sku_code);
+    if (a.assemble_status !== b.assemble_status) {
+      return a.assemble_status.localeCompare(b.assemble_status);
+    }
+    return (a.sub_index || 1) - (b.sub_index || 1);
+  });
+
+  sorted.forEach(function (row) {
+    const key = row.style_code + '-' + row.sku_code + '-' + row.assemble_status;
+
+    if (!groupsByKey.has(key)) {
+      const style = allStyles.find(function (s) { return s.style_code === row.style_code; });
+      const sku   = skuAll.find(function (s) { return s.sku_code === row.sku_code; });
+      groupsByKey.set(key, {
+        key:          key,
+        style_code:   row.style_code,
+        style_name:   style ? style.style_name : row.style_code,
+        sku_code:     row.sku_code,
+        sku_desc:     sku ? sku.description : row.sku_code,
+        skuType:      row.sku_type || '',
+        category:     sku ? (sku.category    || '') : '',
+        subcategory:  sku ? (sku.subcategory || '') : '',
+        // CB-5 需求1: carry door attributes (joined from door_styles) for lead time
+        construction_type: style ? (style.construction_type || null) : null,
+        is_stock:          style ? style.is_stock : null,
+        needs_confirmation: sku ? !!sku.needs_confirmation : false,  // CB-29
+        type:         row.assemble_status,
+        quantity:     0,
+        unit_price:   parseFloat(row.unit_price),
+        msrp:         parseFloat(row.msrp || 0),
+        assemble_fee: parseFloat(row.assemble_fee || 0),
+        sub_groups:   [],
+      });
+    }
+
+    const cartItem = groupsByKey.get(key);
+    const rowQty = parseInt(row.quantity, 10) || 0;
+    cartItem.quantity += rowQty;
+    cartItem.sub_groups.push({
+      sub_index:           parseInt(row.sub_index, 10) || (cartItem.sub_groups.length + 1),
+      qty:                 rowQty,
+      modifications:       Array.isArray(row.modifications) ? row.modifications : [],
+      modification_status: row.modification_status
+        || (row.assemble_status === 'RTA' ? 'skipped' : 'unprocessed'),
+    });
+  });
+
+  // Re-number sub_indexes 1..N within each cart item
+  cartItems = [];
+  groupsByKey.forEach(function (item) {
+    item.sub_groups.forEach(function (g, i) { g.sub_index = i + 1; });
+    cartItems.push(item);
+  });
+
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  console.log('[E5/step2] Loaded ' + items.length + ' DB row(s) → merged into ' +
+              cartItems.length + ' cart item(s).');
+}
+
+
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxOverlay').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightboxOverlay').classList.remove('show');
+}
+
+function filterStyles() { renderStyleList(); }
+
+// ── CB-11 任務A: per-door lead time(重寫 CB-5)──
+// Frameless          → ~5 Weeks
+// Framed + non-stock → ~2~3 Weeks
+// Framed + stock     → null(整條完全不顯示)
+function leadTimeForDoor(constructionType, isStock) {
+  const ct = (constructionType || '').toLowerCase();
+  if (ct === 'frameless') return '~5 Weeks';
+  if (!isStock) return '~2~3 Weeks';
+  return null;  // stock 回 null,呼叫方拿到 null 就完全不顯示
+}
+
+// ── CB-11 任務A: 寫入 preview 的 Lead Time(門圖上方)+ non-stock 提醒(下方)──
+function updatePreviewLeadAndNote(style) {
+  const ltEl   = document.getElementById('previewLeadTime');
+  const noteEl = document.getElementById('previewNonStockNote');
+  const lt = (style && !style.is_coming_soon)
+    ? leadTimeForDoor(style.construction_type, style.is_stock)
+    : null;
+  if (lt) {
+    ltEl.innerHTML = '<span class="lt-label">Lead Time:</span> ' + lt;
+    ltEl.style.display = 'block';
+  } else {
+    ltEl.style.display = 'none';   // stock / coming soon → 整條不出現
+  }
+  if (style && !style.is_coming_soon && style.is_stock === false) {
+    noteEl.textContent = NONSTOCK_NOTE_TEXT;
+    noteEl.style.display = 'block';
+  } else {
+    noteEl.style.display = 'none';
+  }
+}
+
+// ── CB-5 需求3: display mapping (DB value unchanged) ──
+// DB still stores 'RTA'; everywhere we DISPLAY it, show 'Unassembled'.
+function formatAssembleStatus(v) {
+  return v === 'RTA' ? 'Unassembled' : 'Assembled';
+}
+
+// ── CB-5 需求2: non-stock advisory note text ──
+const NONSTOCK_NOTE_TEXT =
+  'This is a non-stock product, and the team needs to confirm whether it can be successfully transferred.';
+
+// ── CB-5 需求4: preferred SKU type group order (covers ProCraft + Milania) ──
+// Base → Tall → Wall → Vanity → ... → Accessories last; unknowns alphabetical at end.
+const SKU_TYPE_ORDER = [
+  'BASE', 'TALL', 'WALL', 'VANITY',
+  'DRAWER', 'ROLL OUT TRAY', 'BOX', 'MBOX',
+  'DOOR & FRAME', 'MOLDINGS', 'PANELS',
+  'ACCESSORIES'
+];
+function skuTypeRank(type) {
+  const t = (type || '').toUpperCase();
+  const i = SKU_TYPE_ORDER.indexOf(t);
+  return i === -1 ? SKU_TYPE_ORDER.length : i;
+}
+
+function setSort(v) {
+  currentSort = v;
+  renderSkuTable();
+}
+
+
+function selectAndConfirm(code) {
+  if (isReviewLocked()) return;  // CB-4: read-only review — no style selection
+  hoveredStyle = allStyles.find(s => s.style_code === code);
+  if (!hoveredStyle) return;
+  if (hoveredStyle.is_coming_soon) return;  // Coming Soon styles are not selectable
+
+  // Update preview panel
+  const img    = document.getElementById('previewImg');
+  const swatch = document.getElementById('previewSwatch');
+  document.getElementById('previewEmpty').style.display   = 'none';
+  document.getElementById('previewContent').style.display = 'block';
+
+  if (hoveredStyle.image_url) {
+    img.src = hoveredStyle.image_url; img.style.display = 'block'; swatch.style.display = 'none';
+  } else {
+    img.style.display = 'none'; swatch.style.display = 'block';
+  }
+  document.getElementById('previewName').textContent = hoveredStyle.style_name;
+  document.getElementById('previewMeta').textContent =
+    `${hoveredStyle.style_code} · ${hoveredStyle.subcategory||''} · ${hoveredStyle.construction_type||''} · ${hoveredStyle.brand}`;
+  updatePreviewLeadAndNote(hoveredStyle);  // CB-11 任務A
+
+  // Confirm selection
+  activeStyle = hoveredStyle;
+  currentCat  = 'All';
+  renderStyleList();
+  document.getElementById('skuStyleTag').textContent      = activeStyle.style_name;
+  document.getElementById('skuSearchWrap').style.display  = 'block';
+  const badge = document.getElementById('selectedBadge');
+  if (badge) badge.style.display = 'block';
+  renderCatTabs();
+  renderSkuTable();
+}
+
+function switchBrand(brand) {
+  activeBrand = brand;
+  activeSubcat = 'All';
+  document.querySelectorAll('.brand-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === brand);
+  });
+  renderStyleList();
+}
+
+function switchSubcat(subcat) {
+  activeSubcat = subcat;
+  renderStyleList();
+}
+
+function renderStyleList() {
+  const q = (document.getElementById('styleSearch').value||'').toLowerCase();
+  const grid = document.getElementById('styleListBody');
+  const subcatTabsEl = document.getElementById('subcatTabs');
+
+  // Filter by brand
+  const brandStyles = allStyles.filter(s => s.brand === activeBrand);
+
+  // Build subcat tabs
+  const subcats = ['All', ...new Set(brandStyles.map(s => s.subcategory || 'Other'))].sort((a,b) => a==='All'?-1:b==='All'?1:a.localeCompare(b));
+  subcatTabsEl.innerHTML = subcats.map(sc => `
+    <button class="subcat-tab ${sc === activeSubcat ? 'active' : ''}" onclick="switchSubcat('${sc}')">${sc}</button>
+  `).join('');
+
+  // Filter by subcat + search
+  let filtered = brandStyles;
+  if (activeSubcat !== 'All') filtered = filtered.filter(s => (s.subcategory||'Other') === activeSubcat);
+  if (q) filtered = filtered.filter(s => s.style_name.toLowerCase().includes(q) || s.style_code.toLowerCase().includes(q));
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--muted);">No styles found.</div>';
+    return;
+  }
+
+  // CB-4: in review mode, cards are non-interactive (no selection)
+  const locked = isReviewLocked();
+
+  grid.innerHTML = filtered.map(s => {
+    const sel = activeStyle && activeStyle.style_code === s.style_code;
+    const isComingSoon = !!s.is_coming_soon;
+    const cardClass = `style-img-card${sel ? ' selected' : ''}${isComingSoon ? ' coming-soon' : ''}${locked ? ' locked' : ''}`;
+    const cardStyle = isComingSoon ? ' style="cursor:not-allowed;"' : '';
+    const onClick = (isComingSoon || locked) ? '' : `onclick="selectAndConfirm('${s.style_code}')"`;
+    const badge = isComingSoon
+      ? `<div style="position:absolute;top:6px;right:6px;background:var(--green-dark,#1b3022);color:#fff;font-size:8px;letter-spacing:0.1em;padding:3px 6px;border-radius:2px;font-weight:600;text-transform:uppercase;z-index:2;">Coming Soon</div>`
+      : '';
+    return `
+          <div class="${cardClass}"${cardStyle} ${onClick}>
+            <div class="style-img-card-img-wrap" style="position:relative;">
+              ${badge}
+              ${s.image_url
+                ? `<img src="${s.image_url}" alt="${s.style_name}" loading="lazy"/>`
+                : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>`
+              }
+            </div>
+            <div class="style-img-card-info">
+              <div class="style-img-card-name">${s.style_name}</div>
+              <div class="style-img-card-code">${s.style_code}</div>
+            </div>
+          </div>`;
+  }).join('');
+}
+
+
+function toggleSubcat(keyRaw) {
+  const key = keyRaw.replace(/_/g,' ').replace(/\s+/g,' ');
+  // find the original key
+  const matchKey = [...openSubcats].find(k => k.replace(/\s/g,'_') === keyRaw) ||
+    allStyles.map(s=>`${s.brand}__${s.subcategory||'Other'}`).find(k=>k.replace(/\s/g,'_')===keyRaw);
+
+  if (openSubcats.has(matchKey)) {
+    openSubcats.delete(matchKey);
+  } else {
+    openSubcats.add(matchKey);
+  }
+  renderStyleList();
+}
+
+function previewStyle(code) {
+  hoveredStyle = allStyles.find(s => s.style_code === code);
+  const bg = colorMap[hoveredStyle.color]||'#8A8A8A';
+  document.getElementById('previewEmpty').style.display = 'none';
+  document.getElementById('previewContent').style.display = 'block';
+
+  const img    = document.getElementById('previewImg');
+  const swatch = document.getElementById('previewSwatch');
+  if (hoveredStyle.image_url) {
+    img.src = hoveredStyle.image_url; img.style.display = 'block'; swatch.style.display = 'none';
+  } else {
+    img.style.display = 'none'; swatch.style.display = 'block'; swatch.style.background = bg;
+  }
+
+  document.getElementById('previewName').textContent = hoveredStyle.style_name;
+  document.getElementById('previewMeta').textContent =
+    `${hoveredStyle.style_code} · ${hoveredStyle.subcategory||''} · ${hoveredStyle.construction_type||''} · ${hoveredStyle.brand}`;
+  updatePreviewLeadAndNote(hoveredStyle);  // CB-11 任務A
+
+  const btn = document.getElementById('btnSelectStyle');
+  const isActive = activeStyle && activeStyle.style_code === code;
+  btn.textContent = isActive ? '✓ Selected' : 'Select This Style';
+  btn.className = 'btn-select-style' + (isActive ? ' confirmed' : '');
+}
+
+function confirmStyle() {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  if (!hoveredStyle) return;
+  activeStyle = hoveredStyle;
+  currentCat = 'All';
+  renderStyleList();
+  document.getElementById('skuStyleTag').textContent = activeStyle.style_name;
+  document.getElementById('skuSearchWrap').style.display = 'block';
+  const badge = document.getElementById('selectedBadge');
+  if (badge) badge.style.display = 'block';
+  renderCatTabs();
+  renderSkuTable();
+}
+
+function getActiveSkus() {
+  if (!activeStyle) return [];
+  return activeStyle.construction_type?.toLowerCase() === 'frameless' ? allSkusFrameless : allSkusFramed;
+}
+
+// Returns the assemble fee for a given SKU type and construction type.
+// Returns 0 when there is no fee configured (which means: ASM disallowed for this combo).
+function getAsmFee(type, constructionType) {
+  if (!dealer) return 0;
+  const t  = (type || '').toUpperCase();
+  const ct = (constructionType || '').toLowerCase();
+  if (ct !== 'framed' && ct !== 'frameless') return 0;
+  const map = {
+    framed: {
+      'BASE':          dealer.asm_fee_framed_base,
+      'WALL':          dealer.asm_fee_framed_wall,
+      'TALL':          dealer.asm_fee_framed_tall,
+      'ROLL OUT TRAY': dealer.asm_fee_framed_roll_out_tray,
+    },
+    frameless: {
+      'BASE':          dealer.asm_fee_frameless_base,
+      'WALL':          dealer.asm_fee_frameless_wall,
+      'TALL':          dealer.asm_fee_frameless_tall,
+      'VANITY':        dealer.asm_fee_frameless_vanity,
+      'ROLL OUT TRAY': dealer.asm_fee_frameless_roll_out_tray,
+    }
+  };
+  const v = map[ct]?.[t];
+  return v == null ? 0 : (parseFloat(v) || 0);
+}
+
+function renderCatTabs() {
+  const skus = getActiveSkus();
+  const types = ['All', ...new Set(skus.map(s => s.type).filter(Boolean))];
+  document.getElementById('catTabs').innerHTML = types.map(c =>
+    `<button class="cat-tab ${c===currentCat?'active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCat(c) {
+  currentCat = c;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.toggle('active',b.textContent===c));
+  renderSkuTable();
+}
+
+
+// Helper: returns the MSRP for the SKU based on the style's group, or null if N/A
+function getMsrpForGroup(sku, grp) {
+  const g = (grp || 'GROUP A').toUpperCase();
+  const v = g === 'GROUP D' ? sku.msrp_group_d
+          : g === 'GROUP C' ? sku.msrp_group_c
+          : g === 'GROUP B' ? sku.msrp_group_b
+          : sku.msrp_group_a;
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+function renderSkuTable() {
+  if (!activeStyle) return;
+  const stockM     = dealer ? parseFloat(dealer.stock_multiplier     || 1) : 1;
+  const nonStockM  = dealer ? parseFloat(dealer.non_stock_multiplier || 1) : 1;
+  const framelessM = dealer ? parseFloat(dealer.frameless_multiplier || 1) : 1;
+  const isFrameless = activeStyle.construction_type?.toLowerCase() === 'frameless';
+  const isStock    = activeStyle.is_stock;
+  const m          = isFrameless ? framelessM : (isStock ? stockM : nonStockM);
+  const q = (document.getElementById('skuSearch')?.value||'').toLowerCase();
+  const grp        = (activeStyle.grp || 'GROUP A').toUpperCase();
+
+  let skus = getActiveSkus();
+  if (currentCat !== 'All') skus = skus.filter(s => s.type === currentCat);
+  if (q) skus = skus.filter(s => s.sku_code.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+
+  // Filter out SKUs that have no price for the current style's group (N/A handling)
+  skus = skus.filter(s => getMsrpForGroup(s, grp) !== null);
+
+  // CB-5 需求4: apply sort to the (filtered) list
+  skus = skus.slice().sort(function (a, b) {
+    if (currentSort === 'sku') {
+      return a.sku_code.localeCompare(b.sku_code);
+    }
+    if (currentSort === 'price_asc' || currentSort === 'price_desc') {
+      const pa = getMsrpForGroup(a, grp) * m;
+      const pb = getMsrpForGroup(b, grp) * m;
+      return currentSort === 'price_asc' ? pa - pb : pb - pa;
+    }
+    // default 'type': by preferred type-group order, then SKU code within group
+    const ra = skuTypeRank(a.type), rb = skuTypeRank(b.type);
+    if (ra !== rb) return ra - rb;
+    const ta = (a.type || '').toUpperCase(), tb = (b.type || '').toUpperCase();
+    if (ta !== tb) return ta.localeCompare(tb);
+    return a.sku_code.localeCompare(b.sku_code);
+  });
+
+  const wrap = document.getElementById('skuTableWrap');
+  if (!skus.length) { wrap.innerHTML = '<div class="sku-placeholder">No items found.</div>'; return; }
+
+  // Stock/Non-Stock tag is only meaningful for Framed; hide for Frameless
+  const stockTag = isFrameless
+    ? ''
+    : (isStock
+        ? '<span style="font-size:9px;background:rgba(22,163,74,0.1);color:#16A34A;border-radius:2px;padding:1px 5px;">STOCK</span>'
+        : '<span style="font-size:9px;background:rgba(59,130,246,0.1);color:#3B82F6;border-radius:2px;padding:1px 5px;">NON-STOCK</span>');
+
+  // CB-4: disable add controls in review mode (defensive — selection is blocked
+  // upstream, so this table normally never renders during review)
+  const locked   = isReviewLocked();
+  const disAttr  = locked ? ' disabled' : '';
+
+  wrap.innerHTML = `
+    <table class="sku-table">
+      <thead>
+        <tr>
+          <th>Tag</th>
+          <th>SKU</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Unit Price</th>
+          <th>Asm Fee</th>
+          <th class="th-right">Assemble Status &amp; Add</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${skus.map(sku => {
+          const base      = getMsrpForGroup(sku, grp);
+          const unitPrice = (base * m).toFixed(2);
+          const asmFee    = getAsmFee(sku.type, activeStyle.construction_type);
+          const asmAvailable = asmFee > 0;
+          const typeTag   = sku.type
+            ? `<span style="font-size:9px;background:rgba(201,168,76,0.12);color:#8B6914;border-radius:2px;padding:1px 5px;">${sku.type}</span>`
+            : '—';
+          const asmButton = (asmAvailable && !locked)
+            ? `<button class="btn-add" onclick="addToCart('${sku.sku_code}','Assembled',${unitPrice},${asmFee})" style="background:rgba(201,168,76,0.15);color:#8B6914;border:1px solid rgba(201,168,76,0.4);text-transform:none;">Assembled</button>`
+            : `<button class="btn-add" disabled title="Assembled service not available for this item type" style="background:#E5E5E5;color:#9CA3AF;border:1px solid #D4D4D4;cursor:not-allowed;text-transform:none;">Assembled</button>`;
+          return `
+            <tr>
+              <td>${sku.tag || ''}</td>
+              <td class="td-code">${sku.sku_code}${sku.needs_confirmation ? ' ⚠️' : ''} ${stockTag}</td>
+              <td class="td-desc">${sku.description}</td>
+              <td>${typeTag}</td>
+              <td class="td-price">$${unitPrice}</td>
+              <td style="font-size:12px;color:var(--muted);">${asmAvailable ? `$${asmFee.toFixed(2)}` : '—'}</td>
+              <td>
+                <div class="td-actions">
+                  <button class="qty-btn" onclick="chgQty('${sku.sku_code}',-1)"${disAttr}>−</button>
+                  <input class="qty-input" type="number" min="0" value="1" id="qty-${sku.sku_code}"${disAttr}/>
+                  <button class="qty-btn" onclick="chgQty('${sku.sku_code}',1)"${disAttr}>+</button>
+                  <button class="btn-add" onclick="addToCart('${sku.sku_code}','RTA',${unitPrice},0)" style="background:var(--green-dark);color:#fff;text-transform:none;"${disAttr}>Unassembled</button>
+                  ${asmButton}
+                </div>
+              </td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function chgQty(code, d) {
+  if (isReviewLocked()) return;  // CB-4
+  const el = document.getElementById('qty-'+code);
+  if (el) el.value = Math.max(0, parseInt(el.value||0)+d);
+}
+
+function addToCart(skuCode, type, unitPrice, assembledFee) {
+  if (isReviewLocked()) return;  // CB-4: read-only review — no adding
+  const el  = document.getElementById('qty-'+skuCode);
+  const qty = parseInt(el?.value||0);
+  if (qty<=0) { showToast('Please enter a quantity first'); return; }
+  const sku = getActiveSkus().find(s => s.sku_code === skuCode);
+  if (!sku) { showToast('SKU not found'); return; }
+  const grp2      = (activeStyle.grp || 'GROUP A').toUpperCase();
+  const msrpValue = getMsrpForGroup(sku, grp2);
+  if (msrpValue === null) {
+    showToast('This SKU is not available for the selected style group');
+    return;
+  }
+const key = `${activeStyle.style_code}-${skuCode}-${type}`;
+  const idx = cartItems.findIndex(i=>i.key===key);
+  if (idx>=0) {
+    // E5: increment qty + grow the default sub_group qty (no split yet)
+    cartItems[idx].quantity += qty;
+    if (Array.isArray(cartItems[idx].sub_groups) && cartItems[idx].sub_groups.length === 1) {
+      cartItems[idx].sub_groups[0].qty = cartItems[idx].quantity;
+    } else if (!Array.isArray(cartItems[idx].sub_groups) || !cartItems[idx].sub_groups.length) {
+      // Defensive: rebuild sub_groups if missing
+      cartItems[idx].sub_groups = [{
+        sub_index:           1,
+        qty:                 cartItems[idx].quantity,
+        modifications:       [],
+        modification_status: type === 'RTA' ? 'skipped' : 'unprocessed',
+      }];
+    }
+  }
+  else {
+    cartItems.push({
+      key, style_code:activeStyle.style_code, style_name:activeStyle.style_name,
+      sku_code:skuCode, sku_desc:sku.description, type,
+      category:    sku.category    || '',
+      subcategory: sku.subcategory || '',
+      skuType:     sku.type        || '',
+      // CB-5 需求1: carry door attributes for Step 3 / quote-detail lead time
+      construction_type: activeStyle.construction_type || null,
+      is_stock:          activeStyle.is_stock,
+      needs_confirmation: !!sku.needs_confirmation,  // CB-29
+      quantity:qty, unit_price:parseFloat(unitPrice), msrp:msrpValue,
+      assemble_fee: parseFloat(assembledFee||0),
+      // E5: new cart items start as a single un-split sub-group
+      sub_groups: [{
+        sub_index:           1,
+        qty:                 qty,
+        modifications:       [],
+        modification_status: type === 'RTA' ? 'skipped' : 'unprocessed',
+      }],
+    });
+  }
+  if (el) el.value=1;
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  renderCart();
+  showToast(`${sku.sku_code} (${type}) × ${qty} added`);
+}
+
+function removeFromCart(key) {
+  if (isReviewLocked()) return;  // CB-4: read-only review — no removing
+  cartItems=cartItems.filter(i=>i.key!==key);
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  renderCart();
+  // F-CUSTOM v1.1: also refresh custom items list (in case removed item was custom)
+  if (typeof renderCustomItemsList === 'function') renderCustomItemsList();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// F-CUSTOM v1.1 (2026-05-14): Admin "+ Add Custom Item"
+//
+//   v1.1 changes vs v1.0:
+//     • Button moved from sku-panel-header to a new "Custom Items"
+//       section at the bottom of the SKU panel.
+//     • Modal field order reorganized per Ben's request:
+//         Cabinet: Type → Construction → Door Style (manual) → SKU
+//                  → Desc → Cabinet Type (dynamic from product table)
+//                  → Asm Status → Asm Fee (auto, read-only)
+//                  → Qty → Unit Price (with help note)
+//         Accessory: Type → (locked "Accessories" label) → SKU → Desc
+//                    → Qty → Unit Price (with help note)
+//         Other: Type → Door Style (free text, optional) → SKU → Desc
+//                → Qty → Unit Price (with help note)
+//     • Asm Fee is now read-only, auto-calculated from
+//       dealer.asm_fee_<ctype>_<cabinet_type>.
+//     • Cabinet Type dropdown is dynamically populated from the
+//       product table's distinct `type` column (per construction).
+//     • Unit Price has an "MSRP not applied" help note.
+//     • A "Custom Items" list section at SKU panel bottom shows
+//       all custom items already added (regardless of selected style).
+// ═══════════════════════════════════════════════════════════════════
+
+let customModalState = {
+  type:           null,    // 'Cabinet' | 'Accessory' | 'Other'
+  construction:   null,    // 'framed' | 'frameless' (Cabinet only)
+  cabinetType:    null,    // BASE / WALL / TALL / VANITY / ROLL OUT TRAY etc.
+  asmStatus:      'RTA',   // 'RTA' | 'Assembled'
+  editingKey:     null,    // cart key of item being edited; null = ADD mode
+};
+
+function isAdminRole() {
+  // F-CUSTOM: check the LOGGED-IN user's role, not the loaded `dealer`
+  // object. In admin "create as dealer" flow, `dealer` is the target
+  // dealer (for pricing); admin permissions come from currentUserRole.
+  return currentUserRole === 'admin' || currentUserRole === 'super_admin';
+}
+
+// Distinct cabinet types per construction, derived from product tables
+// (lazy populated on first openCustomModal()).
+let _customCabinetTypes = { framed: null, frameless: null };
+
+function getDistinctCabinetTypes(construction) {
+  // Read from already-loaded allSkusFramed / allSkusFrameless
+  const source = (construction === 'frameless') ? allSkusFrameless : allSkusFramed;
+  const types = new Set();
+  source.forEach(function (s) {
+    if (s.type) types.add(s.type);
+  });
+  // Preferred order; unknown types appended at the end
+  const preferred = ['BASE', 'WALL', 'TALL', 'VANITY', 'ROLL OUT TRAY'];
+  const sorted = [];
+  preferred.forEach(function (t) { if (types.has(t)) { sorted.push(t); types.delete(t); } });
+  Array.from(types).sort().forEach(function (t) { sorted.push(t); });
+  return sorted;
+}
+
+function populateCabinetTypeSelect(construction) {
+  const sel = document.getElementById('customCabinetTypeSelect');
+  if (!sel) return;
+  const types = getDistinctCabinetTypes(construction);
+  sel.innerHTML = '<option value="">— Select cabinet type —</option>' +
+    types.map(function (t) {
+      return '<option value="' + t + '">' + t + '</option>';
+    }).join('');
+  sel.value = '';
+  // Reset state — they must re-pick after construction change
+  customModalState.cabinetType = null;
+  recomputeCustomAsmFee();
+}
+
+// Compute Asm Fee = dealer's asm_fee_<ctype>_<cabinet_type>
+function recomputeCustomAsmFee() {
+  const feeEl = document.getElementById('customAsmFee');
+  if (!feeEl) return;
+
+  if (customModalState.asmStatus !== 'Assembled') {
+    feeEl.value = '';
+    return;
+  }
+  if (!customModalState.construction || !customModalState.cabinetType) {
+    feeEl.value = '';
+    return;
+  }
+  const fee = getAsmFee(customModalState.cabinetType, customModalState.construction);
+  feeEl.value = (fee > 0) ? fee.toFixed(2) : '0.00';
+}
+
+function openCustomModal(editKey) {
+  if (isReviewLocked()) return;  // CB-4: read-only review — no custom items
+  // Reset state
+  customModalState = {
+    type:         null,
+    construction: null,
+    cabinetType:  null,
+    asmStatus:    'RTA',
+    editingKey:   editKey || null,
+  };
+
+  // Reset all visual states
+  document.querySelectorAll('#customTypeGrid .custom-type-card').forEach(function (c) {
+    c.classList.remove('selected');
+  });
+  document.querySelectorAll('#customConstructionGroup .custom-construction-btn').forEach(function (b) {
+    b.classList.remove('active');
+  });
+  document.getElementById('customCabinetSection').style.display    = 'none';
+  document.getElementById('customAccessorySection').style.display  = 'none';
+  document.getElementById('customOtherSection').style.display      = 'none';
+  document.getElementById('customCommonFieldsRow1').style.display  = 'none';
+  document.getElementById('customCommonFieldsRow2').style.display  = 'none';
+  document.getElementById('customCommonFieldsRow3').style.display  = 'none';
+
+  // Clear field values
+  document.getElementById('customDoorStyleCabinet').value = '';
+  document.getElementById('customDoorStyleOther').value   = '';
+  document.getElementById('customCabinetTypeSelect').innerHTML = '<option value="">— Select cabinet type —</option>';
+  document.getElementById('customAsmFee').value           = '';
+  document.getElementById('customSkuCode').value          = '';
+  document.getElementById('customSkuDesc').value          = '';
+  document.getElementById('customQty').value              = 1;
+  document.getElementById('customUnitPrice').value        = '';
+  setCustomAsmStatus('RTA');
+
+  // Clear any prior invalid markings
+  ['customSkuCode','customSkuDesc','customQty','customUnitPrice',
+   'customDoorStyleCabinet','customDoorStyleOther','customCabinetTypeSelect']
+    .forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('invalid');
+    });
+
+  if (editKey) {
+    // EDIT mode — prefill from existing cart item
+    const item = cartItems.find(function (i) { return i.key === editKey; });
+    if (!item || !item.is_custom) {
+      showToast('Item not found or not editable');
+      return;
+    }
+
+    document.getElementById('customModalTitle').textContent = 'Edit Custom Item';
+    document.getElementById('customSaveBtn').textContent    = 'Save Changes';
+
+    // Infer type from sku_type
+    let inferredType;
+    if (item.skuType === 'ACCESSORIES') inferredType = 'Accessory';
+    else if (item.skuType === 'OTHER')  inferredType = 'Other';
+    else inferredType = 'Cabinet';
+    onCustomTypeSelect(inferredType);  // shows section + common fields
+
+    document.getElementById('customSkuCode').value   = item.sku_code   || '';
+    document.getElementById('customSkuDesc').value   = item.sku_desc   || '';
+    document.getElementById('customQty').value       = item.quantity   || 1;
+    document.getElementById('customUnitPrice').value = (item.unit_price || 0).toFixed(2);
+
+    if (inferredType === 'Cabinet') {
+      const ctype = (item.construction_type || 'framed').toLowerCase();
+      setCustomConstruction(ctype);
+      document.getElementById('customDoorStyleCabinet').value = item.style_name || '';
+      // Cabinet type — wait for populate to finish then set
+      const sel = document.getElementById('customCabinetTypeSelect');
+      if (item.skuType && sel) {
+        sel.value = item.skuType;
+        customModalState.cabinetType = item.skuType;
+      }
+      setCustomAsmStatus(item.type || 'RTA');
+      recomputeCustomAsmFee();
+    } else if (inferredType === 'Other') {
+      document.getElementById('customDoorStyleOther').value = item.style_name || '';
+    }
+  } else {
+    // ADD mode — fresh form
+    document.getElementById('customModalTitle').textContent = 'Add Custom Item';
+    document.getElementById('customSaveBtn').textContent    = 'Add to Cart';
+  }
+
+  document.getElementById('customModalOverlay').classList.add('show');
+  document.body.classList.add('modal-open');
+}
+
+function closeCustomModal() {
+  document.getElementById('customModalOverlay').classList.remove('show');
+  document.body.classList.remove('modal-open');
+  customModalState.editingKey = null;
+}
+
+function onCustomTypeSelect(type) {
+  customModalState.type = type;
+  // Visual toggle
+  document.querySelectorAll('#customTypeGrid .custom-type-card').forEach(function (c) {
+    c.classList.toggle('selected', c.getAttribute('data-type') === type);
+  });
+  // Show the type-specific section
+  document.getElementById('customCabinetSection').style.display    = (type === 'Cabinet')   ? 'block' : 'none';
+  document.getElementById('customAccessorySection').style.display  = (type === 'Accessory') ? 'block' : 'none';
+  document.getElementById('customOtherSection').style.display      = (type === 'Other')     ? 'block' : 'none';
+  // Show the common fields (SKU/Desc/Qty/Price) after type is selected
+  document.getElementById('customCommonFieldsRow1').style.display  = 'block';
+  document.getElementById('customCommonFieldsRow2').style.display  = 'block';
+  document.getElementById('customCommonFieldsRow3').style.display  = 'flex';
+}
+
+function setCustomConstruction(ctype) {
+  customModalState.construction = ctype;
+  document.querySelectorAll('#customConstructionGroup .custom-construction-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-value') === ctype);
+  });
+  // Populate cabinet type dropdown from product table
+  populateCabinetTypeSelect(ctype);
+  recomputeCustomAsmFee();
+}
+
+function onCustomCabinetTypeChange() {
+  const sel = document.getElementById('customCabinetTypeSelect');
+  customModalState.cabinetType = sel.value || null;
+  recomputeCustomAsmFee();
+}
+
+function setCustomAsmStatus(s) {
+  customModalState.asmStatus = s;
+  document.querySelectorAll('#customAsmStatusGroup .custom-radio-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-value') === s);
+  });
+  recomputeCustomAsmFee();
+}
+
+function saveCustomItem() {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  // ── Validate common fields ──
+  const skuCode    = document.getElementById('customSkuCode').value.trim();
+  const skuDesc    = document.getElementById('customSkuDesc').value.trim();
+  const qtyRaw     = document.getElementById('customQty').value;
+  const priceRaw   = document.getElementById('customUnitPrice').value;
+  const qty        = parseInt(qtyRaw, 10);
+  const unitPrice  = parseFloat(priceRaw);
+
+  let firstInvalid = null;
+
+  // Clear prior markings
+  ['customSkuCode','customSkuDesc','customQty','customUnitPrice',
+   'customDoorStyleCabinet','customDoorStyleOther','customCabinetTypeSelect']
+    .forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('invalid');
+    });
+
+  if (!customModalState.type) {
+    showToast('Please select an item type', true);
+    return;
+  }
+  if (!skuCode) {
+    document.getElementById('customSkuCode').classList.add('invalid');
+    firstInvalid = firstInvalid || 'SKU code is required';
+  }
+  if (!skuDesc) {
+    document.getElementById('customSkuDesc').classList.add('invalid');
+    firstInvalid = firstInvalid || 'Description is required';
+  }
+  if (!isFinite(qty) || qty < 1) {
+    document.getElementById('customQty').classList.add('invalid');
+    firstInvalid = firstInvalid || 'Quantity must be at least 1';
+  }
+  if (!isFinite(unitPrice) || unitPrice < 0) {
+    document.getElementById('customUnitPrice').classList.add('invalid');
+    firstInvalid = firstInvalid || 'Unit price must be 0 or greater';
+  }
+
+  // ── Type-specific validation + field gathering ──
+  let styleCode   = null;
+  let styleName   = null;
+  let cabinetType = null;
+  let asmStatus   = 'RTA';
+  let asmFee      = 0;
+  let construction = null;
+
+  if (customModalState.type === 'Cabinet') {
+    if (!customModalState.construction) {
+      firstInvalid = firstInvalid || 'Construction type is required';
+    } else {
+      construction = customModalState.construction;
+    }
+
+    const doorStyleInput = document.getElementById('customDoorStyleCabinet');
+    const typed = doorStyleInput.value.trim();
+    if (!typed) {
+      doorStyleInput.classList.add('invalid');
+      firstInvalid = firstInvalid || 'Door style is required';
+    } else {
+      styleCode = null;   // Custom — no catalog match
+      styleName = typed;
+    }
+
+    const ctSel = document.getElementById('customCabinetTypeSelect');
+    if (!ctSel.value) {
+      ctSel.classList.add('invalid');
+      firstInvalid = firstInvalid || 'Cabinet type is required';
+    } else {
+      cabinetType = ctSel.value;
+    }
+
+    asmStatus = customModalState.asmStatus || 'RTA';
+    if (asmStatus === 'Assembled' && construction && cabinetType) {
+      asmFee = getAsmFee(cabinetType, construction);
+    } else {
+      asmFee = 0;
+    }
+  } else if (customModalState.type === 'Accessory') {
+    styleCode    = null;
+    styleName    = 'Accessories';
+    cabinetType  = null;
+    asmStatus    = 'RTA';
+    asmFee       = 0;
+    construction = null;
+  } else if (customModalState.type === 'Other') {
+    const doorStyleInput = document.getElementById('customDoorStyleOther');
+    const typed = doorStyleInput.value.trim();
+    styleCode    = null;
+    styleName    = typed || null;   // optional
+    cabinetType  = null;
+    asmStatus    = 'RTA';
+    asmFee       = 0;
+    construction = null;
+  }
+
+  if (firstInvalid) {
+    showToast(firstInvalid, true);
+    return;
+  }
+
+  // ── Resolve final fields per type ──
+  let skuType, finalAsmStatus, finalAsmFee, finalStyleCode, finalStyleName;
+  switch (customModalState.type) {
+    case 'Cabinet':
+      skuType        = cabinetType;       // BASE / WALL / TALL / VANITY / ...
+      finalAsmStatus = asmStatus;
+      finalAsmFee    = asmFee;
+      finalStyleCode = styleCode;
+      finalStyleName = styleName;
+      break;
+    case 'Accessory':
+      skuType        = 'ACCESSORIES';
+      finalAsmStatus = 'RTA';
+      finalAsmFee    = 0;
+      finalStyleCode = null;
+      finalStyleName = 'Accessories';
+      break;
+    case 'Other':
+      skuType        = 'OTHER';
+      finalAsmStatus = 'RTA';
+      finalAsmFee    = 0;
+      finalStyleCode = null;
+      finalStyleName = styleName;   // optional, may be null
+      break;
+  }
+
+  // Build / preserve key
+  const isEditing = !!customModalState.editingKey;
+  const key = isEditing
+    ? customModalState.editingKey
+    : 'CUSTOM-' + Date.now() + '-' + skuCode + '-' + finalAsmStatus;
+
+  const newItem = {
+    key:                key,
+    is_custom:          true,
+    style_code:         finalStyleCode,
+    style_name:         finalStyleName,
+    construction_type:  construction,    // 'framed' / 'frameless' / null
+    is_stock:           false,           // CB-5 需求1: custom items treated as non-stock (special order)
+    sku_code:           skuCode,
+    sku_desc:           skuDesc,
+    type:               finalAsmStatus,  // RTA / Assembled
+    skuType:            skuType,
+    category:           '',
+    subcategory:        '',
+    quantity:           qty,
+    unit_price:         unitPrice,
+    msrp:               0,
+    assemble_fee:       finalAsmFee,
+    sub_groups: [{
+      sub_index:           1,
+      qty:                 qty,
+      modifications:       [],
+      modification_status: 'skipped',
+    }],
+  };
+
+  if (isEditing) {
+    const idx = cartItems.findIndex(function (i) { return i.key === customModalState.editingKey; });
+    if (idx >= 0) {
+      cartItems[idx] = newItem;
+      console.log('[F-CUSTOM] Edited custom item:', newItem);
+    }
+  } else {
+    cartItems.push(newItem);
+    console.log('[F-CUSTOM] Added custom item:', newItem);
+  }
+
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  renderCart();
+  renderCustomItemsList();
+  closeCustomModal();
+  showToast(isEditing ? (skuCode + ' updated') : (skuCode + ' added to cart'));
+}
+
+// ──────────────────────────────────────────────────────────────────
+// F-CUSTOM v1.1: render the "Custom Items" list at SKU panel bottom
+// ──────────────────────────────────────────────────────────────────
+function renderCustomItemsList() {
+  const listEl = document.getElementById('customItemsList');
+  if (!listEl) return;
+  const customs = cartItems.filter(function (i) { return i.is_custom; });
+
+  if (!customs.length) {
+    listEl.innerHTML = '<div class="custom-items-empty">' +
+      'No custom items yet. Click "+ Add Custom Item" above to add one.' +
+      '</div>';
+    return;
+  }
+
+  listEl.innerHTML = customs.map(function (item) {
+    let typeBadge, typeClass;
+    if (item.skuType === 'ACCESSORIES') {
+      typeBadge = 'ACCESSORY';
+      typeClass = 'accessory';
+    } else if (item.skuType === 'OTHER') {
+      typeBadge = 'OTHER';
+      typeClass = 'other';
+    } else {
+      typeBadge = 'CABINET';
+      typeClass = 'cabinet';
+    }
+
+    // Build meta line: style name + cabinet type + asm + construction
+    const metaParts = [];
+    if (item.style_name) metaParts.push(item.style_name);
+    if (item.construction_type) metaParts.push(item.construction_type);
+    if (item.skuType && item.skuType !== 'ACCESSORIES' && item.skuType !== 'OTHER') {
+      metaParts.push(item.skuType);
+    }
+    metaParts.push(formatAssembleStatus(item.type)); // CB-5 需求3: display Unassembled/Assembled
+    if ((item.assemble_fee || 0) > 0) metaParts.push('Asm +$' + item.assemble_fee.toFixed(2));
+
+    const lineTotal = (item.unit_price * item.quantity);
+
+    return '' +
+      '<div class="custom-item-row" data-key="' + item.key + '">' +
+        '<div class="ci-code">' +
+          item.sku_code +
+          ' <span class="ci-type-badge ' + typeClass + '">' + typeBadge + '</span>' +
+        '</div>' +
+        '<div class="ci-desc" title="' + (item.sku_desc || '') + '">' + (item.sku_desc || '') + '</div>' +
+        '<div class="ci-meta">' + metaParts.join(' · ') + '</div>' +
+        '<div class="ci-qty">Qty ' + item.quantity + '</div>' +
+        '<div class="ci-price">$' + item.unit_price.toFixed(2) + '/ea</div>' +
+        '<div class="ci-line">$' + lineTotal.toFixed(2) + '</div>' +
+        '<div class="ci-actions">' +
+          '<button class="ci-action-btn edit" type="button" ' +
+            'onclick="openCustomModal(\'' + item.key + '\')" ' +
+            'title="Edit">✏</button>' +
+          '<button class="ci-action-btn del" type="button" ' +
+            'onclick="removeFromCart(\'' + item.key + '\'); renderCustomItemsList();" ' +
+            'title="Remove">×</button>' +
+        '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Cart qty inline edit (2026-05-14)
+//
+// Hybrid sync rule for cart qty change vs sub_groups:
+//   Case 1: sub_groups.length === 1 → 直接同步 sub_groups[0].qty
+//   Case 2: 加總 → 多的加到 sub_groups[0]
+//   Case 3: 減總且 ≥ 現有 sub 數量 → 從 sub_groups[last] 開始扣
+//   Case 4: 減到某 sub 要被刪 → confirm dialog 警告
+// ═══════════════════════════════════════════════════════════════════
+
+function syncCartQtyToSubGroups(item, newQty) {
+  // Defensive: ensure sub_groups exists
+  if (!Array.isArray(item.sub_groups) || !item.sub_groups.length) {
+    item.sub_groups = [{
+      sub_index: 1,
+      qty: newQty,
+      modifications: [],
+      modification_status: item.type === 'RTA' ? 'skipped' : 'unprocessed',
+    }];
+    item.quantity = newQty;
+    return { ok: true, deletedCount: 0 };
+  }
+
+  const subCount = item.sub_groups.length;
+  const currentSum = item.sub_groups.reduce(function (s, g) { return s + (g.qty || 0); }, 0);
+
+  // Case 1: single sub_group — direct sync
+  if (subCount === 1) {
+    item.sub_groups[0].qty = newQty;
+    item.quantity = newQty;
+    return { ok: true, deletedCount: 0 };
+  }
+
+  // Case 2: increasing — add diff to first sub
+  if (newQty > currentSum) {
+    item.sub_groups[0].qty += (newQty - currentSum);
+    item.quantity = newQty;
+    return { ok: true, deletedCount: 0 };
+  }
+
+  // Case 3 & 4: decreasing
+  // Walk from last sub toward first, deducting until we reach newQty
+  // If a sub reaches 0, it must be deleted (Case 4 — needs confirm)
+  // Compute hypothetically first to know how many would be deleted
+  let remaining = newQty;
+  const sims = item.sub_groups.map(function (g) {
+    return { sub_index: g.sub_index, qty: g.qty || 0, modifications: g.modifications || [] };
+  });
+  // Greedy from first to last: keep filling each sub up to its current qty
+  const newSubs = [];
+  for (let i = 0; i < sims.length; i++) {
+    if (remaining <= 0) break;
+    const take = Math.min(sims[i].qty, remaining);
+    if (take > 0) {
+      newSubs.push({
+        sub_index:           newSubs.length + 1,
+        qty:                 take,
+        modifications:       sims[i].modifications,
+        modification_status: item.sub_groups[i].modification_status,
+      });
+      remaining -= take;
+    }
+  }
+
+  const deletedCount = subCount - newSubs.length;
+
+  // Case 4: at least one sub would be removed → ask confirm
+  if (deletedCount > 0) {
+    // Build a friendly message listing what gets lost
+    const lostSubs = item.sub_groups.slice(newSubs.length);
+    const lostModSummary = lostSubs.map(function (g) {
+      const modCount = (g.modifications || []).length;
+      return 'Sub ' + g.sub_index + ' (qty ' + g.qty + ', ' + modCount + ' mod' +
+             (modCount !== 1 ? 's' : '') + ')';
+    }).join(', ');
+    const confirmed = confirm(
+      'Reducing qty to ' + newQty + ' will delete ' + deletedCount +
+      ' sub-group(s):\n\n' + lostSubs.map(function (g) {
+        return '• Sub ' + g.sub_index + ' (qty ' + g.qty + ', ' +
+               (g.modifications || []).length + ' modification(s))';
+      }).join('\n') +
+      '\n\nThe modifications on those sub-groups will be LOST. Continue?'
+    );
+    if (!confirmed) return { ok: false, deletedCount: 0 };
+  }
+
+  item.sub_groups = newSubs;
+  item.quantity = newQty;
+  return { ok: true, deletedCount: deletedCount };
+}
+
+function onCartQtyChange(key, newValRaw) {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) return;
+  let q = parseInt(newValRaw, 10);
+  if (!isFinite(q) || q < 1) q = 1;
+
+  if (q === item.quantity) return;  // no-op
+
+  const result = syncCartQtyToSubGroups(item, q);
+  if (!result.ok) {
+    // User cancelled — re-render to restore the old qty in the input
+    renderCart();
+    return;
+  }
+
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  renderCart();
+  // F-CUSTOM v1.1: refresh custom list (in case qty change was on a custom item)
+  if (typeof renderCustomItemsList === 'function') renderCustomItemsList();
+
+  if (result.deletedCount > 0) {
+    console.log('[CART-QTY] item', item.sku_code, '→ qty', q,
+                '(deleted', result.deletedCount, 'sub-group(s))');
+  } else {
+    console.log('[CART-QTY] item', item.sku_code, '→ qty', q);
+  }
+}
+
+function bumpCartQty(key, delta) {
+  if (isReviewLocked()) return;  // CB-4: read-only review
+  const item = cartItems.find(function (i) { return i.key === key; });
+  if (!item) return;
+  const newQty = Math.max(1, (item.quantity || 1) + delta);
+  onCartQtyChange(key, newQty);
+}
+
+function renderCart() {
+  const subtotal     = cartItems.reduce((s,i)=>s+i.unit_price*i.quantity,0);
+  const assembleTotal = cartItems.reduce((s,i)=>s+(i.assemble_fee||0)*i.quantity,0);
+  const totalQty     = cartItems.reduce((s,i)=>s+i.quantity,0);
+  const totalLines   = cartItems.length;
+
+  document.getElementById('cartFabBadge').textContent = totalQty;
+  document.getElementById('bottomCount').textContent = `${totalQty} item${totalQty!==1?'s':''}`;
+  document.getElementById('btnNext').disabled = totalLines===0;
+
+  if (!totalLines) {
+    document.getElementById('cartBody').innerHTML='<div class="cart-empty">No items yet.<br>Select a style to begin.</div>';
+    document.getElementById('cartFooter').style.display='none';
+    return;
+  }
+
+  // CB-4: in review mode, cart is read-only (no qty edit / remove / custom edit)
+  const locked = isReviewLocked();
+
+  document.getElementById('cartBody').innerHTML = cartItems.map(function (item) {
+    // F-CUSTOM: gold [CUSTOM] badge for hand-entered items
+    const customBadge = item.is_custom
+      ? '<span class="custom-badge">CUSTOM</span>'
+      : '';
+
+    // F-CUSTOM: edit pencil (custom items only — admin can re-open modal).
+    // CB-4: hidden in review mode.
+    const editBtn = (item.is_custom && !locked)
+      ? `<button class="cart-item-edit-btn" type="button"
+            onclick="openCustomModal('${item.key}')"
+            title="Edit custom item">✏</button>`
+      : '';
+
+    // Cart qty inline: − [input] + (locked & disabled in review mode)
+    const qtyControls = locked
+      ? `
+      <div class="cart-item-qty-controls">
+        <button class="cart-qty-btn" type="button" disabled>−</button>
+        <input class="cart-qty-input" type="number" min="1" step="1"
+          value="${item.quantity}" disabled/>
+        <button class="cart-qty-btn" type="button" disabled>+</button>
+      </div>`
+      : `
+      <div class="cart-item-qty-controls">
+        <button class="cart-qty-btn" type="button"
+          onclick="bumpCartQty('${item.key}', -1)"
+          ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+        <input class="cart-qty-input" type="number" min="1" step="1"
+          value="${item.quantity}"
+          onchange="onCartQtyChange('${item.key}', this.value)"/>
+        <button class="cart-qty-btn" type="button"
+          onclick="bumpCartQty('${item.key}', 1)">+</button>
+      </div>`;
+
+    // Style/SKU display — for custom items without a style_code, just show "(custom)"
+    const styleLabel = item.style_name
+      ? item.style_name
+      : (item.is_custom ? '(custom)' : '');
+    const _confIcon = item.needs_confirmation ? ' ⚠️' : '';  // CB-29
+        const nameLine = styleLabel
+          ? `${styleLabel} · ${item.sku_code}${_confIcon}${customBadge}`
+          : `${item.sku_code}${_confIcon}${customBadge}`;
+
+    // CB-4: remove button disabled in review mode
+    const removeBtn = locked
+      ? `<button class="btn-remove" disabled>×</button>`
+      : `<button class="btn-remove" onclick="removeFromCart('${item.key}')">×</button>`;
+
+    return `
+    <div class="cart-item">
+      <div class="cart-item-top">
+        <div style="flex:1; min-width:0;">
+          <div class="cart-item-name">${nameLine}</div>
+          <div class="cart-item-detail">${formatAssembleStatus(item.type)} · $${item.unit_price.toFixed(2)}/ea${item.assemble_fee > 0 ? ` · Assemble: +$${item.assemble_fee.toFixed(2)}/ea` : ''}</div>
+          ${qtyControls}
+        </div>
+        <div class="cart-item-right">
+          <div class="cart-item-price">$${(item.unit_price * item.quantity).toFixed(2)}</div>
+          ${editBtn}
+          ${removeBtn}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Show subtotal + assemble fee breakdown
+  const footerEl = document.getElementById('cartFooter');
+  footerEl.style.display='block';
+  document.getElementById('cartTotal').textContent=`$${subtotal.toFixed(2)}`;
+  
+  // Add/update assemble fee row
+  let asmRow = document.getElementById('cartAssembleRow');
+  if (!asmRow) {
+    asmRow = document.createElement('div');
+    asmRow.id = 'cartAssembleRow';
+    asmRow.style.cssText = 'font-size:11px;color:var(--muted);padding:4px 0;display:flex;justify-content:space-between;';
+    footerEl.insertBefore(asmRow, footerEl.firstChild);
+  }
+  if (assembleTotal > 0) {
+    asmRow.innerHTML = `<span>Assemble Fee (est.)</span><span>+$${assembleTotal.toFixed(2)}</span>`;
+    asmRow.style.display='flex';
+  } else {
+    asmRow.style.display='none';
+  }
+}
+
+function toggleCart() {
+  const drawer  = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartOverlay');
+  const isOpen  = drawer.classList.contains('open');
+  if (isOpen) { closeCart(); } else { drawer.classList.add('open'); overlay.classList.add('open'); }
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+function goNext() {
+  if (!cartItems.length) return;
+  sessionStorage.setItem('quoteStep2', JSON.stringify(cartItems));
+  // CB-4: forward mode so review / admin-edit survives direct refresh on the next step
+  const modeParam = buildModeParam();
+  const nextUrl = draftId
+    ? 'new-quote-modifications.html?draft=' + draftId + modeParam
+    : 'new-quote-modifications.html';
+  window.location.href = nextUrl;
+}
+
+init();
+</script>
+<script src="components/feedback-widget.js?v=1.0"></script>
+</body>
+</html>
